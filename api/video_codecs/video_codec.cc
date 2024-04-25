@@ -16,6 +16,7 @@
 
 #include "absl/strings/match.h"
 #include "rtc_base/checks.h"
+#include "rtc_base/strings/string_builder.h"
 
 namespace webrtc {
 namespace {
@@ -81,6 +82,39 @@ VideoCodec::VideoCodec()
       legacy_conference_mode(false),
       codec_specific_(),
       complexity_(VideoCodecComplexity::kComplexityNormal) {}
+
+std::string VideoCodec::ToString() const {
+  char string_buf[2048];
+  rtc::SimpleStringBuilder ss(string_buf);
+
+  ss << "VideoCodec {" << "type: " << CodecTypeToPayloadString(codecType)
+     << ", mode: "
+     << (mode == VideoCodecMode::kRealtimeVideo ? "RealtimeVideo"
+                                                : "Screensharing");
+  if (IsSinglecast()) {
+    absl::optional<ScalabilityMode> scalability_mode = GetScalabilityMode();
+    if (scalability_mode.has_value()) {
+      ss << ", Singlecast: {" << width << "x" << height << " "
+         << ScalabilityModeToString(*scalability_mode)
+         << (active ? ", active" : ", inactive") << "}";
+    }
+  } else {
+    ss << ", Simulcast: {";
+    for (size_t i = 0; i < numberOfSimulcastStreams; ++i) {
+      const SimulcastStream stream = simulcastStream[i];
+      absl::optional<ScalabilityMode> scalability_mode =
+          stream.GetScalabilityMode();
+      if (scalability_mode.has_value()) {
+        ss << "[" << stream.width << "x" << stream.height << " "
+           << ScalabilityModeToString(*scalability_mode)
+           << (stream.active ? ", active" : ", inactive") << "]";
+      }
+    }
+    ss << "}";
+  }
+  ss << "}";
+  return ss.str();
+}
 
 VideoCodecVP8* VideoCodec::VP8() {
   RTC_DCHECK_EQ(codecType, kVideoCodecVP8);
@@ -163,8 +197,6 @@ VideoCodecType PayloadStringToCodecType(const std::string& name) {
     return kVideoCodecAV1;
   if (absl::EqualsIgnoreCase(name, kPayloadNameH264))
     return kVideoCodecH264;
-  if (absl::EqualsIgnoreCase(name, kPayloadNameMultiplex))
-    return kVideoCodecMultiplex;
   if (absl::EqualsIgnoreCase(name, kPayloadNameH265))
     return kVideoCodecH265;
   return kVideoCodecGeneric;

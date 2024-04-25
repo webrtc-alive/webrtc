@@ -16,6 +16,7 @@
 
 #include "p2p/base/packet_transport_internal.h"
 #include "rtc_base/copy_on_write_buffer.h"
+#include "rtc_base/time_utils.h"
 
 namespace rtc {
 
@@ -69,7 +70,7 @@ class FakePacketTransport : public PacketTransportInternal {
       return -1;
     }
     CopyOnWriteBuffer packet(data, len);
-    SendPacketInternal(packet);
+    SendPacketInternal(packet, options);
 
     SentPacket sent_packet(options.packet_id, TimeMillis());
     SignalSentPacket(this, sent_packet);
@@ -103,6 +104,9 @@ class FakePacketTransport : public PacketTransportInternal {
     SignalNetworkRouteChanged(network_route);
   }
 
+  using PacketTransportInternal::NotifyOnClose;
+  using PacketTransportInternal::NotifyPacketReceived;
+
  private:
   void set_writable(bool writable) {
     if (writable_ == writable) {
@@ -123,11 +127,13 @@ class FakePacketTransport : public PacketTransportInternal {
     SignalReceivingState(this);
   }
 
-  void SendPacketInternal(const CopyOnWriteBuffer& packet) {
+  void SendPacketInternal(const CopyOnWriteBuffer& packet,
+                          const rtc::PacketOptions& options) {
     last_sent_packet_ = packet;
     if (dest_) {
-      dest_->SignalReadPacket(dest_, packet.data<char>(), packet.size(),
-                              TimeMicros(), 0);
+      dest_->NotifyPacketReceived(rtc::ReceivedPacket(
+          packet, SocketAddress(), webrtc::Timestamp::Micros(rtc::TimeMicros()),
+          options.ecn_1 ? EcnMarking::kEct1 : EcnMarking::kNotEct));
     }
   }
 

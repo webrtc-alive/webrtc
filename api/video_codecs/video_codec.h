@@ -157,6 +157,9 @@ class RTC_EXPORT VideoCodec {
   bool GetFrameDropEnabled() const;
   void SetFrameDropEnabled(bool enabled);
 
+  bool IsSinglecast() const { return numberOfSimulcastStreams <= 1; }
+  bool IsSimulcast() const { return !IsSinglecast(); }
+
   // Public variables. TODO(hta): Make them private with accessors.
   VideoCodecType codecType;
 
@@ -209,6 +212,7 @@ class RTC_EXPORT VideoCodec {
 
   bool operator==(const VideoCodec& other) const = delete;
   bool operator!=(const VideoCodec& other) const = delete;
+  std::string ToString() const;
 
   // Accessors for codec specific information.
   // There is a const version of each that returns a reference,

@@ -12,6 +12,7 @@
 
 #include <utility>
 
+#include "absl/memory/memory.h"
 #include "common_video/h264/h264_common.h"
 #ifdef RTC_ENABLE_H265
 #include "common_video/h265/h265_common.h"
@@ -166,7 +167,7 @@ int32_t VideoEncoderWrapper::Encode(
 
   FrameExtraInfo info;
   info.capture_time_ns = frame.timestamp_us() * rtc::kNumNanosecsPerMicrosec;
-  info.timestamp_rtp = frame.timestamp();
+  info.timestamp_rtp = frame.rtp_timestamp();
   {
     MutexLock lock(&frame_extra_infos_lock_);
     frame_extra_infos_.push_back(info);
@@ -458,6 +459,19 @@ ScopedJavaLocalRef<jobject> VideoEncoderWrapper::ToJavaRateControlParameters(
 
   return Java_RateControlParameters_Constructor(jni, j_bitrate_allocation,
                                                 rc_parameters.framerate_fps);
+}
+
+std::unique_ptr<VideoEncoder> JavaToNativeVideoEncoder(
+    JNIEnv* jni,
+    const JavaRef<jobject>& j_encoder,
+    jlong j_webrtc_env_ref) {
+  if (jlong native_encoder =
+          Java_VideoEncoder_createNative(jni, j_encoder, j_webrtc_env_ref);
+      native_encoder != 0) {
+    return absl::WrapUnique(reinterpret_cast<VideoEncoder*>(native_encoder));
+  } else {
+    return std::make_unique<VideoEncoderWrapper>(jni, j_encoder);
+  }
 }
 
 std::unique_ptr<VideoEncoder> JavaToNativeVideoEncoder(
