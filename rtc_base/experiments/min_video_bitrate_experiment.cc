@@ -101,6 +101,7 @@ absl::optional<DataRate> GetExperimentalMinVideoBitrate(VideoCodecType type) {
       case kVideoCodecH264:
         return min_bitrate_h264.GetOptional();
       case kVideoCodecH265:
+      case kVideoCodecMultiplex:
       case kVideoCodecGeneric:
         return absl::nullopt;
     }
