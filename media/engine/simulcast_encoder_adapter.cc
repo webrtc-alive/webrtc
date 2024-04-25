@@ -39,16 +39,16 @@
 #include "rtc_base/checks.h"
 #include "rtc_base/experiments/rate_control_settings.h"
 #include "rtc_base/logging.h"
-#include "system_wrappers/include/field_trial.h"
 
 namespace {
 
 // Max qp for lowest spatial resolution when doing simulcast.
 const unsigned int kLowestResMaxQp = 45;
 
-absl::optional<unsigned int> GetScreenshareBoostedQpValue() {
+absl::optional<unsigned int> GetScreenshareBoostedQpValue(
+    const webrtc::FieldTrialsView& field_trials) {
   std::string experiment_group =
-      webrtc::field_trial::FindFullName("WebRTC-BoostedScreenshareQp");
+      field_trials.Lookup("WebRTC-BoostedScreenshareQp");
   unsigned int qp;
   if (sscanf(experiment_group.c_str(), "%u", &qp) != 1)
     return absl::nullopt;
@@ -268,29 +268,6 @@ SimulcastEncoderAdapter::SimulcastEncoderAdapter(VideoEncoderFactory* factory,
 SimulcastEncoderAdapter::SimulcastEncoderAdapter(
     VideoEncoderFactory* primary_factory,
     VideoEncoderFactory* fallback_factory,
-    const SdpVideoFormat& format)
-    : inited_(0),
-      primary_encoder_factory_(primary_factory),
-      fallback_encoder_factory_(fallback_factory),
-      video_format_(format),
-      total_streams_count_(0),
-      bypass_mode_(false),
-      encoded_complete_callback_(nullptr),
-      experimental_boosted_screenshare_qp_(GetScreenshareBoostedQpValue()),
-      boost_base_layer_quality_(RateControlSettings::ParseFromFieldTrials()
-                                    .Vp8BoostBaseLayerQuality()),
-      prefer_temporal_support_on_base_layer_(field_trial::IsEnabled(
-          "WebRTC-Video-PreferTemporalSupportOnBaseLayer")) {
-  RTC_DCHECK(primary_factory);
-
-  // The adapter is typically created on the worker thread, but operated on
-  // the encoder task queue.
-  encoder_queue_.Detach();
-}
-
-SimulcastEncoderAdapter::SimulcastEncoderAdapter(
-    VideoEncoderFactory* primary_factory,
-    VideoEncoderFactory* fallback_factory,
     const SdpVideoFormat& format,
     const FieldTrialsView& field_trials)
     : SimulcastEncoderAdapter(/*env=*/nullptr,
@@ -314,7 +291,7 @@ SimulcastEncoderAdapter::SimulcastEncoderAdapter(
       bypass_mode_(false),
       encoded_complete_callback_(nullptr),
       experimental_boosted_screenshare_qp_(
-          GetScreenshareBoostedQpValue()),
+          GetScreenshareBoostedQpValue(field_trials)),
       boost_base_layer_quality_(
           RateControlSettings::ParseFromKeyValueConfig(&field_trials)
               .Vp8BoostBaseLayerQuality()),
