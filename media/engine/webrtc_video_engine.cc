@@ -2239,6 +2239,7 @@ WebRtcVideoSendChannel::WebRtcVideoSendStream::CreateVideoEncoderConfig(
     case webrtc::kVideoCodecVP9:
     case webrtc::kVideoCodecAV1:
     case webrtc::kVideoCodecGeneric:
+    case webrtc::kVideoCodecMultiplex:
       max_qp = kDefaultVideoMaxQpVpx;
       break;
   }
