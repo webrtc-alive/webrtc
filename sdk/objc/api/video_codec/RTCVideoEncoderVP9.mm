@@ -16,7 +16,12 @@
 #import "RTCNativeVideoEncoderBuilder+Native.h"
 #import "RTCVideoEncoderVP9.h"
 
+#import "helpers/NSString+StdString.h"
+
+#include "absl/container/inlined_vector.h"
+#include "api/video_codecs/sdp_video_format.h"
 #include "modules/video_coding/codecs/vp9/include/vp9.h"
+#include "modules/video_coding/svc/create_scalability_structure.h"
 
 @interface RTC_OBJC_TYPE (RTCVideoEncoderVP9Builder)
     : RTC_OBJC_TYPE(RTCNativeVideoEncoder) <RTC_OBJC_TYPE (RTCNativeVideoEncoderBuilder)>

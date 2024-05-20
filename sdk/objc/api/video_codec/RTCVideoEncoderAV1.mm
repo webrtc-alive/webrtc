@@ -16,6 +16,7 @@
 #import "RTCNativeVideoEncoderBuilder+Native.h"
 #import "RTCVideoEncoderAV1.h"
 #include "modules/video_coding/codecs/av1/libaom_av1_encoder.h"
+#include "modules/video_coding/svc/create_scalability_structure.h"
 
 @interface RTC_OBJC_TYPE (RTCVideoEncoderAV1Builder)
     : RTC_OBJC_TYPE(RTCNativeVideoEncoder) <RTC_OBJC_TYPE (RTCNativeVideoEncoderBuilder)>
