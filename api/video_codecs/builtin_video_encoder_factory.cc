@@ -40,7 +40,9 @@ class BuiltinVideoEncoderFactory : public VideoEncoderFactory {
     if (format.IsCodecInList(
             internal_encoder_factory_->GetSupportedFormats())) {
       return std::make_unique<SimulcastEncoderAdapter>(
-          internal_encoder_factory_.get(), format);
+          env,
+          /*primary_factory=*/internal_encoder_factory_.get(),
+          /*fallback_factory=*/nullptr, format);
     }
 
     return nullptr;
