@@ -37,7 +37,7 @@ static void JNI_AudioTrack_RemoveSink(JNIEnv* jni,
 }
 
 static jlong JNI_AudioTrack_WrapSink(JNIEnv* jni,
-                                     const JavaParamRef<jobject>& sink) {
+                                     const JavaRef<jobject>& sink) {
   return jlongFromPointer(new AudioTrackSinkWrapper(jni, sink));
 }
 
