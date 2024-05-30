@@ -13,16 +13,10 @@ import java.util.List;
 
 public class LibvpxVp9Encoder extends WrappedNativeVideoEncoder {
   @Override
-  public long createNativeVideoEncoder() {
-    return nativeCreateEncoder();
-  }
-
-  @Override
   public long createNative(long webrtcEnvRef) {
     return nativeCreate(webrtcEnvRef);
   }
 
-  static native long nativeCreateEncoder();
   static native long nativeCreate(long webrtcEnvRef);
 
   @Override

@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2017 The WebRTC project authors. All Rights Reserved.
+ *  Copyright (c) 2024 The WebRTC project authors. All Rights Reserved.
  *
  *  Use of this source code is governed by a BSD-style license
  *  that can be found in the LICENSE file in the root of the source
@@ -10,27 +10,11 @@
 
 #import <Foundation/Foundation.h>
 
-#import "RTCWrappedNativeVideoEncoder.h"
+#import "RTCNativeVideoEncoder.h"
 #import "base/RTCMacros.h"
-#import "helpers/NSString+StdString.h"
+#include "rtc_base/checks.h"
 
-@implementation RTC_OBJC_TYPE (RTCWrappedNativeVideoEncoder) {
-  std::unique_ptr<webrtc::VideoEncoder> _wrappedEncoder;
-}
-
-- (instancetype)initWithNativeEncoder:(std::unique_ptr<webrtc::VideoEncoder>)encoder {
-  if (self = [super init]) {
-    _wrappedEncoder = std::move(encoder);
-  }
-
-  return self;
-}
-
-- (std::unique_ptr<webrtc::VideoEncoder>)releaseWrappedEncoder {
-  return std::move(_wrappedEncoder);
-}
-
-#pragma mark - RTC_OBJC_TYPE(RTCVideoEncoder)
+@implementation RTC_OBJC_TYPE (RTCNativeVideoEncoder)
 
 - (void)setCallback:(RTCVideoEncoderCallback)callback {
   RTC_DCHECK_NOTREACHED();

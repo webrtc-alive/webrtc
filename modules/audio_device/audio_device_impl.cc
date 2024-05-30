@@ -121,6 +121,19 @@ AudioDeviceModuleImpl::AudioDeviceModuleImpl(
     TaskQueueFactory* task_queue_factory,
     bool bypass_voice_processing)
     : audio_layer_(audio_layer),
+#if defined(WEBRTC_IOS)
+    bypass_voice_processing_(bypass_voice_processing),
+#endif
+    audio_device_buffer_(task_queue_factory) {
+  RTC_DLOG(LS_INFO) << __FUNCTION__;
+}
+
+AudioDeviceModuleImpl::AudioDeviceModuleImpl(
+    AudioLayer audio_layer,
+    std::unique_ptr<AudioDeviceGeneric> audio_device,
+    TaskQueueFactory* task_queue_factory,
+    bool bypass_voice_processing)
+    : audio_layer_(audio_layer),
     #if defined(WEBRTC_IOS)
     bypass_voice_processing_(bypass_voice_processing),
     #endif

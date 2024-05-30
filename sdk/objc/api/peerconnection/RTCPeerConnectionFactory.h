@@ -68,6 +68,14 @@ RTC_OBJC_EXPORT
 
 @property(nonatomic, readonly) RTC_OBJC_TYPE(RTCAudioDeviceModule) *audioDeviceModule;
 
+/**
+ * Valid kind values are kRTCMediaStreamTrackKindAudio and
+ * kRTCMediaStreamTrackKindVideo.
+ */
+- (RTC_OBJC_TYPE(RTCRtpCapabilities) *)rtpSenderCapabilitiesForKind:(NSString *)kind;
+
+@property(nonatomic, readonly) RTC_OBJC_TYPE(RTCAudioDeviceModule) *audioDeviceModule;
+
 - (RTC_OBJC_TYPE(RTCRtpCapabilities) *)rtpSenderCapabilitiesFor:(RTCRtpMediaType)mediaType;
 
 - (RTC_OBJC_TYPE(RTCRtpCapabilities) *)rtpReceiverCapabilitiesFor:(RTCRtpMediaType)mediaType;

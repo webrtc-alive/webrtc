@@ -3516,6 +3516,24 @@ void WebRtcVideoReceiveChannel::WebRtcVideoReceiveStream::SetReceiverParameters(
   }
 }
 
+void WebRtcVideoReceiveChannel::StartReceive(uint32_t ssrc) {
+  RTC_DCHECK_RUN_ON(&thread_checker_);
+  WebRtcVideoReceiveStream* stream = FindReceiveStream(ssrc);
+  if(!stream) {
+    return;
+  }
+  stream->StartReceiveStream();
+}
+
+void WebRtcVideoReceiveChannel::StopReceive(uint32_t ssrc) {
+  RTC_DCHECK_RUN_ON(&thread_checker_);
+  WebRtcVideoReceiveStream* stream = FindReceiveStream(ssrc);
+  if(!stream) {
+    return;
+  }
+  stream->StopReceiveStream();
+}
+
 void WebRtcVideoReceiveChannel::WebRtcVideoReceiveStream::
     RecreateReceiveStream() {
   RTC_DCHECK_RUN_ON(&thread_checker_);
@@ -3752,6 +3770,16 @@ WebRtcVideoReceiveChannel::WebRtcVideoReceiveStream::GetVideoReceiverInfo(
       }
     }
   }
+
+  // remote-outbound-rtp stats.
+  info.last_sender_report_timestamp_ms = stats.last_sender_report_timestamp_ms;
+  info.last_sender_report_remote_timestamp_ms =
+      stats.last_sender_report_remote_timestamp_ms;
+  info.sender_reports_packets_sent = stats.sender_reports_packets_sent;
+  info.sender_reports_bytes_sent = stats.sender_reports_bytes_sent;
+  info.sender_reports_reports_count = stats.sender_reports_reports_count;
+  // TODO(bugs.webrtc.org/12529): RTT-related fields are missing and can only be
+  // present if DLRR is enabled.
 
   if (log_stats)
     RTC_LOG(LS_INFO) << stats.ToString(rtc::TimeMillis());

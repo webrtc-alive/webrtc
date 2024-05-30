@@ -67,22 +67,6 @@ NSString *const kRTCRtpTransceiverErrorDomain = @"org.webrtc.RTCRtpTranceiver";
   }
 }
 
-- (void)setCodecPreferences:(NSArray<RTC_OBJC_TYPE(RTCRtpCodecCapability) *> *)codecPreferences {
-
-  std::vector<webrtc::RtpCodecCapability> objects;
-
-  for (RTC_OBJC_TYPE(RTCRtpCodecCapability) *object in codecPreferences) {
-    objects.push_back(object.nativeCodecCapability);
-  }
-
-  //webrtc::RTCError error = 
-  _nativeRtpTransceiver->SetCodecPreferences(rtc::ArrayView<webrtc::RtpCodecCapability>(objects.data(), objects.size()));
-
-  // if (!error.ok()) {
-  //   [NSException raise:@"setCodecPreferences" format:@"SDK returned error: %@", [NSString stringWithUTF8String: error.message()]];
-  // }
-}
-
 - (NSArray<RTC_OBJC_TYPE(RTCRtpCodecCapability) *> *)codecPreferences {
 
   NSMutableArray *result = [NSMutableArray array];
@@ -90,7 +74,7 @@ NSString *const kRTCRtpTransceiverErrorDomain = @"org.webrtc.RTCRtpTranceiver";
   std::vector<webrtc::RtpCodecCapability> capabilities = _nativeRtpTransceiver->codec_preferences();
 
   for (auto & element : capabilities) {
-    RTC_OBJC_TYPE(RTCRtpCodecCapability) *object = [[RTC_OBJC_TYPE(RTCRtpCodecCapability) alloc] initWithNativeCodecCapability: element];
+    RTC_OBJC_TYPE(RTCRtpCodecCapability) *object = [[RTC_OBJC_TYPE(RTCRtpCodecCapability) alloc] initWithNativeRtpCodecCapability: element];
     [result addObject: object];
   }
 

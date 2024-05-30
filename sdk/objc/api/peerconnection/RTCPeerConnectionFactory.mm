@@ -17,6 +17,9 @@
 #import "RTCAudioDeviceModule.h"
 #import "RTCAudioDeviceModule+Private.h"
 
+#import "RTCAudioDeviceModule.h"
+#import "RTCAudioDeviceModule+Private.h"
+
 #import "RTCAudioSource+Private.h"
 #import "RTCAudioTrack+Private.h"
 #import "RTCMediaConstraints+Private.h"
@@ -135,14 +138,14 @@
 
   webrtc::RtpCapabilities capabilities = _nativeFactory->GetRtpSenderCapabilities([RTC_OBJC_TYPE(RTCRtpReceiver) nativeMediaTypeForMediaType: mediaType]);
 
-  return [[RTC_OBJC_TYPE(RTCRtpCapabilities) alloc] initWithNativeCapabilities: capabilities];
+  return [[RTCRtpCapabilities alloc] initWithNativeRtpCapabilities: capabilities];
 }
 
 - (RTC_OBJC_TYPE(RTCRtpCapabilities) *)rtpReceiverCapabilitiesFor:(RTCRtpMediaType)mediaType {
 
   webrtc::RtpCapabilities capabilities = _nativeFactory->GetRtpReceiverCapabilities([RTC_OBJC_TYPE(RTCRtpReceiver) nativeMediaTypeForMediaType: mediaType]);
 
-  return [[RTC_OBJC_TYPE(RTCRtpCapabilities) alloc] initWithNativeCapabilities: capabilities];
+  return [[RTCRtpCapabilities alloc] initWithNativeRtpCapabilities: capabilities];
 }
 
 - (instancetype)
@@ -264,11 +267,22 @@
     dependencies.trials = std::make_unique<webrtc::FieldTrialBasedConfig>();
     dependencies.task_queue_factory =
         webrtc::CreateDefaultTaskQueueFactory(dependencies.trials.get());
-    dependencies.adm = std::move(audioDeviceModule);
+   
+    // always create ADM on worker thread
+    _nativeAudioDeviceModule = _workerThread->BlockingCall([&dependencies, &bypassVoiceProcessing]() {
+      return webrtc::AudioDeviceModule::Create(webrtc::AudioDeviceModule::AudioLayer::kPlatformDefaultAudio,
+                                               dependencies.task_queue_factory.get(),
+                                               bypassVoiceProcessing == YES);
+	  });
+
+    _audioDeviceModule = [[RTC_OBJC_TYPE(RTCAudioDeviceModule) alloc] initWithNativeModule: _nativeAudioDeviceModule
+                                                       workerThread: _workerThread.get()];
+    dependencies.adm = _nativeAudioDeviceModule;
     dependencies.audio_encoder_factory = std::move(audioEncoderFactory);
     dependencies.audio_decoder_factory = std::move(audioDecoderFactory);
     dependencies.video_encoder_factory = std::move(videoEncoderFactory);
     dependencies.video_decoder_factory = std::move(videoDecoderFactory);
+
     if (audioProcessingModule) {
       dependencies.audio_processing = std::move(audioProcessingModule);
     } else {

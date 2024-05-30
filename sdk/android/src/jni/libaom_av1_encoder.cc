@@ -22,10 +22,6 @@
 namespace webrtc {
 namespace jni {
 
-static jlong JNI_LibaomAv1Encoder_CreateEncoder(JNIEnv* jni) {
-  return jlongFromPointer(webrtc::CreateLibaomAv1Encoder().release());
-}
-
 jlong JNI_LibaomAv1Encoder_Create(JNIEnv* jni, jlong j_webrtc_env_ref) {
   return NativeToJavaPointer(
       CreateLibaomAv1Encoder(
@@ -33,5 +29,14 @@ jlong JNI_LibaomAv1Encoder_Create(JNIEnv* jni, jlong j_webrtc_env_ref) {
           .release());
 }
 
+static  webrtc::ScopedJavaLocalRef<jobject> JNI_LibaomAv1Encoder_GetSupportedScalabilityModes(JNIEnv* jni) {
+  std::vector<std::string> modes;
+   for (const auto scalability_mode : webrtc::kAllScalabilityModes) {
+      if (webrtc::ScalabilityStructureConfig(scalability_mode).has_value()) {
+       modes.push_back(std::string(webrtc::ScalabilityModeToString(scalability_mode)));
+      }
+    }
+  return NativeToJavaStringArray(jni, modes);
+}
 }  // namespace jni
 }  // namespace webrtc
