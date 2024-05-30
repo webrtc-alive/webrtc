@@ -131,6 +131,24 @@ const int64_t kNanosecondsPerSecond = 1000000000;
   return device.formats;
 }
 
++ (CGFloat)defaultZoomFactorForDeviceType:(AVCaptureDeviceType)deviceType {
+  // AVCaptureDeviceTypeBuiltInTripleCamera, Virtual, switchOver: [2, 6], default: 2
+  // AVCaptureDeviceTypeBuiltInDualCamera, Virtual, switchOver: [3], default: 1
+  // AVCaptureDeviceTypeBuiltInDualWideCamera, Virtual, switchOver: [2], default: 2
+  // AVCaptureDeviceTypeBuiltInWideAngleCamera, Physical, General purpose use
+  // AVCaptureDeviceTypeBuiltInTelephotoCamera, Physical
+  // AVCaptureDeviceTypeBuiltInUltraWideCamera, Physical
+#if TARGET_OS_IOS || TARGET_OS_TV
+  if ([deviceType isEqualToString:AVCaptureDeviceTypeBuiltInTripleCamera] ||
+      [deviceType isEqualToString:AVCaptureDeviceTypeBuiltInDualWideCamera])
+    // For AVCaptureDeviceTypeBuiltInTripleCamera and AVCaptureDeviceTypeBuiltInDualWideCamera,
+    // it will switch over from ultra-wide to wide on 2.0, so to prefer wide by default, return 2.0.
+    return 2.0;
+#endif
+
+  return 1.0;
+}
+
 - (FourCharCode)preferredOutputPixelFormat {
   return _preferredOutputPixelFormat;
 }
@@ -170,8 +188,7 @@ const int64_t kNanosecondsPerSecond = 1000000000;
 
                       NSError *error = nil;
                       if (![self.currentDevice lockForConfiguration:&error]) {
-                        RTCLogError(@"Failed to lock device %@. Error: %@",
-                                    self.currentDevice,
+                        RTCLogError(@"Failed to lock device %@. Error: %@", self.currentDevice,
                                     error.userInfo);
                         if (completionHandler) {
                           completionHandler(error);
@@ -182,8 +199,10 @@ const int64_t kNanosecondsPerSecond = 1000000000;
                       [self reconfigureCaptureSessionInput];
                       [self updateDeviceCaptureFormat:format fps:fps];
                       [self updateVideoDataOutputPixelFormat:format];
-                      [self.captureSession startRunning];
+                      [self updateZoomFactor];
                       [self.currentDevice unlockForConfiguration];
+
+                      [self.captureSession startRunning];
                       self.isRunning = YES;
                       if (completionHandler) {
                         completionHandler(nil);
@@ -282,7 +301,7 @@ const int64_t kNanosecondsPerSecond = 1000000000;
   RTC_OBJC_TYPE(RTCCVPixelBuffer) *rtcPixelBuffer =
       [[RTC_OBJC_TYPE(RTCCVPixelBuffer) alloc] initWithPixelBuffer:pixelBuffer];
   int64_t timeStampNs = CMTimeGetSeconds(CMSampleBufferGetPresentationTimeStamp(sampleBuffer)) *
-      kNanosecondsPerSecond;
+                        kNanosecondsPerSecond;
   RTC_OBJC_TYPE(RTCVideoFrame) *videoFrame =
       [[RTC_OBJC_TYPE(RTCVideoFrame) alloc] initWithBuffer:rtcPixelBuffer
                                                   rotation:_rotation
@@ -412,8 +431,7 @@ const int64_t kNanosecondsPerSecond = 1000000000;
 - (dispatch_queue_t)frameQueue {
   if (!_frameQueue) {
     _frameQueue = RTCDispatchQueueCreateWithTarget(
-        "org.webrtc.cameravideocapturer.video",
-        DISPATCH_QUEUE_SERIAL,
+        "org.webrtc.cameravideocapturer.video", DISPATCH_QUEUE_SERIAL,
         dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
   }
   return _frameQueue;
@@ -493,6 +511,16 @@ const int64_t kNanosecondsPerSecond = 1000000000;
     RTCLogError(@"Failed to set active format!\n User info:%@", exception.userInfo);
     return;
   }
+}
+
+- (void)updateZoomFactor {
+  NSAssert([RTC_OBJC_TYPE(RTCDispatcher) isOnQueueForType:RTCDispatcherTypeCaptureSession],
+           @"updateZoomFactor must be called on the capture queue.");
+
+#if TARGET_OS_IOS || TARGET_OS_TV
+  CGFloat videoZoomFactor = [[self class] defaultZoomFactorForDeviceType:_currentDevice.deviceType];
+  [_currentDevice setVideoZoomFactor:videoZoomFactor];
+#endif
 }
 
 - (void)reconfigureCaptureSessionInput {
