@@ -52,5 +52,13 @@
       return false;
 #endif
     }
-
+    + (NSArray<NSString *> *)scalabilityModes {
+        NSMutableArray<NSString *> *scalabilityModes = [NSMutableArray array];
+        for (const auto scalability_mode : webrtc::kAllScalabilityModes) {
+          if (webrtc::ScalabilityStructureConfig(scalability_mode).has_value()) {
+          [scalabilityModes addObject:[NSString stringForAbslStringView:webrtc::ScalabilityModeToString(scalability_mode)]];
+          }
+        }
+        return scalabilityModes;
+    }
     @end

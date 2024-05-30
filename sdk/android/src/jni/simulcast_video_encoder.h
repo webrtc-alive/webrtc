@@ -14,7 +14,7 @@ extern "C" {
  */
 
 JNIEXPORT jlong JNICALL Java_org_webrtc_SimulcastVideoEncoder_nativeCreateEncoder
-  (JNIEnv *, jclass, jobject, jobject, jobject);
+  (JNIEnv *, jclass, jlong, jobject, jobject, jobject);
 
 #ifdef __cplusplus
 }
