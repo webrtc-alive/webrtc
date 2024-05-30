@@ -19,6 +19,7 @@
 #include <utility>
 
 #include "absl/algorithm/container.h"
+#include "absl/types/optional.h"
 #include "api/field_trials_view.h"
 #include "api/scoped_refptr.h"
 #include "api/video/i420_buffer.h"
@@ -29,22 +30,24 @@
 #include "api/video_codecs/video_encoder_factory.h"
 #include "api/video_codecs/video_encoder_software_fallback_wrapper.h"
 #include "media/base/media_constants.h"
+#include "media/base/sdp_video_format_utils.h"
 #include "media/base/video_common.h"
 #include "modules/video_coding/include/video_error_codes.h"
+#include "modules/video_coding/include/video_error_codes_utils.h"
 #include "modules/video_coding/utility/simulcast_rate_allocator.h"
 #include "rtc_base/checks.h"
 #include "rtc_base/experiments/rate_control_settings.h"
 #include "rtc_base/logging.h"
-#include "system_wrappers/include/field_trial.h"
 
 namespace {
 
 // Max qp for lowest spatial resolution when doing simulcast.
 const unsigned int kLowestResMaxQp = 45;
 
-absl::optional<unsigned int> GetScreenshareBoostedQpValue() {
+absl::optional<unsigned int> GetScreenshareBoostedQpValue(
+    const webrtc::FieldTrialsView& field_trials) {
   std::string experiment_group =
-      webrtc::field_trial::FindFullName("WebRTC-BoostedScreenshareQp");
+      field_trials.Lookup("WebRTC-BoostedScreenshareQp");
   unsigned int qp;
   if (sscanf(experiment_group.c_str(), "%u", &qp) != 1)
     return absl::nullopt;
@@ -351,11 +354,20 @@ int SimulcastEncoderAdapter::InitEncode(
   // If we only have a single active layer it is better to create an encoder
   // with only one configured layer than creating it with all-but-one disabled
   // layers because that way we control scaling.
+  // The use of the nonstandard x-google-per-layer-pli fmtp parameter also
+  // forces the use of SEA with separate encoders to support per-layer
+  // handling of PLIs.
   bool separate_encoders_needed =
       !encoder_context->encoder().GetEncoderInfo().supports_simulcast ||
-      active_streams_count == 1;
+      active_streams_count == 1 || per_layer_pli_;
+  RTC_LOG(LS_INFO) << "[SEA] InitEncode: total_streams_count: "
+                   << total_streams_count_
+                   << ", active_streams_count: " << active_streams_count
+                   << ", separate_encoders_needed: "
+                   << (separate_encoders_needed ? "true" : "false");
   // Singlecast or simulcast with simulcast-capable underlaying encoder.
   if (total_streams_count_ == 1 || !separate_encoders_needed) {
+    RTC_LOG(LS_INFO) << "[SEA] InitEncode: Single-encoder mode";
     int ret = encoder_context->encoder().InitEncode(&codec_, settings);
     if (ret >= 0) {
       stream_contexts_.emplace_back(
@@ -371,7 +383,8 @@ int SimulcastEncoderAdapter::InitEncode(
 
     encoder_context->Release();
     if (total_streams_count_ == 1) {
-      // Failed to initialize singlecast encoder.
+      RTC_LOG(LS_ERROR) << "[SEA] InitEncode: failed with error code: "
+                        << WebRtcVideoCodecErrorToString(ret);
       return ret;
     }
   }
@@ -399,10 +412,16 @@ int SimulcastEncoderAdapter::InitEncode(
         /*is_lowest_quality_stream=*/stream_idx == lowest_quality_stream_idx,
         /*is_highest_quality_stream=*/stream_idx == highest_quality_stream_idx);
 
+    RTC_LOG(LS_INFO) << "[SEA] Multi-encoder mode: initializing stream: "
+                     << stream_idx << ", active: "
+                     << (codec_.simulcastStream[stream_idx].active ? "true"
+                                                                   : "false");
     int ret = encoder_context->encoder().InitEncode(&stream_codec, settings);
     if (ret < 0) {
       encoder_context.reset();
       Release();
+      RTC_LOG(LS_ERROR) << "[SEA] InitEncode: failed with error code: "
+                        << WebRtcVideoCodecErrorToString(ret);
       return ret;
     }
 
@@ -483,7 +502,7 @@ int SimulcastEncoderAdapter::Encode(
 
     // Convert timestamp from RTP 90kHz clock.
     const Timestamp frame_timestamp =
-        Timestamp::Micros((1000 * input_image.timestamp()) / 90);
+        Timestamp::Micros((1000 * input_image.rtp_timestamp()) / 90);
 
     // If adapter is passed through and only one sw encoder does simulcast,
     // frame types for all streams should be passed to the encoder unchanged.
