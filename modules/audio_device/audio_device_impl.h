@@ -24,7 +24,6 @@
 namespace webrtc {
 
 class AudioDeviceGeneric;
-class AudioManager;
 
 class AudioDeviceModuleImpl : public AudioDeviceModuleForTest {
  public:
@@ -35,7 +34,12 @@ class AudioDeviceModuleImpl : public AudioDeviceModuleForTest {
     kPlatformLinux = 3,
     kPlatformMac = 4,
     kPlatformAndroid = 5,
-    kPlatformIOS = 6
+    kPlatformIOS = 6,
+    // Fuchsia isn't fully supported, as there is no implementation for
+    // AudioDeviceGeneric which will be created for Fuchsia, so
+    // `CreatePlatformSpecificObjects()` call will fail unless usable
+    // implementation will be provided by the user.
+    kPlatformFuchsia = 7,
   };
 
   int32_t CheckPlatform();
@@ -50,7 +54,7 @@ class AudioDeviceModuleImpl : public AudioDeviceModuleForTest {
   AudioDeviceModuleImpl(AudioLayer audio_layer,
                         std::unique_ptr<AudioDeviceGeneric> audio_device,
                         TaskQueueFactory* task_queue_factory,
-                        bool bypass_voice_processing = false);
+                        bool create_detached);
   ~AudioDeviceModuleImpl() override;
 
   // Retrieve the currently utilized audio layer
