@@ -1,22 +1,14 @@
 /*
- * Copyright 2023 LiveKit
+ *  Copyright 2024 The WebRTC project authors. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree. An additional intellectual property rights grant can be found
+ *  in the file PATENTS.  All contributing project authors may
+ *  be found in the AUTHORS file in the root of the source tree.
  */
 
 #import "RTCRtpCodecCapability+Private.h"
-
-#import "RTCRtpReceiver+Private.h"
 
 #import "RTCMediaStreamTrack.h"
 #import "helpers/NSString+StdString.h"
@@ -26,113 +18,99 @@
 
 @implementation RTC_OBJC_TYPE (RTCRtpCodecCapability)
 
-@synthesize nativeCodecCapability = _nativeCodecCapability;
+@synthesize preferredPayloadType = _preferredPayloadType;
+@synthesize name = _name;
+@synthesize kind = _kind;
+@synthesize clockRate = _clockRate;
+@synthesize numChannels = _numChannels;
+@synthesize parameters = _parameters;
+@synthesize mimeType = _mimeType;
 
 - (instancetype)init {
-  return [self initWithNativeCodecCapability:webrtc::RtpCodecCapability()];
+  webrtc::RtpCodecCapability rtpCodecCapability;
+  return [self initWithNativeRtpCodecCapability:rtpCodecCapability];
 }
 
-- (instancetype)initWithNativeCodecCapability:
-    (const webrtc::RtpCodecCapability &)nativeCodecCapability {
+- (instancetype)initWithNativeRtpCodecCapability:
+    (const webrtc::RtpCodecCapability &)nativeRtpCodecCapability {
   if (self = [super init]) {
-    _nativeCodecCapability = nativeCodecCapability;
+    if (nativeRtpCodecCapability.preferred_payload_type) {
+      _preferredPayloadType =
+          [NSNumber numberWithInt:*nativeRtpCodecCapability.preferred_payload_type];
+    }
+    _name = [NSString stringForStdString:nativeRtpCodecCapability.name];
+    switch (nativeRtpCodecCapability.kind) {
+      case cricket::MEDIA_TYPE_AUDIO:
+        _kind = kRTCMediaStreamTrackKindAudio;
+        break;
+      case cricket::MEDIA_TYPE_VIDEO:
+        _kind = kRTCMediaStreamTrackKindVideo;
+        break;
+      case cricket::MEDIA_TYPE_DATA:
+        RTC_DCHECK_NOTREACHED();
+        break;
+      case cricket::MEDIA_TYPE_UNSUPPORTED:
+        RTC_DCHECK_NOTREACHED();
+        break;
+    }
+    if (nativeRtpCodecCapability.clock_rate) {
+      _clockRate = [NSNumber numberWithInt:*nativeRtpCodecCapability.clock_rate];
+    }
+    if (nativeRtpCodecCapability.num_channels) {
+      _numChannels = [NSNumber numberWithInt:*nativeRtpCodecCapability.num_channels];
+    }
+    NSMutableDictionary *parameters = [NSMutableDictionary dictionary];
+    for (const auto &parameter : nativeRtpCodecCapability.parameters) {
+      [parameters setObject:[NSString stringForStdString:parameter.second]
+                     forKey:[NSString stringForStdString:parameter.first]];
+    }
+    _parameters = parameters;
+    _mimeType = [NSString stringForStdString:nativeRtpCodecCapability.mime_type()];
   }
-
   return self;
 }
 
-- (NSString *)mimeType {
-  return [NSString stringWithUTF8String:_nativeCodecCapability.mime_type().c_str()];
+- (NSString *)description {
+  return [NSString stringWithFormat:@"RTC_OBJC_TYPE(RTCRtpCodecCapability) {\n  "
+                                    @"preferredPayloadType: %@\n  name: %@\n  kind: %@\n  "
+                                    @"clockRate: %@\n  numChannels: %@\n  parameters: %@\n  "
+                                    @"mimeType: %@\n}",
+                                    _preferredPayloadType,
+                                    _name,
+                                    _kind,
+                                    _clockRate,
+                                    _numChannels,
+                                    _parameters,
+                                    _mimeType];
 }
 
-- (NSString *)name {
-  return [NSString stringWithUTF8String:_nativeCodecCapability.name.c_str()];
-}
-
-- (void)setName:(NSString *)name {
-  _nativeCodecCapability.name = std::string([name UTF8String]);
-}
-
-- (RTCRtpMediaType)kind {
-  return [RTC_OBJC_TYPE(RTCRtpReceiver) mediaTypeForNativeMediaType:_nativeCodecCapability.kind];
-}
-
-- (void)setKind:(RTCRtpMediaType)kind {
-  _nativeCodecCapability.kind = [RTC_OBJC_TYPE(RTCRtpReceiver) nativeMediaTypeForMediaType:kind];
-}
-
-- (NSNumber *)clockRate {
-  if (!_nativeCodecCapability.clock_rate) {
-    return nil;
+- (webrtc::RtpCodecCapability)nativeRtpCodecCapability {
+  webrtc::RtpCodecCapability rtpCodecCapability;
+  if (_preferredPayloadType != nil) {
+    rtpCodecCapability.preferred_payload_type = absl::optional<int>(_preferredPayloadType.intValue);
   }
-
-  return [NSNumber numberWithInt:*_nativeCodecCapability.clock_rate];
-}
-
-- (void)setClockRate:(NSNumber *)clockRate {
-  if (clockRate == nil) {
-    _nativeCodecCapability.clock_rate = absl::optional<int>();
-    return;
+  rtpCodecCapability.name = [NSString stdStringForString:_name];
+  // NSString pointer comparison is safe here since "kind" is readonly and only
+  // populated above.
+  if (_kind == kRTCMediaStreamTrackKindAudio) {
+    rtpCodecCapability.kind = cricket::MEDIA_TYPE_AUDIO;
+  } else if (_kind == kRTCMediaStreamTrackKindVideo) {
+    rtpCodecCapability.kind = cricket::MEDIA_TYPE_VIDEO;
+  } else {
+    RTC_DCHECK_NOTREACHED();
   }
-
-  _nativeCodecCapability.clock_rate = absl::optional<int>(clockRate.intValue);
-}
-
-- (NSNumber *)preferredPayloadType {
-  if (!_nativeCodecCapability.preferred_payload_type) {
-    return nil;
+  if (_clockRate != nil) {
+    rtpCodecCapability.clock_rate = absl::optional<int>(_clockRate.intValue);
   }
-
-  return [NSNumber numberWithInt:*_nativeCodecCapability.preferred_payload_type];
-}
-
-- (void)setPreferredPayloadType:(NSNumber *)preferredPayloadType {
-  if (preferredPayloadType == nil) {
-    _nativeCodecCapability.preferred_payload_type = absl::optional<int>();
-    return;
+  if (_numChannels != nil) {
+    rtpCodecCapability.num_channels = absl::optional<int>(_numChannels.intValue);
   }
-
-  _nativeCodecCapability.preferred_payload_type =
-      absl::optional<int>(preferredPayloadType.intValue);
-}
-
-- (NSNumber *)numChannels {
-  if (!_nativeCodecCapability.num_channels) {
-    return nil;
-  }
-
-  return [NSNumber numberWithInt:*_nativeCodecCapability.num_channels];
-}
-
-- (void)setNumChannels:(NSNumber *)numChannels {
-  if (numChannels == nil) {
-    _nativeCodecCapability.num_channels = absl::optional<int>();
-    return;
-  }
-
-  _nativeCodecCapability.num_channels = absl::optional<int>(numChannels.intValue);
-}
-
-- (NSDictionary<NSString *, NSString *> *)parameters {
-  NSMutableDictionary *result = [NSMutableDictionary dictionary];
-  auto _parameters = _nativeCodecCapability.parameters;
-  for (auto it = _parameters.begin(); it != _parameters.end(); ++it) {
-    [result setObject:[NSString stringForStdString:it->second]
-               forKey:[NSString stringForStdString:it->first]];
-  }
-
-  return result;
-}
-
-- (void)setParameters:(NSDictionary<NSString *, NSString *> *)parameters {
-  std::map<std::string, std::string> _parameters;
-  for (NSString *paramKey in parameters.allKeys) {
+  for (NSString *paramKey in _parameters.allKeys) {
     std::string key = [NSString stdStringForString:paramKey];
-    std::string value = [NSString stdStringForString:parameters[paramKey]];
-    _parameters[key] = value;
+    std::string value = [NSString stdStringForString:_parameters[paramKey]];
+    rtpCodecCapability.parameters[key] = value;
   }
-
-  _nativeCodecCapability.parameters = _parameters;
+  return rtpCodecCapability;
 }
 
 @end
