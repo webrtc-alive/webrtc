@@ -65,7 +65,7 @@ std::unique_ptr<RtpPacketizer> RtpPacketizer::Create(
     case kVideoCodecAV1:
       return std::make_unique<RtpPacketizerAv1>(
           payload, limits, rtp_video_header.frame_type,
-          rtp_video_header.is_last_frame_in_picture);
+          rtp_video_header.is_last_frame_in_picture, enable_av1_even_split);
     default: {
       return std::make_unique<RtpPacketizerGeneric>(payload, limits,
                                                     rtp_video_header);
