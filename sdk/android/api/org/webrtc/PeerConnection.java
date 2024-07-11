@@ -578,6 +578,17 @@ public class PeerConnection {
      * See: https://www.chromestatus.com/feature/6269234631933952
      */
     public boolean offerExtmapAllowMixed;
+    
+    /**
+     * When this flag is set, ports not bound to any specific network interface
+     * will be used, in addition to normal ports bound to the enumerated
+     * interfaces. Without this flag, these "any address" ports would only be
+     * used when network enumeration fails or is disabled. But under certain
+     * conditions, these ports may succeed where others fail, so they may allow
+     * the application to work in a wider variety of environments, at the expense
+     * of having to allocate additional candidates.
+     */
+    public boolean enableIceGatheringOnAnyAddressPorts;
 
     /** Control port allocation, including what kinds of ports are allocated. */
     @PortAllocatorFlags public int portAllocatorFlags;
@@ -624,6 +635,7 @@ public class PeerConnection {
       enableImplicitRollback = false;
       offerExtmapAllowMixed = true;
       portAllocatorFlags = 0;
+      enableIceGatheringOnAnyAddressPorts = false;
     }
 
     @CalledByNative("RTCConfiguration")
@@ -837,6 +849,11 @@ public class PeerConnection {
     @PortAllocatorFlags
     int getPortAllocatorFlags() {
       return portAllocatorFlags;
+    }
+
+    @CalledByNative("RTCConfiguration")
+    boolean getEnableIceGatheringOnAnyAddressPorts() {
+      return enableIceGatheringOnAnyAddressPorts;
     }
   };
 

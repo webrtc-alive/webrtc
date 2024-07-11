@@ -14,17 +14,16 @@
 
 #include "absl/types/variant.h"
 #include "modules/rtp_rtcp/source/rtp_format_h264.h"
+#include "modules/rtp_rtcp/source/rtp_format_h265.h"
 #include "modules/rtp_rtcp/source/rtp_format_video_generic.h"
 #include "modules/rtp_rtcp/source/rtp_format_vp8.h"
 #include "modules/rtp_rtcp/source/rtp_format_vp9.h"
 #include "modules/rtp_rtcp/source/rtp_packetizer_av1.h"
 #include "modules/video_coding/codecs/h264/include/h264_globals.h"
+#include "modules/video_coding/codecs/h265/include/h265_globals.h"
 #include "modules/video_coding/codecs/vp8/include/vp8_globals.h"
 #include "modules/video_coding/codecs/vp9/include/vp9_globals.h"
 #include "rtc_base/checks.h"
-#ifdef RTC_ENABLE_H265
-#include "modules/rtp_rtcp/source/rtp_packetizer_h265.h"
-#endif
 
 namespace webrtc {
 
@@ -47,6 +46,12 @@ std::unique_ptr<RtpPacketizer> RtpPacketizer::Create(
       return std::make_unique<RtpPacketizerH264>(payload, limits,
                                                  h264.packetization_mode);
     }
+    case kVideoCodecH265: {
+      const auto& h265 =
+          absl::get<RTPVideoHeaderH265>(rtp_video_header.video_type_header);
+      return absl::make_unique<RtpPacketizerH265>(
+          payload, limits, h265.packetization_mode);
+    }
     case kVideoCodecVP8: {
       const auto& vp8 =
           absl::get<RTPVideoHeaderVP8>(rtp_video_header.video_type_header);
@@ -60,12 +65,7 @@ std::unique_ptr<RtpPacketizer> RtpPacketizer::Create(
     case kVideoCodecAV1:
       return std::make_unique<RtpPacketizerAv1>(
           payload, limits, rtp_video_header.frame_type,
-          rtp_video_header.is_last_frame_in_picture, enable_av1_even_split);
-#ifdef RTC_ENABLE_H265
-    case kVideoCodecH265: {
-      return std::make_unique<RtpPacketizerH265>(payload, limits);
-    }
-#endif
+          rtp_video_header.is_last_frame_in_picture);
     default: {
       return std::make_unique<RtpPacketizerGeneric>(payload, limits,
                                                     rtp_video_header);

@@ -176,20 +176,6 @@ TEST_F(DataChannelControllerTest, MaxChannels) {
   }
 }
 
-TEST_F(DataChannelControllerTest, BufferedAmountIncludesFromTransport) {
-  NiceMock<MockDataChannelTransport> transport;
-  EXPECT_CALL(transport, buffered_amount(0)).WillOnce(Return(4711));
-  ON_CALL(*pc_, GetSctpSslRole_n).WillByDefault([&]() {
-    return rtc::SSL_CLIENT;
-  });
-
-  DataChannelControllerForTest dcc(pc_.get(), &transport);
-  auto dc = dcc.InternalCreateDataChannelWithProxy(
-                   "label", InternalDataChannelInit(DataChannelInit()))
-                .MoveValue();
-  EXPECT_EQ(dc->buffered_amount(), 4711u);
-}
-
 // Test that while a data channel is in the `kClosing` state, its StreamId does
 // not get re-used for new channels. Only once the state reaches `kClosed`
 // should a StreamId be available again for allocation.

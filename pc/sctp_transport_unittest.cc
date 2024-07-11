@@ -214,4 +214,5 @@ TEST_F(SctpTransportTest, CloseWhenTransportCloses) {
   ASSERT_EQ_WAIT(SctpTransportState::kClosed, observer_.State(),
                  kDefaultTimeout);
 }
+
 }  // namespace webrtc

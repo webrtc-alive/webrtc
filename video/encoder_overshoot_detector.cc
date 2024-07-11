@@ -273,6 +273,7 @@ void EncoderOvershootDetector::UpdateHistograms() {
                                   average_overshoot_percent);
       break;
     case VideoCodecType::kVideoCodecGeneric:
+    case VideoCodecType::kVideoCodecMultiplex:
       break;
   }
 }

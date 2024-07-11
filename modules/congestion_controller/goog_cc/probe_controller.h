@@ -156,7 +156,6 @@ class ProbeController {
     kProbingComplete,
   };
 
-  void UpdateState(State new_state);
   ABSL_MUST_USE_RESULT std::vector<ProbeClusterConfig>
   InitiateExponentialProbing(Timestamp at_time);
   ABSL_MUST_USE_RESULT std::vector<ProbeClusterConfig> InitiateProbing(
