@@ -128,6 +128,12 @@ deps = {
     'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libcxxabi.git@ba370858669b1e905db5ded82c8887095b61dc14',
   'src/third_party/libunwind/src':
     'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libunwind.git@0906c4a31502cc7a46b5cf1794e21664ffa23be1',
+  'src/buildtools/third_party/libc++/trunk':
+    'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libcxx.git@bff81b702ff4b7f74b1c0ed02a4bcf6c2744a90b',
+  'src/buildtools/third_party/libc++abi/trunk':
+    'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libcxxabi.git@307bd163607c315d46103ebe1d68aab44bf93986',
+  'src/buildtools/third_party/libunwind/trunk':
+    'https://chromium.googlesource.com/external/github.com/llvm/llvm-project/libunwind.git@419b03c0b8f20d6da9ddcb0d661a94a97cdd7dad',
 
   'src/third_party/test_fonts/test_fonts': {
       'dep_type': 'gcs',

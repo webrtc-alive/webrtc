@@ -175,6 +175,10 @@ void VideoDecoderSoftwareFallbackWrapper::UpdateFallbackDecoderHistograms() {
       RTC_HISTOGRAM_COUNTS_100000(kFallbackHistogramsUmaPrefix + "H265",
                                   hw_decoded_frames_since_last_fallback_);
       break;
+    case kVideoCodecMultiplex:
+      RTC_HISTOGRAM_COUNTS_100000(kFallbackHistogramsUmaPrefix + "Multiplex",
+                                  hw_decoded_frames_since_last_fallback_);
+      break;
   }
 }
 

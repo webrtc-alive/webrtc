@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2023 The WebRTC project authors. All Rights Reserved.
+ *  Copyright (c) 2018 The WebRTC project authors. All Rights Reserved.
  *
  *  Use of this source code is governed by a BSD-style license
  *  that can be found in the LICENSE file in the root of the source
@@ -13,16 +13,19 @@
 
 #include "absl/types/optional.h"
 #include "api/array_view.h"
-#include "rtc_base/system/rtc_export.h"
+
+namespace rtc {
+class BitBuffer;
+}
 
 namespace webrtc {
 
-// A class for parsing out video parameter set (VPS) data from an H265 NALU.
-class RTC_EXPORT H265VpsParser {
+// A class for parsing out sequence parameter set (VPS) data from an H265 NALU.
+class H265VpsParser {
  public:
   // The parsed state of the VPS. Only some select values are stored.
   // Add more as they are actually needed.
-  struct RTC_EXPORT VpsState {
+  struct VpsState {
     VpsState();
 
     uint32_t id = 0;

@@ -287,6 +287,9 @@ class WebRtcVideoSendChannel : public MediaChannelUtil,
     return send_codec()->rtx_time;
   }
 
+  virtual void StartReceive(uint32_t ssrc) {}
+  virtual void StopReceive(uint32_t ssrc) {}
+
  private:
   struct ChangedSenderParameters {
     // These optionals are unset if not changed.
@@ -628,7 +631,8 @@ class WebRtcVideoReceiveChannel : public MediaChannelUtil,
                                      bool nack_enabled,
                                      webrtc::RtcpMode rtcp_mode,
                                      absl::optional<int> rtx_time) override;
-
+  void StartReceive(uint32_t ssrc) override;
+  void StopReceive(uint32_t ssrc) override;
  private:
   class WebRtcVideoReceiveStream;
   struct ChangedReceiverParameters {
