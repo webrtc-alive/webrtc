@@ -993,7 +993,6 @@ if (is_ios || is_mac) {
       sources = [
         "objc/api/peerconnection/RTCAudioDeviceModule.h",
         "objc/api/peerconnection/RTCAudioDeviceModule+Private.h",
-        "objc/api/peerconnection/RTCAudioDeviceModule.mm",
         "objc/api/peerconnection/RTCIODevice.h",
         "objc/api/peerconnection/RTCIODevice.mm",
         "objc/api/peerconnection/RTCAudioSource+Private.h",
