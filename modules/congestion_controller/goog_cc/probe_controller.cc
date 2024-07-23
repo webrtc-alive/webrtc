@@ -502,8 +502,7 @@ std::vector<ProbeClusterConfig> ProbeController::Process(Timestamp at_time) {
       kMaxWaitingTimeForProbingResult) {
     if (state_ == State::kWaitingForProbingResult) {
       RTC_LOG(LS_INFO) << "kWaitingForProbingResult: timeout";
-      state_ = State::kProbingComplete;
-      min_bitrate_to_probe_further_ = DataRate::PlusInfinity();
+      UpdateState(State::kProbingComplete);
     }
   }
   if (estimated_bitrate_.IsZero() || state_ != State::kProbingComplete) {
@@ -558,8 +557,7 @@ std::vector<ProbeClusterConfig> ProbeController::InitiateProbing(
             : std::min(max_total_allocated_bitrate_, max_bitrate_);
     if (std::min(network_estimate, estimated_bitrate_) >
         config_.skip_if_estimate_larger_than_fraction_of_max * max_probe_rate) {
-      state_ = State::kProbingComplete;
-      min_bitrate_to_probe_further_ = DataRate::PlusInfinity();
+      UpdateState(State::kProbingComplete);
       return {};
     }
   }
@@ -620,15 +618,14 @@ std::vector<ProbeClusterConfig> ProbeController::InitiateProbing(
   }
   time_last_probing_initiated_ = now;
   if (probe_further) {
-    state_ = State::kWaitingForProbingResult;
+    UpdateState(State::kWaitingForProbingResult);
     // Dont expect probe results to be larger than a fraction of the actual
     // probe rate.
     min_bitrate_to_probe_further_ =
         std::min(estimate_capped_bitrate, (*(bitrates_to_probe.end() - 1))) *
         config_.further_probe_threshold;
   } else {
-    state_ = State::kProbingComplete;
-    min_bitrate_to_probe_further_ = DataRate::PlusInfinity();
+    UpdateState(State::kProbingComplete);
   }
   return pending_probes;
 }
