@@ -50,10 +50,10 @@ struct KeyProviderOptions {
   bool discard_frame_when_cryptor_not_ready;
   KeyProviderOptions()
       : shared_key(false),
-      ratchet_window_size(0),
-      failure_tolerance(-1),
-      key_ring_size(DEFAULT_KEYRING_SIZE),
-      discard_frame_when_cryptor_not_ready(false) {}
+        ratchet_window_size(0),
+        failure_tolerance(-1),
+        key_ring_size(DEFAULT_KEYRING_SIZE),
+        discard_frame_when_cryptor_not_ready(false) {}
   KeyProviderOptions(KeyProviderOptions& copy)
       : shared_key(copy.shared_key),
         ratchet_salt(copy.ratchet_salt),
@@ -63,7 +63,7 @@ struct KeyProviderOptions {
         key_ring_size(copy.key_ring_size) {}
 };
 
-class KeyProvider : public rtc::RefCountInterface {
+class KeyProvider : public web::RefCountInterface {
  public:
   virtual bool SetSharedKey(int key_index, std::vector<uint8_t> key) = 0;
 
@@ -96,9 +96,9 @@ class KeyProvider : public rtc::RefCountInterface {
   virtual ~KeyProvider() {}
 };
 
-class ParticipantKeyHandler : public rtc::RefCountInterface {
+class ParticipantKeyHandler : public web::RefCountInterface {
  public:
-  struct KeySet : public rtc::RefCountInterface {
+  struct KeySet : public web::RefCountInterface {
     std::vector<uint8_t> material;
     std::vector<uint8_t> encryption_key;
     KeySet(std::vector<uint8_t> material, std::vector<uint8_t> encryptionKey)
@@ -109,7 +109,7 @@ class ParticipantKeyHandler : public rtc::RefCountInterface {
   ParticipantKeyHandler(KeyProvider* key_provider)
       : key_provider_(key_provider) {
     int key_ring_size = key_provider_->options().key_ring_size;
-    if(key_ring_size <= 0) {
+    if (key_ring_size <= 0) {
       key_ring_size = DEFAULT_KEYRING_SIZE;
     } else if (key_ring_size > (int)MAX_KEYRING_SIZE) {
       // Keyring size needs to be between 1 and 256
@@ -366,7 +366,7 @@ enum FrameCryptionState {
   kInternalError,
 };
 
-class FrameCryptorTransformerObserver : public rtc::RefCountInterface {
+class FrameCryptorTransformerObserver : public web::RefCountInterface {
  public:
   virtual void OnFrameCryptionStateChanged(const std::string participant_id,
                                            FrameCryptionState error) = 0;

@@ -20,15 +20,16 @@
 
 #include "rtc_base/ref_counted_object.h"
 #include "sdk/android/native_api/jni/scoped_java_ref.h"
-#include "sdk/android/src/jni/pc/external_audio_processor.h"
 #include "sdk/android/src/jni/pc/external_audio_processing_interface.h"
+#include "sdk/android/src/jni/pc/external_audio_processor.h"
+
 
 namespace webrtc {
 namespace jni {
 
 class ExternalAudioProcessingJni
     : public webrtc::ExternalAudioProcessingInterface,
-      public rtc::RefCountInterface {
+      public web::RefCountInterface {
  public:
   ExternalAudioProcessingJni(JNIEnv* jni, const JavaRef<jobject>& j_processing);
   ~ExternalAudioProcessingJni();
@@ -36,14 +37,17 @@ class ExternalAudioProcessingJni
  protected:
   virtual void Initialize(int sample_rate_hz, int num_channels) override;
   virtual void Reset(int new_rate) override;
-  virtual void Process(int num_bans, int num_frames, int buffer_size, float* buffer) override;
+  virtual void Process(int num_bans,
+                       int num_frames,
+                       int buffer_size,
+                       float* buffer) override;
 
  private:
   const ScopedJavaGlobalRef<jobject> j_processing_global_;
   const ScopedJavaGlobalRef<jobject> j_processing_;
 };
 
-class ExternalAudioProcessingFactory : public rtc::RefCountInterface {
+class ExternalAudioProcessingFactory : public web::RefCountInterface {
  public:
   ExternalAudioProcessingFactory();
   virtual ~ExternalAudioProcessingFactory() = default;
