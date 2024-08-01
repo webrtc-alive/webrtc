@@ -24,7 +24,7 @@ class MockRtpTransceiver : public RtpTransceiverInterface {
   MockRtpTransceiver() = default;
 
   static rtc::scoped_refptr<MockRtpTransceiver> Create() {
-    return rtc::make_ref_counted<MockRtpTransceiver>();
+    return webrtc::make_ref_counted<MockRtpTransceiver>();
   }
 
   MOCK_METHOD(cricket::MediaType, media_type, (), (const, override));

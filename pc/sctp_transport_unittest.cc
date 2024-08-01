@@ -121,11 +121,11 @@ class SctpTransportTest : public ::testing::Test {
         std::make_unique<FakeDtlsTransport>(
             "audio", cricket::ICE_CANDIDATE_COMPONENT_RTP);
     dtls_transport_ =
-        rtc::make_ref_counted<DtlsTransport>(std::move(cricket_transport));
+        webrtc::make_ref_counted<DtlsTransport>(std::move(cricket_transport));
 
     auto cricket_sctp_transport =
         absl::WrapUnique(new FakeCricketSctpTransport());
-    transport_ = rtc::make_ref_counted<SctpTransport>(
+    transport_ = webrtc::make_ref_counted<SctpTransport>(
         std::move(cricket_sctp_transport), dtls_transport_);
   }
 
@@ -153,12 +153,12 @@ TEST(SctpTransportSimpleTest, CreateClearDelete) {
       std::make_unique<FakeDtlsTransport>("audio",
                                           cricket::ICE_CANDIDATE_COMPONENT_RTP);
   rtc::scoped_refptr<DtlsTransport> dtls_transport =
-      rtc::make_ref_counted<DtlsTransport>(std::move(cricket_transport));
+      webrtc::make_ref_counted<DtlsTransport>(std::move(cricket_transport));
 
   std::unique_ptr<cricket::SctpTransportInternal> fake_cricket_sctp_transport =
       absl::WrapUnique(new FakeCricketSctpTransport());
   rtc::scoped_refptr<SctpTransport> sctp_transport =
-      rtc::make_ref_counted<SctpTransport>(
+      webrtc::make_ref_counted<SctpTransport>(
           std::move(fake_cricket_sctp_transport), dtls_transport);
   ASSERT_TRUE(sctp_transport->internal());
   ASSERT_EQ(SctpTransportState::kConnecting,

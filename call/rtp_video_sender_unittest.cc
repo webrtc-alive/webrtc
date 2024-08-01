@@ -643,20 +643,20 @@ TEST(RtpVideoSenderTest, EarlyRetransmits) {
   // Inject a transport feedback where the packet for the first frame is lost,
   // expect a retransmission for it.
   EXPECT_CALL(test.transport(), SendRtp)
-      .WillOnce([&frame1_rtp_sequence_number](
-                    rtc::ArrayView<const uint8_t> packet,
-                    const PacketOptions& options) {
-        RtpPacket rtp_packet;
-        EXPECT_TRUE(rtp_packet.Parse(packet));
-        EXPECT_EQ(rtp_packet.Ssrc(), kRtxSsrc1);
+      .WillOnce(
+          [&frame1_rtp_sequence_number](rtc::ArrayView<const uint8_t> packet,
+                                        const PacketOptions& options) {
+            RtpPacket rtp_packet;
+            EXPECT_TRUE(rtp_packet.Parse(packet));
+            EXPECT_EQ(rtp_packet.Ssrc(), kRtxSsrc1);
 
-        // Retransmitted sequence number from the RTX header should match
-        // the lost packet.
-        rtc::ArrayView<const uint8_t> payload = rtp_packet.payload();
-        EXPECT_EQ(ByteReader<uint16_t>::ReadBigEndian(payload.data()),
-                  frame1_rtp_sequence_number);
-        return true;
-      });
+            // Retransmitted sequence number from the RTX header should match
+            // the lost packet.
+            rtc::ArrayView<const uint8_t> payload = rtp_packet.payload();
+            EXPECT_EQ(ByteReader<uint16_t>::ReadBigEndian(payload.data()),
+                      frame1_rtp_sequence_number);
+            return true;
+          });
 
   StreamFeedbackObserver::StreamPacketInfo first_packet_feedback;
   first_packet_feedback.rtp_sequence_number = frame1_rtp_sequence_number;
@@ -1183,7 +1183,7 @@ TEST(RtpVideoSenderTest, CanSetZeroBitrate) {
 
 TEST(RtpVideoSenderTest, SimulcastSenderRegistersFrameTransformers) {
   rtc::scoped_refptr<MockFrameTransformer> transformer =
-      rtc::make_ref_counted<MockFrameTransformer>();
+      webrtc::make_ref_counted<MockFrameTransformer>();
 
   EXPECT_CALL(*transformer, RegisterTransformedFrameSinkCallback(_, kSsrc1));
   EXPECT_CALL(*transformer, RegisterTransformedFrameSinkCallback(_, kSsrc2));
@@ -1340,18 +1340,18 @@ TEST(RtpVideoSenderTest, RetransmitsBaseLayerOnly) {
   CodecSpecificInfo key_codec_info;
   key_codec_info.codecType = kVideoCodecVP8;
   key_codec_info.codecSpecific.VP8.temporalIdx = 0;
-  EXPECT_EQ(EncodedImageCallback::Result::OK,
-            test.router()->OnEncodedImage(
-                encoded_image, &key_codec_info).error);
+  EXPECT_EQ(
+      EncodedImageCallback::Result::OK,
+      test.router()->OnEncodedImage(encoded_image, &key_codec_info).error);
   encoded_image.SetRtpTimestamp(2);
   encoded_image.capture_time_ms_ = 3;
   encoded_image._frameType = VideoFrameType::kVideoFrameDelta;
   CodecSpecificInfo delta_codec_info;
   delta_codec_info.codecType = kVideoCodecVP8;
   delta_codec_info.codecSpecific.VP8.temporalIdx = 1;
-  EXPECT_EQ(EncodedImageCallback::Result::OK,
-            test.router()->OnEncodedImage(
-                encoded_image, &delta_codec_info).error);
+  EXPECT_EQ(
+      EncodedImageCallback::Result::OK,
+      test.router()->OnEncodedImage(encoded_image, &delta_codec_info).error);
 
   test.AdvanceTime(TimeDelta::Millis(33));
 
@@ -1380,8 +1380,8 @@ TEST(RtpVideoSenderTest, RetransmitsBaseLayerOnly) {
   test.AdvanceTime(TimeDelta::Millis(33));
 
   // Verify that only base layer packet was retransmitted.
-  std::vector<uint16_t> base_rtp_sequence_numbers(rtp_sequence_numbers.begin(),
-                               rtp_sequence_numbers.begin() + 1);
+  std::vector<uint16_t> base_rtp_sequence_numbers(
+      rtp_sequence_numbers.begin(), rtp_sequence_numbers.begin() + 1);
   EXPECT_EQ(retransmitted_rtp_sequence_numbers, base_rtp_sequence_numbers);
 }
 

@@ -23,7 +23,7 @@ namespace webrtc {
 class MockRtpSender : public RtpSenderInterface {
  public:
   static rtc::scoped_refptr<MockRtpSender> Create() {
-    return rtc::make_ref_counted<MockRtpSender>();
+    return webrtc::make_ref_counted<MockRtpSender>();
   }
 
   MOCK_METHOD(bool, SetTrack, (MediaStreamTrackInterface*), (override));

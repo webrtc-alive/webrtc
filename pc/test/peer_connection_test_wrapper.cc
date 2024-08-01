@@ -301,7 +301,7 @@ void PeerConnectionTestWrapper::SetLocalDescription(SdpType type,
                    << ": SetLocalDescription " << webrtc::SdpTypeToString(type)
                    << " " << sdp;
 
-  auto observer = rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+  auto observer = webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
   peer_connection_->SetLocalDescription(
       observer.get(), webrtc::CreateSessionDescription(type, sdp).release());
 }
@@ -312,7 +312,7 @@ void PeerConnectionTestWrapper::SetRemoteDescription(SdpType type,
                    << ": SetRemoteDescription " << webrtc::SdpTypeToString(type)
                    << " " << sdp;
 
-  auto observer = rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+  auto observer = webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
   peer_connection_->SetRemoteDescription(
       observer.get(), webrtc::CreateSessionDescription(type, sdp).release());
 }
@@ -412,8 +412,9 @@ PeerConnectionTestWrapper::GetUserMedia(
     config.width = resolution.width;
     config.height = resolution.height;
 
-    auto source = rtc::make_ref_counted<webrtc::FakePeriodicVideoTrackSource>(
-        config, /* remote */ false);
+    auto source =
+        webrtc::make_ref_counted<webrtc::FakePeriodicVideoTrackSource>(
+            config, /* remote */ false);
     fake_video_sources_.push_back(source);
 
     std::string videotrack_label = stream_id + kVideoTrackLabelBase;

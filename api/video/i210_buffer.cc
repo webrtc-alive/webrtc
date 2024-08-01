@@ -57,8 +57,8 @@ I210Buffer::~I210Buffer() {}
 
 // static
 rtc::scoped_refptr<I210Buffer> I210Buffer::Create(int width, int height) {
-  return rtc::make_ref_counted<I210Buffer>(width, height, width,
-                                           (width + 1) / 2, (width + 1) / 2);
+  return webrtc::make_ref_counted<I210Buffer>(width, height, width,
+                                              (width + 1) / 2, (width + 1) / 2);
 }
 
 // static

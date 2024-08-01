@@ -157,7 +157,7 @@ TEST_F(ChannelSendTest, IncreaseRtpTimestampByPauseDuration) {
 
 TEST_F(ChannelSendTest, FrameTransformerGetsCorrectTimestamp) {
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<MockFrameTransformer>();
+      webrtc::make_ref_counted<MockFrameTransformer>();
   channel_->SetEncoderToPacketizerFrameTransformer(mock_frame_transformer);
   rtc::scoped_refptr<TransformedFrameCallback> callback;
   EXPECT_CALL(*mock_frame_transformer, RegisterTransformedFrameCallback)
@@ -204,7 +204,7 @@ TEST_F(ChannelSendTest, AudioLevelsAttachedToCorrectTransformedFrame) {
   extension_manager.RegisterByType(1, kRtpExtensionAudioLevel);
 
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<MockFrameTransformer>();
+      webrtc::make_ref_counted<MockFrameTransformer>();
   channel_->SetEncoderToPacketizerFrameTransformer(mock_frame_transformer);
   rtc::scoped_refptr<TransformedFrameCallback> callback;
   EXPECT_CALL(*mock_frame_transformer, RegisterTransformedFrameCallback)
@@ -267,7 +267,7 @@ TEST_F(ChannelSendTest, AudioLevelsAttachedToInsertedTransformedFrame) {
   extension_manager.RegisterByType(1, kRtpExtensionAudioLevel);
 
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<MockFrameTransformer>();
+      webrtc::make_ref_counted<MockFrameTransformer>();
   channel_->SetEncoderToPacketizerFrameTransformer(mock_frame_transformer);
   rtc::scoped_refptr<TransformedFrameCallback> callback;
   EXPECT_CALL(*mock_frame_transformer, RegisterTransformedFrameCallback)

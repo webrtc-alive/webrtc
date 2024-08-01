@@ -69,7 +69,7 @@ class DtlsTransportTest : public ::testing::Test {
     }
     cricket_transport->SetSslCipherSuite(kNonsenseCipherSuite);
     transport_ =
-        rtc::make_ref_counted<DtlsTransport>(std::move(cricket_transport));
+        webrtc::make_ref_counted<DtlsTransport>(std::move(cricket_transport));
   }
 
   void CompleteDtlsHandshake() {
@@ -94,7 +94,7 @@ TEST_F(DtlsTransportTest, CreateClearDelete) {
   auto cricket_transport = std::make_unique<FakeDtlsTransport>(
       "audio", cricket::ICE_CANDIDATE_COMPONENT_RTP);
   auto webrtc_transport =
-      rtc::make_ref_counted<DtlsTransport>(std::move(cricket_transport));
+      webrtc::make_ref_counted<DtlsTransport>(std::move(cricket_transport));
   ASSERT_TRUE(webrtc_transport->internal());
   ASSERT_EQ(DtlsTransportState::kNew, webrtc_transport->Information().state());
   webrtc_transport->Clear();

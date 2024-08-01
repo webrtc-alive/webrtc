@@ -36,7 +36,7 @@ namespace webrtc {
 namespace videocapturemodule {
 rtc::scoped_refptr<VideoCaptureModule> VideoCaptureImpl::Create(
     const char* deviceUniqueId) {
-  auto implementation = rtc::make_ref_counted<VideoCaptureModuleV4L2>();
+  auto implementation = webrtc::make_ref_counted<VideoCaptureModuleV4L2>();
 
   if (implementation->Init(deviceUniqueId) != 0)
     return nullptr;
@@ -50,14 +50,14 @@ rtc::scoped_refptr<VideoCaptureModule> VideoCaptureImpl::Create(
 #if defined(WEBRTC_USE_PIPEWIRE)
   if (options->allow_pipewire()) {
     auto implementation =
-        rtc::make_ref_counted<VideoCaptureModulePipeWire>(options);
+        webrtc::make_ref_counted<VideoCaptureModulePipeWire>(options);
 
     if (implementation->Init(deviceUniqueId) == 0)
       return implementation;
   }
 #endif
   if (options->allow_v4l2()) {
-    auto implementation = rtc::make_ref_counted<VideoCaptureModuleV4L2>();
+    auto implementation = webrtc::make_ref_counted<VideoCaptureModuleV4L2>();
 
     if (implementation->Init(deviceUniqueId) == 0)
       return implementation;

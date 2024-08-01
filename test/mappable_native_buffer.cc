@@ -45,14 +45,14 @@ VideoFrame CreateMappableNativeFrame(int64_t ntp_time_ms,
                                      VideoFrameBuffer::Type mappable_type,
                                      int width,
                                      int height) {
-  VideoFrame frame =
-      VideoFrame::Builder()
-          .set_video_frame_buffer(rtc::make_ref_counted<MappableNativeBuffer>(
-              mappable_type, width, height))
-          .set_rtp_timestamp(99)
-          .set_timestamp_ms(99)
-          .set_rotation(kVideoRotation_0)
-          .build();
+  VideoFrame frame = VideoFrame::Builder()
+                         .set_video_frame_buffer(
+                             webrtc::make_ref_counted<MappableNativeBuffer>(
+                                 mappable_type, width, height))
+                         .set_rtp_timestamp(99)
+                         .set_timestamp_ms(99)
+                         .set_rotation(kVideoRotation_0)
+                         .build();
   frame.set_ntp_time_ms(ntp_time_ms);
   return frame;
 }
@@ -78,8 +78,8 @@ MappableNativeBuffer::ScaledBuffer::CropAndScale(int offset_x,
                                                  int crop_height,
                                                  int scaled_width,
                                                  int scaled_height) {
-  return rtc::make_ref_counted<ScaledBuffer>(parent_, scaled_width,
-                                             scaled_height);
+  return webrtc::make_ref_counted<ScaledBuffer>(parent_, scaled_width,
+                                                scaled_height);
 }
 
 rtc::scoped_refptr<I420BufferInterface>
@@ -146,7 +146,7 @@ bool MappableNativeBuffer::DidConvertToI420() const {
 
 rtc::scoped_refptr<MappableNativeBuffer::ScaledBuffer>
 MappableNativeBuffer::FullSizeBuffer() {
-  return rtc::make_ref_counted<ScaledBuffer>(
+  return webrtc::make_ref_counted<ScaledBuffer>(
       rtc::scoped_refptr<MappableNativeBuffer>(this), width_, height_);
 }
 
@@ -169,7 +169,8 @@ MappableNativeBuffer::GetOrCreateMappedBuffer(int width, int height) {
     }
     case VideoFrameBuffer::Type::kNV12: {
       auto nv12_buffer =
-          rtc::make_ref_counted<NV12BufferWithDidConvertToI420>(width, height);
+          webrtc::make_ref_counted<NV12BufferWithDidConvertToI420>(width,
+                                                                   height);
       nv12_buffer->InitializeData();
       mapped_buffer = std::move(nv12_buffer);
       break;

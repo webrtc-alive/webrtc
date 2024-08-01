@@ -134,7 +134,8 @@ PeerConnectionWrapper::CreateRollback() {
 std::unique_ptr<SessionDescriptionInterface> PeerConnectionWrapper::CreateSdp(
     rtc::FunctionView<void(CreateSessionDescriptionObserver*)> fn,
     std::string* error_out) {
-  auto observer = rtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
+  auto observer =
+      webrtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
   fn(observer.get());
   EXPECT_EQ_WAIT(true, observer->called(), kDefaultTimeout);
   if (error_out && !observer->result()) {
@@ -166,7 +167,7 @@ bool PeerConnectionWrapper::SetRemoteDescription(
 bool PeerConnectionWrapper::SetRemoteDescription(
     std::unique_ptr<SessionDescriptionInterface> desc,
     RTCError* error_out) {
-  auto observer = rtc::make_ref_counted<FakeSetRemoteDescriptionObserver>();
+  auto observer = webrtc::make_ref_counted<FakeSetRemoteDescriptionObserver>();
   pc()->SetRemoteDescription(std::move(desc), observer);
   EXPECT_EQ_WAIT(true, observer->called(), kDefaultTimeout);
   bool ok = observer->error().ok();
@@ -178,7 +179,7 @@ bool PeerConnectionWrapper::SetRemoteDescription(
 bool PeerConnectionWrapper::SetSdp(
     rtc::FunctionView<void(SetSessionDescriptionObserver*)> fn,
     std::string* error_out) {
-  auto observer = rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+  auto observer = webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
   fn(observer.get());
   EXPECT_EQ_WAIT(true, observer->called(), kDefaultTimeout);
   if (error_out && !observer->result()) {
@@ -340,7 +341,7 @@ bool PeerConnectionWrapper::IsIceConnected() {
 }
 
 rtc::scoped_refptr<const RTCStatsReport> PeerConnectionWrapper::GetStats() {
-  auto callback = rtc::make_ref_counted<MockRTCStatsCollectorCallback>();
+  auto callback = webrtc::make_ref_counted<MockRTCStatsCollectorCallback>();
   pc()->GetStats(callback.get());
   EXPECT_TRUE_WAIT(callback->called(), kDefaultTimeout);
   return callback->report();

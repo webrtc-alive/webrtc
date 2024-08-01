@@ -66,7 +66,7 @@ class DummySetSessionDescriptionObserver
     : public webrtc::SetSessionDescriptionObserver {
  public:
   static rtc::scoped_refptr<DummySetSessionDescriptionObserver> Create() {
-    return rtc::make_ref_counted<DummySetSessionDescriptionObserver>();
+    return webrtc::make_ref_counted<DummySetSessionDescriptionObserver>();
   }
   virtual void OnSuccess() { RTC_LOG(LS_INFO) << __FUNCTION__; }
   virtual void OnFailure(webrtc::RTCError error) {
@@ -92,7 +92,8 @@ class CapturerTrackSource : public webrtc::VideoTrackSource {
       capturer = absl::WrapUnique(
           webrtc::test::VcmCapturer::Create(kWidth, kHeight, kFps, i));
       if (capturer) {
-        return rtc::make_ref_counted<CapturerTrackSource>(std::move(capturer));
+        return webrtc::make_ref_counted<CapturerTrackSource>(
+            std::move(capturer));
       }
     }
 

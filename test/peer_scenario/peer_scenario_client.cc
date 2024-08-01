@@ -325,7 +325,7 @@ PeerScenarioClient::VideoSendTrack PeerScenarioClient::CreateVideo(
                                                config.generator);
   res.capturer = capturer.get();
   capturer->Init();
-  res.source = rtc::make_ref_counted<FrameGeneratorCapturerVideoTrackSource>(
+  res.source = webrtc::make_ref_counted<FrameGeneratorCapturerVideoTrackSource>(
       std::move(capturer), config.screencast);
   res.source->Start();
   auto track = pc_factory_->CreateVideoTrack(res.source, track_id);
@@ -347,7 +347,7 @@ void PeerScenarioClient::CreateAndSetSdp(
     std::function<void(std::string)> offer_handler) {
   RTC_DCHECK_RUN_ON(signaling_thread_);
   peer_connection_->CreateOffer(
-      rtc::make_ref_counted<LambdaCreateSessionDescriptionObserver>(
+      webrtc::make_ref_counted<LambdaCreateSessionDescriptionObserver>(
           [=](std::unique_ptr<SessionDescriptionInterface> offer) {
             RTC_DCHECK_RUN_ON(signaling_thread_);
             if (munge_offer) {
@@ -357,7 +357,7 @@ void PeerScenarioClient::CreateAndSetSdp(
             RTC_CHECK(offer->ToString(&sdp_offer));
             peer_connection_->SetLocalDescription(
                 std::move(offer),
-                rtc::make_ref_counted<LambdaSetLocalDescriptionObserver>(
+                webrtc::make_ref_counted<LambdaSetLocalDescriptionObserver>(
                     [sdp_offer, offer_handler](RTCError) {
                       offer_handler(sdp_offer);
                     }));
@@ -380,7 +380,8 @@ void PeerScenarioClient::SetSdpOfferAndGetAnswer(
   RTC_DCHECK_RUN_ON(signaling_thread_);
   peer_connection_->SetRemoteDescription(
       CreateSessionDescription(SdpType::kOffer, remote_offer),
-      rtc::make_ref_counted<LambdaSetRemoteDescriptionObserver>([=](RTCError) {
+      webrtc::make_ref_counted<
+          LambdaSetRemoteDescriptionObserver>([=](RTCError) {
         RTC_DCHECK_RUN_ON(signaling_thread_);
         if (remote_description_set) {
           // Allow the caller to modify transceivers
@@ -388,7 +389,7 @@ void PeerScenarioClient::SetSdpOfferAndGetAnswer(
           remote_description_set();
         }
         peer_connection_->CreateAnswer(
-            rtc::make_ref_counted<LambdaCreateSessionDescriptionObserver>(
+            webrtc::make_ref_counted<LambdaCreateSessionDescriptionObserver>(
                 [=](std::unique_ptr<SessionDescriptionInterface> answer) {
                   RTC_DCHECK_RUN_ON(signaling_thread_);
                   std::string sdp_answer;
@@ -396,7 +397,8 @@ void PeerScenarioClient::SetSdpOfferAndGetAnswer(
                   RTC_LOG(LS_INFO) << sdp_answer;
                   peer_connection_->SetLocalDescription(
                       std::move(answer),
-                      rtc::make_ref_counted<LambdaSetLocalDescriptionObserver>(
+                      webrtc::make_ref_counted<
+                          LambdaSetLocalDescriptionObserver>(
                           [answer_handler, sdp_answer](RTCError) {
                             answer_handler(sdp_answer);
                           }));
@@ -417,7 +419,7 @@ void PeerScenarioClient::SetSdpAnswer(
   RTC_DCHECK_RUN_ON(signaling_thread_);
   peer_connection_->SetRemoteDescription(
       CreateSessionDescription(SdpType::kAnswer, remote_answer),
-      rtc::make_ref_counted<LambdaSetRemoteDescriptionObserver>(
+      webrtc::make_ref_counted<LambdaSetRemoteDescriptionObserver>(
           [remote_answer, done_handler](RTCError) {
             auto answer =
                 CreateSessionDescription(SdpType::kAnswer, remote_answer);

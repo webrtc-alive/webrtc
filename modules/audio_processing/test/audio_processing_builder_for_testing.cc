@@ -23,7 +23,7 @@ AudioProcessingBuilderForTesting::~AudioProcessingBuilderForTesting() = default;
 #ifdef WEBRTC_EXCLUDE_AUDIO_PROCESSING_MODULE
 
 rtc::scoped_refptr<AudioProcessing> AudioProcessingBuilderForTesting::Create() {
-  return rtc::make_ref_counted<AudioProcessingImpl>(
+  return webrtc::make_ref_counted<AudioProcessingImpl>(
       config_, std::move(capture_post_processing_),
       std::move(render_pre_processing_), std::move(echo_control_factory_),
       std::move(echo_detector_), std::move(capture_analyzer_));

@@ -152,7 +152,8 @@ RTPSenderVideo::RTPSenderVideo(const Config& config)
       absolute_capture_time_sender_(config.clock),
       frame_transformer_delegate_(
           config.frame_transformer
-              ? rtc::make_ref_counted<RTPSenderVideoFrameTransformerDelegate>(
+              ? webrtc::make_ref_counted<
+                    RTPSenderVideoFrameTransformerDelegate>(
                     this,
                     config.frame_transformer,
                     rtp_sender_->SSRC(),

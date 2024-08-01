@@ -67,7 +67,7 @@ int ObjCFrameBuffer::height() const {
 }
 
 rtc::scoped_refptr<I420BufferInterface> ObjCFrameBuffer::ToI420() {
-  return rtc::make_ref_counted<ObjCI420FrameBuffer>([frame_buffer_ toI420]);
+  return webrtc::make_ref_counted<ObjCI420FrameBuffer>([frame_buffer_ toI420]);
 }
 
 rtc::scoped_refptr<VideoFrameBuffer> ObjCFrameBuffer::CropAndScale(int offset_x,
@@ -78,12 +78,13 @@ rtc::scoped_refptr<VideoFrameBuffer> ObjCFrameBuffer::CropAndScale(int offset_x,
                                                                    int scaled_height) {
   if ([frame_buffer_ respondsToSelector:@selector
                      (cropAndScaleWith:offsetY:cropWidth:cropHeight:scaleWidth:scaleHeight:)]) {
-    return rtc::make_ref_counted<ObjCFrameBuffer>([frame_buffer_ cropAndScaleWith:offset_x
-                                                                          offsetY:offset_y
-                                                                        cropWidth:crop_width
-                                                                       cropHeight:crop_height
-                                                                       scaleWidth:scaled_width
-                                                                      scaleHeight:scaled_height]);
+    return webrtc::make_ref_counted<ObjCFrameBuffer>([frame_buffer_
+        cropAndScaleWith:offset_x
+                 offsetY:offset_y
+               cropWidth:crop_width
+              cropHeight:crop_height
+              scaleWidth:scaled_width
+             scaleHeight:scaled_height]);
   }
 
   // Use the default implementation.

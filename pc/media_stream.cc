@@ -30,7 +30,7 @@ static typename V::iterator FindTrack(V* vector, const std::string& track_id) {
 }
 
 rtc::scoped_refptr<MediaStream> MediaStream::Create(const std::string& id) {
-  return rtc::make_ref_counted<MediaStream>(id);
+  return webrtc::make_ref_counted<MediaStream>(id);
 }
 
 MediaStream::MediaStream(const std::string& id) : id_(id) {}

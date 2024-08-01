@@ -619,7 +619,7 @@ void VideoQualityTest::FillScalabilitySettings(
     encoder_config.spatial_layers = params->ss[video_idx].spatial_layers;
     encoder_config.simulcast_layers = std::vector<VideoStream>(num_streams);
     encoder_config.video_stream_factory =
-        rtc::make_ref_counted<cricket::EncoderStreamFactory>(
+        webrtc::make_ref_counted<cricket::EncoderStreamFactory>(
             params->video[video_idx].codec, cricket::kDefaultVideoMaxQpVpx,
             params->screenshare[video_idx].enabled, true, encoder_info);
     params->ss[video_idx].streams =
@@ -802,7 +802,7 @@ void VideoQualityTest::SetupVideo(Transport* send_transport,
           params_.ss[video_idx].streams;
     }
     video_encoder_configs_[video_idx].video_stream_factory =
-        rtc::make_ref_counted<cricket::EncoderStreamFactory>(
+        webrtc::make_ref_counted<cricket::EncoderStreamFactory>(
             params_.video[video_idx].codec,
             params_.ss[video_idx].streams[0].max_qp,
             params_.screenshare[video_idx].enabled, true, encoder_info);
@@ -832,7 +832,7 @@ void VideoQualityTest::SetupVideo(Transport* send_transport,
         vp8_settings.numberOfTemporalLayers = static_cast<unsigned char>(
             params_.video[video_idx].num_temporal_layers);
         video_encoder_configs_[video_idx].encoder_specific_settings =
-            rtc::make_ref_counted<
+            webrtc::make_ref_counted<
                 VideoEncoderConfig::Vp8EncoderSpecificSettings>(vp8_settings);
       } else if (params_.video[video_idx].codec == "VP9") {
         VideoCodecVP9 vp9_settings = VideoEncoder::GetDefaultVp9Settings();
@@ -848,7 +848,7 @@ void VideoQualityTest::SetupVideo(Transport* send_transport,
           vp9_settings.flexibleMode = true;
         }
         video_encoder_configs_[video_idx].encoder_specific_settings =
-            rtc::make_ref_counted<
+            webrtc::make_ref_counted<
                 VideoEncoderConfig::Vp9EncoderSpecificSettings>(vp9_settings);
       }
     } else if (params_.ss[video_idx].num_spatial_layers > 1) {
@@ -862,8 +862,8 @@ void VideoQualityTest::SetupVideo(Transport* send_transport,
       vp9_settings.interLayerPred = params_.ss[video_idx].inter_layer_pred;
       vp9_settings.automaticResizeOn = false;
       video_encoder_configs_[video_idx].encoder_specific_settings =
-          rtc::make_ref_counted<VideoEncoderConfig::Vp9EncoderSpecificSettings>(
-              vp9_settings);
+          webrtc::make_ref_counted<
+              VideoEncoderConfig::Vp9EncoderSpecificSettings>(vp9_settings);
       RTC_DCHECK_EQ(video_encoder_configs_[video_idx].simulcast_layers.size(),
                     1);
       // Min bitrate will be enforced by spatial layer config instead.
@@ -873,7 +873,7 @@ void VideoQualityTest::SetupVideo(Transport* send_transport,
         VideoCodecVP8 vp8_settings = VideoEncoder::GetDefaultVp8Settings();
         vp8_settings.automaticResizeOn = true;
         video_encoder_configs_[video_idx].encoder_specific_settings =
-            rtc::make_ref_counted<
+            webrtc::make_ref_counted<
                 VideoEncoderConfig::Vp8EncoderSpecificSettings>(vp8_settings);
       } else if (params_.video[video_idx].codec == "VP9") {
         VideoCodecVP9 vp9_settings = VideoEncoder::GetDefaultVp9Settings();
@@ -881,7 +881,7 @@ void VideoQualityTest::SetupVideo(Transport* send_transport,
         vp9_settings.automaticResizeOn =
             params_.ss[video_idx].num_spatial_layers == 1;
         video_encoder_configs_[video_idx].encoder_specific_settings =
-            rtc::make_ref_counted<
+            webrtc::make_ref_counted<
                 VideoEncoderConfig::Vp9EncoderSpecificSettings>(vp9_settings);
       } else if (params_.video[video_idx].codec == "H264") {
         // Quality scaling is always on for H.264.
@@ -900,13 +900,13 @@ void VideoQualityTest::SetupVideo(Transport* send_transport,
         VideoCodecVP8 vp8_settings = VideoEncoder::GetDefaultVp8Settings();
         vp8_settings.automaticResizeOn = false;
         video_encoder_configs_[video_idx].encoder_specific_settings =
-            rtc::make_ref_counted<
+            webrtc::make_ref_counted<
                 VideoEncoderConfig::Vp8EncoderSpecificSettings>(vp8_settings);
       } else if (params_.video[video_idx].codec == "VP9") {
         VideoCodecVP9 vp9_settings = VideoEncoder::GetDefaultVp9Settings();
         vp9_settings.automaticResizeOn = false;
         video_encoder_configs_[video_idx].encoder_specific_settings =
-            rtc::make_ref_counted<
+            webrtc::make_ref_counted<
                 VideoEncoderConfig::Vp9EncoderSpecificSettings>(vp9_settings);
       } else if (params_.video[video_idx].codec == "H264") {
         video_encoder_configs_[video_idx].encoder_specific_settings = nullptr;
@@ -980,7 +980,7 @@ void VideoQualityTest::SetupThumbnails(Transport* send_transport,
     thumbnail_encoder_config.max_bitrate_bps = 50000;
     std::vector<VideoStream> streams{params_.ss[0].streams[0]};
     thumbnail_encoder_config.video_stream_factory =
-        rtc::make_ref_counted<VideoStreamFactory>(streams);
+        webrtc::make_ref_counted<VideoStreamFactory>(streams);
     thumbnail_encoder_config.spatial_layers = params_.ss[0].spatial_layers;
 
     thumbnail_encoder_configs_.push_back(thumbnail_encoder_config.Copy());

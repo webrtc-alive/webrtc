@@ -85,8 +85,8 @@ BroadcastResourceListener::CreateAdapterResource() {
   MutexLock lock(&lock_);
   RTC_DCHECK(is_listening_);
   rtc::scoped_refptr<AdapterResource> adapter =
-      rtc::make_ref_counted<AdapterResource>(source_resource_->Name() +
-                                             "Adapter");
+      webrtc::make_ref_counted<AdapterResource>(source_resource_->Name() +
+                                                "Adapter");
   adapters_.push_back(adapter);
   return adapter;
 }

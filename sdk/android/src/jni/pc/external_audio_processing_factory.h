@@ -23,13 +23,12 @@
 #include "sdk/android/src/jni/pc/external_audio_processing_interface.h"
 #include "sdk/android/src/jni/pc/external_audio_processor.h"
 
-
 namespace webrtc {
 namespace jni {
 
 class ExternalAudioProcessingJni
     : public webrtc::ExternalAudioProcessingInterface,
-      public web::RefCountInterface {
+      public webrtc::RefCountInterface {
  public:
   ExternalAudioProcessingJni(JNIEnv* jni, const JavaRef<jobject>& j_processing);
   ~ExternalAudioProcessingJni();
@@ -47,7 +46,7 @@ class ExternalAudioProcessingJni
   const ScopedJavaGlobalRef<jobject> j_processing_;
 };
 
-class ExternalAudioProcessingFactory : public web::RefCountInterface {
+class ExternalAudioProcessingFactory : public webrtc::RefCountInterface {
  public:
   ExternalAudioProcessingFactory();
   virtual ~ExternalAudioProcessingFactory() = default;

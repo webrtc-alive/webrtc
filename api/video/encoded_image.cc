@@ -31,13 +31,13 @@ EncodedImageBuffer::~EncodedImageBuffer() {
 
 // static
 rtc::scoped_refptr<EncodedImageBuffer> EncodedImageBuffer::Create(size_t size) {
-  return rtc::make_ref_counted<EncodedImageBuffer>(size);
+  return webrtc::make_ref_counted<EncodedImageBuffer>(size);
 }
 // static
 rtc::scoped_refptr<EncodedImageBuffer> EncodedImageBuffer::Create(
     const uint8_t* data,
     size_t size) {
-  return rtc::make_ref_counted<EncodedImageBuffer>(data, size);
+  return webrtc::make_ref_counted<EncodedImageBuffer>(data, size);
 }
 
 const uint8_t* EncodedImageBuffer::data() const {

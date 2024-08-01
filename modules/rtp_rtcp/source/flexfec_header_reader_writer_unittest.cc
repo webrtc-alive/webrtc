@@ -134,7 +134,7 @@ void VerifyWrittenAndReadHeaders(
 
   // Read FEC Header using written data.
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   read_packet.pkt->data = written_packet.data;
   for (const FecHeaderWriter::ProtectedStream& stream :
        write_protected_streams) {
@@ -198,7 +198,7 @@ TEST(FlexfecHeaderReaderTest, ReadsHeaderWithKBit0ClearSingleStream) {
       kSnBase >> 8,   kSnBase & 0xFF, kFlexfecPktMask[0], kFlexfecPktMask[1],
       kPayloadBits,   kPayloadBits,   kPayloadBits,       kPayloadBits};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   read_packet.pkt->data.SetData(kPacketData);
   read_packet.protected_streams = {{.ssrc = 0x01}};
 
@@ -231,7 +231,7 @@ TEST(FlexfecHeaderReaderTest, ReadsHeaderWithKBit1ClearSingleStream) {
       kFlexfecPktMask[5], kPayloadBits,       kPayloadBits,
       kPayloadBits,       kPayloadBits};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   read_packet.pkt->data.SetData(kPacketData);
   read_packet.protected_streams = {{.ssrc = 0x01}};
 
@@ -288,7 +288,7 @@ TEST(FlexfecHeaderReaderTest, ReadsHeaderWithBothKBitsSetSingleStream) {
                                      kPayloadBits,
                                      kPayloadBits};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   read_packet.pkt->data.SetData(kPacketData);
   read_packet.protected_streams = {{.ssrc = 0x01}};
 
@@ -321,7 +321,7 @@ TEST(FlexfecHeaderReaderTest, ReadsHeaderWithKBit0Clear2Streams) {
       kSnBase1 >> 8,  kSnBase1 & 0xFF, kFlexfecPktMask2[0], kFlexfecPktMask2[1],
       kPayloadBits,   kPayloadBits,    kPayloadBits,        kPayloadBits};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   read_packet.pkt->data.SetData(kPacketData);
   read_packet.protected_streams = {{.ssrc = 0x01}, {.ssrc = 0x02}};
 
@@ -368,7 +368,7 @@ TEST(FlexfecHeaderReaderTest, ReadsHeaderWithKBit1Clear2Streams) {
       kPayloadBits,        kPayloadBits,        kPayloadBits,
       kPayloadBits};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   read_packet.pkt->data.SetData(kPacketData);
   read_packet.protected_streams = {{.ssrc = 0x01}, {.ssrc = 0x02}};
 
@@ -457,7 +457,7 @@ TEST(FlexfecHeaderReaderTest, ReadsHeaderWithBothKBitsSet2Streams) {
                                      kPayloadBits,
                                      kPayloadBits};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   read_packet.pkt->data.SetData(kPacketData);
   read_packet.protected_streams = {{.ssrc = 0x01}, {.ssrc = 0x02}};
 
@@ -553,7 +553,7 @@ TEST(FlexfecHeaderReaderTest, ReadsHeaderWithMultipleStreamsMultipleMasks) {
                                      kPayloadBits,
                                      kPayloadBits};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   read_packet.pkt->data.SetData(kPacketData);
   read_packet.protected_streams = {
       {.ssrc = 0x01}, {.ssrc = 0x02}, {.ssrc = 0x03}, {.ssrc = 0x04}};
@@ -592,7 +592,7 @@ TEST(FlexfecHeaderReaderTest, ReadPacketWithoutProtectedSsrcsShouldFail) {
       kFlexible,      kPtRecovery,    kLengthRecovery[0], kLengthRecovery[1],
       kTsRecovery[0], kTsRecovery[1], kTsRecovery[2],     kTsRecovery[3]};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   read_packet.pkt->data.SetData(kPacketData);
   // No protected ssrcs.
   read_packet.protected_streams = {};
@@ -607,7 +607,7 @@ TEST(FlexfecHeaderReaderTest, ReadPacketWithoutStreamSpecificHeaderShouldFail) {
       kFlexible,      kPtRecovery,    kLengthRecovery[0], kLengthRecovery[1],
       kTsRecovery[0], kTsRecovery[1], kTsRecovery[2],     kTsRecovery[3]};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   read_packet.pkt->data.SetData(kPacketData);
   read_packet.protected_streams = {{.ssrc = 0x01}};
 
@@ -622,7 +622,7 @@ TEST(FlexfecHeaderReaderTest, ReadShortPacketWithKBit0SetShouldFail) {
       kTsRecovery[0], kTsRecovery[1], kTsRecovery[2],     kTsRecovery[3],
       kSnBases[0][0], kSnBases[0][1], kMask0[0],          kMask0[1]};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   // Expected to have 2 bytes of mask but length of packet misses 1 byte.
   read_packet.pkt->data.SetData(kPacketData, sizeof(kPacketData) - 1);
   read_packet.protected_streams = {{.ssrc = 0x01}};
@@ -639,7 +639,7 @@ TEST(FlexfecHeaderReaderTest, ReadShortPacketWithKBit1ClearShouldFail) {
       kSnBases[0][0], kSnBases[0][1], kMask1[0],          kMask1[1],
       kMask1[2],      kMask1[3],      kMask1[4],          kMask1[5]};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   // Expected to have 6 bytes of mask but length of packet misses 2 bytes.
   read_packet.pkt->data.SetData(kPacketData, sizeof(kPacketData) - 2);
   read_packet.protected_streams = {{.ssrc = 0x01}};
@@ -658,7 +658,7 @@ TEST(FlexfecHeaderReaderTest, ReadShortPacketWithKBit1SetShouldFail) {
       kMask2[6],      kMask2[7],      kMask2[8],          kMask2[9],
       kMask2[10],     kMask2[11],     kMask2[12],         kMask2[13]};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   // Expected to have 14 bytes of mask but length of packet misses 2 bytes.
   read_packet.pkt->data.SetData(kPacketData, sizeof(kPacketData) - 2);
   read_packet.protected_streams = {{.ssrc = 0x01}};
@@ -678,7 +678,7 @@ TEST(FlexfecHeaderReaderTest, ReadShortPacketMultipleStreamsShouldFail) {
       kMask2[6],      kMask2[7],      kMask2[8],          kMask2[9],
       kMask2[10],     kMask2[11],     kMask2[12],         kMask2[13]};
   ReceivedFecPacket read_packet;
-  read_packet.pkt = rtc::make_ref_counted<Packet>();
+  read_packet.pkt = webrtc::make_ref_counted<Packet>();
   // Subtract 2 bytes from length, so the read will fail on parsing second
   read_packet.pkt->data.SetData(kPacketData, sizeof(kPacketData) - 2);
   read_packet.protected_streams = {{.ssrc = 0x01}, {.ssrc = 0x02}};

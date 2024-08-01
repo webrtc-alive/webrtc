@@ -65,7 +65,7 @@ class FakeIceTransportFactory : public IceTransportFactory {
       cricket::MediaType media_type,
       int component,
       IceTransportInit init) override {
-    return rtc::make_ref_counted<cricket::FakeIceTransportWrapper>(
+    return webrtc::make_ref_counted<cricket::FakeIceTransportWrapper>(
         std::make_unique<cricket::FakeIceTransport>(transport_name, component));
   }
 };

@@ -159,8 +159,8 @@ CreateVp9SpecificSettings(VideoStreamConfig video_config) {
     vp9.automaticResizeOn = conf.single.automatic_scaling;
     vp9.denoisingOn = conf.single.denoising;
   }
-  return rtc::make_ref_counted<VideoEncoderConfig::Vp9EncoderSpecificSettings>(
-      vp9);
+  return webrtc::make_ref_counted<
+      VideoEncoderConfig::Vp9EncoderSpecificSettings>(vp9);
 }
 
 rtc::scoped_refptr<VideoEncoderConfig::EncoderSpecificSettings>
@@ -180,8 +180,8 @@ CreateVp8SpecificSettings(VideoStreamConfig config) {
     vp8_settings.automaticResizeOn = config.encoder.single.automatic_scaling;
     vp8_settings.denoisingOn = config.encoder.single.denoising;
   }
-  return rtc::make_ref_counted<VideoEncoderConfig::Vp8EncoderSpecificSettings>(
-      vp8_settings);
+  return webrtc::make_ref_counted<
+      VideoEncoderConfig::Vp8EncoderSpecificSettings>(vp8_settings);
 }
 
 rtc::scoped_refptr<VideoEncoderConfig::EncoderSpecificSettings>
@@ -246,12 +246,12 @@ VideoEncoderConfig CreateVideoEncoderConfig(VideoStreamConfig config) {
     bool screenshare = config.encoder.content_type ==
                        VideoStreamConfig::Encoder::ContentType::kScreen;
     encoder_config.video_stream_factory =
-        rtc::make_ref_counted<cricket::EncoderStreamFactory>(
+        webrtc::make_ref_counted<cricket::EncoderStreamFactory>(
             cricket_codec, cricket::kDefaultVideoMaxQpVpx, screenshare,
             screenshare, encoder_info);
   } else {
     encoder_config.video_stream_factory =
-        rtc::make_ref_counted<DefaultVideoStreamFactory>();
+        webrtc::make_ref_counted<DefaultVideoStreamFactory>();
   }
 
   // TODO(srte): Base this on encoder capabilities.

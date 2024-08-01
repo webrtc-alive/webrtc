@@ -21,7 +21,7 @@ namespace webrtc {
 
 // static
 rtc::scoped_refptr<QualityScalerResource> QualityScalerResource::Create() {
-  return rtc::make_ref_counted<QualityScalerResource>();
+  return webrtc::make_ref_counted<QualityScalerResource>();
 }
 
 QualityScalerResource::QualityScalerResource()

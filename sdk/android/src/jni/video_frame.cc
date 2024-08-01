@@ -137,8 +137,8 @@ rtc::scoped_refptr<AndroidVideoI420Buffer> AndroidVideoI420Buffer::Adopt(
   RTC_DCHECK_EQ(
       static_cast<Type>(Java_Buffer_getBufferType(jni, j_video_frame_buffer)),
       Type::kI420);
-  return rtc::make_ref_counted<AndroidVideoI420Buffer>(jni, width, height,
-                                                       j_video_frame_buffer);
+  return webrtc::make_ref_counted<AndroidVideoI420Buffer>(jni, width, height,
+                                                          j_video_frame_buffer);
 }
 
 AndroidVideoI420Buffer::AndroidVideoI420Buffer(
@@ -186,7 +186,8 @@ rtc::scoped_refptr<AndroidVideoBuffer> AndroidVideoBuffer::Adopt(
   RTC_DCHECK_EQ(
       static_cast<Type>(Java_Buffer_getBufferType(jni, j_video_frame_buffer)),
       Type::kNative);
-  return rtc::make_ref_counted<AndroidVideoBuffer>(jni, j_video_frame_buffer);
+  return webrtc::make_ref_counted<AndroidVideoBuffer>(jni,
+                                                      j_video_frame_buffer);
 }
 
 rtc::scoped_refptr<AndroidVideoBuffer> AndroidVideoBuffer::Create(

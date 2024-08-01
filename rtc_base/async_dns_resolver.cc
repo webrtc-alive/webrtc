@@ -107,7 +107,7 @@ class AsyncDnsResolver::State : public rtc::RefCountedBase {
     kDead       // The owning AsyncDnsResolver has been deleted
   };
   static rtc::scoped_refptr<AsyncDnsResolver::State> Create() {
-    return rtc::make_ref_counted<AsyncDnsResolver::State>();
+    return webrtc::make_ref_counted<AsyncDnsResolver::State>();
   }
 
   // Execute the passed function if the state is Active.

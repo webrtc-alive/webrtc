@@ -877,7 +877,7 @@ void ChannelSend::InitFrameTransformerDelegate(
             absolute_capture_timestamp_ms, csrcs, audio_level_dbov);
       };
   frame_transformer_delegate_ =
-      rtc::make_ref_counted<ChannelSendFrameTransformerDelegate>(
+      webrtc::make_ref_counted<ChannelSendFrameTransformerDelegate>(
           std::move(send_audio_callback), std::move(frame_transformer),
           encoder_queue_.get());
   frame_transformer_delegate_->Init();

@@ -297,7 +297,7 @@ std::unique_ptr<NetEqTest> NetEqTestFactory::InitializeTest(
 
     // Note that capture-by-copy implies that the lambda captures the value of
     // decoder_factory before it's reassigned on the left-hand side.
-    decoder_factory = rtc::make_ref_counted<FunctionAudioDecoderFactory>(
+    decoder_factory = webrtc::make_ref_counted<FunctionAudioDecoderFactory>(
         [decoder_factory, config](
             const SdpAudioFormat& format,
             absl::optional<AudioCodecPairId> codec_pair_id) {

@@ -73,7 +73,7 @@ class VideoRtpReceiverTest : public testing::Test {
   VideoRtpReceiverTest()
       : worker_thread_(rtc::Thread::Create()),
         channel_(cricket::VideoOptions()),
-        receiver_(rtc::make_ref_counted<VideoRtpReceiver>(
+        receiver_(webrtc::make_ref_counted<VideoRtpReceiver>(
             worker_thread_.get(),
             std::string("receiver"),
             std::vector<std::string>({"stream"}))) {

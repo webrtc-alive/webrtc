@@ -173,9 +173,9 @@ class MediaBufferImpl final : public IMediaBuffer {
 // ============================================================================
 
 HRESULT __stdcall AudioDeviceWindowsCore::OnDefaultDeviceChanged(
-   EDataFlow flow,
-   ERole role,
-   LPCWSTR pwstrDefaultDeviceId) {
+    EDataFlow flow,
+    ERole role,
+    LPCWSTR pwstrDefaultDeviceId) {
   if (flow != eRender || role != eCommunications)
     SetEvent(_hDeviceRestartEvent);
   return S_OK;
@@ -575,7 +575,7 @@ AudioDeviceWindowsCore::~AudioDeviceWindowsCore() {
     _hShutdownCaptureEvent = NULL;
   }
 
-  if(NULL != _deviceStateListener) {
+  if (NULL != _deviceStateListener) {
     delete _deviceStateListener;
     _deviceStateListener = NULL;
   }
@@ -2146,8 +2146,8 @@ int32_t AudioDeviceWindowsCore::InitRecordingDMO() {
         << "AudioDeviceBuffer must be attached before streaming can start";
   }
 
-  _mediaBuffer = rtc::make_ref_counted<MediaBufferImpl>(_recBlockSize *
-                                                        _recAudioFrameSize);
+  _mediaBuffer = webrtc::make_ref_counted<MediaBufferImpl>(_recBlockSize *
+                                                           _recAudioFrameSize);
 
   // Optional, but if called, must be after media types are set.
   hr = _dmo->AllocateStreamingResources();
@@ -2704,7 +2704,8 @@ DWORD WINAPI AudioDeviceWindowsCore::WSAPICaptureThreadPollDMO(LPVOID context) {
 
 DWORD AudioDeviceWindowsCore::DoRenderThread() {
   bool keepPlaying = true;
-  HANDLE waitArray[3] = {_hShutdownRenderEvent, _hRenderSamplesReadyEvent, _hDeviceRestartEvent};
+  HANDLE waitArray[3] = {_hShutdownRenderEvent, _hRenderSamplesReadyEvent,
+                         _hDeviceRestartEvent};
   HRESULT hr = S_OK;
   HANDLE hMmTask = NULL;
 
@@ -2784,7 +2785,7 @@ DWORD AudioDeviceWindowsCore::DoRenderThread() {
   // Example: 10*(960/480) + 15 = 20 + 15 = 35ms
   //
   playout_delay = 10 * (bufferLength / _playBlockSize) +
-                      (int)((latency + devPeriod) / 10000);
+                  (int)((latency + devPeriod) / 10000);
   _sndCardPlayDelay = playout_delay;
   _writtenSamples = 0;
   RTC_LOG(LS_VERBOSE) << "[REND] initial delay        : " << playout_delay;
@@ -3219,8 +3220,7 @@ DWORD AudioDeviceWindowsCore::DoCaptureThread() {
   extraDelayMS = (double)((latency + devPeriod) / 10000.0);
   RTC_LOG(LS_VERBOSE) << "[CAPT] extraDelayMS         : " << extraDelayMS;
 
-  endpointBufferSizeMS =
-      10.0 * ((double)bufferLength / (double)_recBlockSize);
+  endpointBufferSizeMS = 10.0 * ((double)bufferLength / (double)_recBlockSize);
   RTC_LOG(LS_VERBOSE) << "[CAPT] endpointBufferSizeMS : "
                       << endpointBufferSizeMS;
 
@@ -3965,33 +3965,49 @@ int32_t AudioDeviceWindowsCore::SetAudioDeviceSink(AudioDeviceSink* sink) {
   return 0;
 }
 
-void AudioDeviceWindowsCore::DeviceStateListener::SetAudioDeviceSink(AudioDeviceSink *sink) {
+void AudioDeviceWindowsCore::DeviceStateListener::SetAudioDeviceSink(
+    AudioDeviceSink* sink) {
   callback_ = sink;
 }
 
-HRESULT AudioDeviceWindowsCore::DeviceStateListener::OnDeviceStateChanged(LPCWSTR pwstrDeviceId, DWORD dwNewState) {
-  RTC_DLOG(LS_INFO) << "AudioDeviceWindowsCore::OnDeviceStateChanged => " << pwstrDeviceId << ", NewState => " << dwNewState;
-  if(callback_) callback_->OnDevicesUpdated();
+HRESULT AudioDeviceWindowsCore::DeviceStateListener::OnDeviceStateChanged(
+    LPCWSTR pwstrDeviceId,
+    DWORD dwNewState) {
+  RTC_DLOG(LS_INFO) << "AudioDeviceWindowsCore::OnDeviceStateChanged => "
+                    << pwstrDeviceId << ", NewState => " << dwNewState;
+  if (callback_)
+    callback_->OnDevicesUpdated();
   return S_OK;
 }
 
-HRESULT AudioDeviceWindowsCore::DeviceStateListener::OnDeviceAdded(LPCWSTR pwstrDeviceId) {
-  RTC_DLOG(LS_INFO) << "AudioDeviceWindowsCore::OnDeviceAdded => " << pwstrDeviceId;
+HRESULT AudioDeviceWindowsCore::DeviceStateListener::OnDeviceAdded(
+    LPCWSTR pwstrDeviceId) {
+  RTC_DLOG(LS_INFO) << "AudioDeviceWindowsCore::OnDeviceAdded => "
+                    << pwstrDeviceId;
   return S_OK;
 }
 
-HRESULT AudioDeviceWindowsCore::DeviceStateListener::OnDeviceRemoved(LPCWSTR pwstrDeviceId) {
-  RTC_DLOG(LS_INFO) << "AudioDeviceWindowsCore::OnDeviceRemoved => " << pwstrDeviceId;
+HRESULT AudioDeviceWindowsCore::DeviceStateListener::OnDeviceRemoved(
+    LPCWSTR pwstrDeviceId) {
+  RTC_DLOG(LS_INFO) << "AudioDeviceWindowsCore::OnDeviceRemoved => "
+                    << pwstrDeviceId;
   return S_OK;
 }
 
-HRESULT AudioDeviceWindowsCore::DeviceStateListener::OnDefaultDeviceChanged(EDataFlow flow, ERole role, LPCWSTR pwstrDefaultDeviceId) {
-  RTC_DLOG(LS_INFO) << "AudioDeviceWindowsCore::OnDefaultDeviceChanged => " << pwstrDefaultDeviceId;
+HRESULT AudioDeviceWindowsCore::DeviceStateListener::OnDefaultDeviceChanged(
+    EDataFlow flow,
+    ERole role,
+    LPCWSTR pwstrDefaultDeviceId) {
+  RTC_DLOG(LS_INFO) << "AudioDeviceWindowsCore::OnDefaultDeviceChanged => "
+                    << pwstrDefaultDeviceId;
   return S_OK;
 }
 
-HRESULT AudioDeviceWindowsCore::DeviceStateListener::OnPropertyValueChanged(LPCWSTR pwstrDeviceId, const PROPERTYKEY key) {
-  //RTC_DLOG(LS_INFO) << "AudioDeviceWindowsCore::OnPropertyValueChanged => " << pwstrDeviceId;
+HRESULT AudioDeviceWindowsCore::DeviceStateListener::OnPropertyValueChanged(
+    LPCWSTR pwstrDeviceId,
+    const PROPERTYKEY key) {
+  // RTC_DLOG(LS_INFO) << "AudioDeviceWindowsCore::OnPropertyValueChanged => "
+  // << pwstrDeviceId;
   return S_OK;
 }
 
@@ -4007,7 +4023,9 @@ ULONG AudioDeviceWindowsCore::DeviceStateListener::Release() {
   return new_ref;
 }
 
-HRESULT AudioDeviceWindowsCore::DeviceStateListener::QueryInterface(REFIID iid, void** object) {
+HRESULT AudioDeviceWindowsCore::DeviceStateListener::QueryInterface(
+    REFIID iid,
+    void** object) {
   if (object == nullptr) {
     return E_POINTER;
   }

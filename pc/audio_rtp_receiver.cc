@@ -43,7 +43,7 @@ AudioRtpReceiver::AudioRtpReceiver(
     cricket::VoiceMediaReceiveChannelInterface* voice_channel /*= nullptr*/)
     : worker_thread_(worker_thread),
       id_(receiver_id),
-      source_(rtc::make_ref_counted<RemoteAudioSource>(
+      source_(webrtc::make_ref_counted<RemoteAudioSource>(
           worker_thread,
           is_unified_plan
               ? RemoteAudioSource::OnAudioChannelGoneAction::kSurvive

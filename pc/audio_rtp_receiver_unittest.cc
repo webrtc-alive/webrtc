@@ -34,11 +34,11 @@ class AudioRtpReceiverTest : public ::testing::Test {
  protected:
   AudioRtpReceiverTest()
       : worker_(rtc::Thread::Current()),
-        receiver_(
-            rtc::make_ref_counted<AudioRtpReceiver>(worker_,
-                                                    std::string(),
-                                                    std::vector<std::string>(),
-                                                    false)) {
+        receiver_(webrtc::make_ref_counted<AudioRtpReceiver>(
+            worker_,
+            std::string(),
+            std::vector<std::string>(),
+            false)) {
     EXPECT_CALL(receive_channel_, SetRawAudioSink(kSsrc, _));
     EXPECT_CALL(receive_channel_, SetBaseMinimumPlayoutDelayMs(kSsrc, _));
   }
@@ -101,7 +101,7 @@ TEST(AudioRtpReceiver, OnChangedNotificationsAfterConstruction) {
   test::RunLoop loop;
   auto* thread = rtc::Thread::Current();  // Points to loop's thread.
   cricket::MockVoiceMediaReceiveChannelInterface receive_channel;
-  auto receiver = rtc::make_ref_counted<AudioRtpReceiver>(
+  auto receiver = webrtc::make_ref_counted<AudioRtpReceiver>(
       thread, std::string(), std::vector<std::string>(), true,
       &receive_channel);
 

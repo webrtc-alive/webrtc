@@ -39,16 +39,14 @@ void SetEncoderSpecific(VideoEncoderConfig* encoder_config,
   if (type == kVideoCodecVP8) {
     VideoCodecVP8 vp8 = VideoEncoder::GetDefaultVp8Settings();
     vp8.automaticResizeOn = automatic_resize;
-    encoder_config->encoder_specific_settings =
-        rtc::make_ref_counted<VideoEncoderConfig::Vp8EncoderSpecificSettings>(
-            vp8);
+    encoder_config->encoder_specific_settings = webrtc::make_ref_counted<
+        VideoEncoderConfig::Vp8EncoderSpecificSettings>(vp8);
   } else if (type == kVideoCodecVP9) {
     VideoCodecVP9 vp9 = VideoEncoder::GetDefaultVp9Settings();
     vp9.automaticResizeOn = automatic_resize;
     vp9.numberOfSpatialLayers = num_spatial_layers;
-    encoder_config->encoder_specific_settings =
-        rtc::make_ref_counted<VideoEncoderConfig::Vp9EncoderSpecificSettings>(
-            vp9);
+    encoder_config->encoder_specific_settings = webrtc::make_ref_counted<
+        VideoEncoderConfig::Vp9EncoderSpecificSettings>(vp9);
   }
 }
 }  // namespace
@@ -134,7 +132,7 @@ class ScalingObserver : public test::SendTest {
     const VideoCodecType codec_type = PayloadStringToCodecType(payload_name_);
     encoder_config->codec_type = codec_type;
     encoder_config->video_stream_factory =
-        rtc::make_ref_counted<cricket::EncoderStreamFactory>(
+        webrtc::make_ref_counted<cricket::EncoderStreamFactory>(
             payload_name_, /*max_qp=*/0, /*is_screenshare=*/false,
             /*conference_mode=*/false, encoder_info);
     encoder_config->max_bitrate_bps =

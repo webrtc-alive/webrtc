@@ -751,11 +751,11 @@ TEST_F(PeerConnectionRtpTestPlanB,
   // when the first callback is invoked.
   callee->pc()->SetRemoteDescription(
       std::move(srd1_sdp),
-      rtc::make_ref_counted<OnSuccessObserver<decltype(srd1_callback)>>(
+      webrtc::make_ref_counted<OnSuccessObserver<decltype(srd1_callback)>>(
           srd1_callback));
   callee->pc()->SetRemoteDescription(
       std::move(srd2_sdp),
-      rtc::make_ref_counted<OnSuccessObserver<decltype(srd2_callback)>>(
+      webrtc::make_ref_counted<OnSuccessObserver<decltype(srd2_callback)>>(
           srd2_callback));
   EXPECT_TRUE_WAIT(srd1_callback_called, kDefaultTimeout);
   EXPECT_TRUE_WAIT(srd2_callback_called, kDefaultTimeout);
@@ -935,7 +935,7 @@ TEST_P(PeerConnectionRtpTest,
   auto callee = CreatePeerConnection();
 
   rtc::scoped_refptr<MockSetSessionDescriptionObserver> observer =
-      rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+      webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
 
   auto offer = caller->CreateOfferAndSetAsLocal();
   callee->pc()->SetRemoteDescription(observer.get(), offer.release());

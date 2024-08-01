@@ -20,7 +20,7 @@ namespace webrtc {
 
 // static
 rtc::scoped_refptr<FakeResource> FakeResource::Create(absl::string_view name) {
-  return rtc::make_ref_counted<FakeResource>(name);
+  return webrtc::make_ref_counted<FakeResource>(name);
 }
 
 FakeResource::FakeResource(absl::string_view name)

@@ -951,7 +951,7 @@ WebRtcVideoSendChannel::WebRtcVideoSendStream::ConfigureVideoEncoderSettings(
     vp8_settings.automaticResizeOn = automatic_resize;
     // VP8 denoising is enabled by default.
     vp8_settings.denoisingOn = codec_default_denoising ? true : denoising;
-    return rtc::make_ref_counted<
+    return webrtc::make_ref_counted<
         webrtc::VideoEncoderConfig::Vp8EncoderSpecificSettings>(vp8_settings);
   }
   if (absl::EqualsIgnoreCase(codec.name, kVp9CodecName)) {
@@ -1000,7 +1000,7 @@ WebRtcVideoSendChannel::WebRtcVideoSendStream::ConfigureVideoEncoderSettings(
       vp9_settings.flexibleMode = vp9_settings.numberOfSpatialLayers > 1;
       vp9_settings.interLayerPred = webrtc::InterLayerPredMode::kOn;
     }
-    return rtc::make_ref_counted<
+    return webrtc::make_ref_counted<
         webrtc::VideoEncoderConfig::Vp9EncoderSpecificSettings>(vp9_settings);
   }
   if (absl::EqualsIgnoreCase(codec.name, kAv1CodecName)) {
@@ -1009,7 +1009,7 @@ WebRtcVideoSendChannel::WebRtcVideoSendStream::ConfigureVideoEncoderSettings(
     if (NumSpatialLayersFromEncoding(rtp_parameters_, /*idx=*/0) > 1) {
       av1_settings.automatic_resize_on = false;
     }
-    return rtc::make_ref_counted<
+    return webrtc::make_ref_counted<
         webrtc::VideoEncoderConfig::Av1EncoderSpecificSettings>(av1_settings);
   }
   return nullptr;
@@ -1508,9 +1508,9 @@ bool WebRtcVideoSendChannel::AddSendStream(const StreamParams& sp) {
   RTC_DCHECK(ssrc != 0);
   send_streams_[ssrc] = stream;
 
-    if (ssrc_list_changed_callback_) {
-      ssrc_list_changed_callback_(send_ssrcs_);
-    }
+  if (ssrc_list_changed_callback_) {
+    ssrc_list_changed_callback_(send_ssrcs_);
+  }
 
   if (sending_) {
     stream->SetSend(true);
@@ -3162,22 +3162,22 @@ bool WebRtcVideoReceiveChannel::MaybeCreateDefaultReceiveStream(
     // BWE has already been notified of this received packet.
     return false;
   }
-    // Ignore unknown ssrcs if we recently created an unsignalled receive
-    // stream since this shouldn't happen frequently. Getting into a state
-    // of creating decoders on every packet eats up processing time (e.g.
-    // https://crbug.com/1069603) and this cooldown prevents that.
-    if (last_unsignalled_ssrc_creation_time_ms_.has_value()) {
-      int64_t now_ms = rtc::TimeMillis();
-      if (now_ms - last_unsignalled_ssrc_creation_time_ms_.value() <
-          kUnsignaledSsrcCooldownMs) {
-        // We've already created an unsignalled ssrc stream within the last
-        // 0.5 s, ignore with a warning.
-        RTC_LOG(LS_WARNING)
-            << "Another unsignalled ssrc packet arrived shortly after the "
-            << "creation of an unsignalled ssrc stream. Dropping packet.";
-        return false;
-      }
+  // Ignore unknown ssrcs if we recently created an unsignalled receive
+  // stream since this shouldn't happen frequently. Getting into a state
+  // of creating decoders on every packet eats up processing time (e.g.
+  // https://crbug.com/1069603) and this cooldown prevents that.
+  if (last_unsignalled_ssrc_creation_time_ms_.has_value()) {
+    int64_t now_ms = rtc::TimeMillis();
+    if (now_ms - last_unsignalled_ssrc_creation_time_ms_.value() <
+        kUnsignaledSsrcCooldownMs) {
+      // We've already created an unsignalled ssrc stream within the last
+      // 0.5 s, ignore with a warning.
+      RTC_LOG(LS_WARNING)
+          << "Another unsignalled ssrc packet arrived shortly after the "
+          << "creation of an unsignalled ssrc stream. Dropping packet.";
+      return false;
     }
+  }
 
   // RTX SSRC not yet known.
   ReCreateDefaultReceiveStream(packet.Ssrc(), absl::nullopt);
@@ -3544,7 +3544,7 @@ void WebRtcVideoReceiveChannel::WebRtcVideoReceiveStream::SetReceiverParameters(
 void WebRtcVideoReceiveChannel::StartReceive(uint32_t ssrc) {
   RTC_DCHECK_RUN_ON(&thread_checker_);
   WebRtcVideoReceiveStream* stream = FindReceiveStream(ssrc);
-  if(!stream) {
+  if (!stream) {
     return;
   }
   stream->StartReceiveStream();
@@ -3553,7 +3553,7 @@ void WebRtcVideoReceiveChannel::StartReceive(uint32_t ssrc) {
 void WebRtcVideoReceiveChannel::StopReceive(uint32_t ssrc) {
   RTC_DCHECK_RUN_ON(&thread_checker_);
   WebRtcVideoReceiveStream* stream = FindReceiveStream(ssrc);
-  if(!stream) {
+  if (!stream) {
     return;
   }
   stream->StopReceiveStream();

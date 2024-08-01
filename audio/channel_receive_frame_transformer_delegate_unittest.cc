@@ -50,9 +50,9 @@ class MockChannelReceive {
 TEST(ChannelReceiveFrameTransformerDelegateTest,
      RegisterTransformedFrameCallbackOnInit) {
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<MockFrameTransformer>();
+      webrtc::make_ref_counted<MockFrameTransformer>();
   rtc::scoped_refptr<ChannelReceiveFrameTransformerDelegate> delegate =
-      rtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
+      webrtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
           ChannelReceiveFrameTransformerDelegate::ReceiveFrameCallback(),
           mock_frame_transformer, nullptr);
   EXPECT_CALL(*mock_frame_transformer, RegisterTransformedFrameCallback);
@@ -64,9 +64,9 @@ TEST(ChannelReceiveFrameTransformerDelegateTest,
 TEST(ChannelReceiveFrameTransformerDelegateTest,
      UnregisterTransformedFrameCallbackOnReset) {
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<MockFrameTransformer>();
+      webrtc::make_ref_counted<MockFrameTransformer>();
   rtc::scoped_refptr<ChannelReceiveFrameTransformerDelegate> delegate =
-      rtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
+      webrtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
           ChannelReceiveFrameTransformerDelegate::ReceiveFrameCallback(),
           mock_frame_transformer, nullptr);
   EXPECT_CALL(*mock_frame_transformer, UnregisterTransformedFrameCallback);
@@ -79,10 +79,10 @@ TEST(ChannelReceiveFrameTransformerDelegateTest,
      TransformRunsChannelReceiveCallback) {
   rtc::AutoThread main_thread;
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   MockChannelReceive mock_channel;
   rtc::scoped_refptr<ChannelReceiveFrameTransformerDelegate> delegate =
-      rtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
+      webrtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
           mock_channel.callback(), mock_frame_transformer,
           rtc::Thread::Current());
   rtc::scoped_refptr<TransformedFrameCallback> callback;
@@ -110,10 +110,10 @@ TEST(ChannelReceiveFrameTransformerDelegateTest,
      TransformRunsChannelReceiveCallbackForSenderFrame) {
   rtc::AutoThread main_thread;
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   MockChannelReceive mock_channel;
   rtc::scoped_refptr<ChannelReceiveFrameTransformerDelegate> delegate =
-      rtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
+      webrtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
           mock_channel.callback(), mock_frame_transformer,
           rtc::Thread::Current());
   rtc::scoped_refptr<TransformedFrameCallback> callback;
@@ -144,10 +144,10 @@ TEST(ChannelReceiveFrameTransformerDelegateTest,
      OnTransformedDoesNotRunChannelReceiveCallbackAfterReset) {
   rtc::AutoThread main_thread;
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<testing::NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<testing::NiceMock<MockFrameTransformer>>();
   MockChannelReceive mock_channel;
   rtc::scoped_refptr<ChannelReceiveFrameTransformerDelegate> delegate =
-      rtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
+      webrtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
           mock_channel.callback(), mock_frame_transformer,
           rtc::Thread::Current());
 
@@ -161,10 +161,10 @@ TEST(ChannelReceiveFrameTransformerDelegateTest,
      ShortCircuitingSkipsTransform) {
   rtc::AutoThread main_thread;
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<testing::NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<testing::NiceMock<MockFrameTransformer>>();
   MockChannelReceive mock_channel;
   rtc::scoped_refptr<ChannelReceiveFrameTransformerDelegate> delegate =
-      rtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
+      webrtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
           mock_channel.callback(), mock_frame_transformer,
           rtc::Thread::Current());
   const uint8_t data[] = {1, 2, 3, 4};
@@ -185,9 +185,9 @@ TEST(ChannelReceiveFrameTransformerDelegateTest,
      AudioLevelAbsentWithoutExtension) {
   rtc::AutoThread main_thread;
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   rtc::scoped_refptr<ChannelReceiveFrameTransformerDelegate> delegate =
-      rtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
+      webrtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
           /*receive_frame_callback=*/nullptr, mock_frame_transformer,
           rtc::Thread::Current());
   rtc::scoped_refptr<TransformedFrameCallback> callback;
@@ -219,9 +219,9 @@ TEST(ChannelReceiveFrameTransformerDelegateTest,
      AudioLevelPresentWithExtension) {
   rtc::AutoThread main_thread;
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   rtc::scoped_refptr<ChannelReceiveFrameTransformerDelegate> delegate =
-      rtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
+      webrtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
           /*receive_frame_callback=*/nullptr, mock_frame_transformer,
           rtc::Thread::Current());
   rtc::scoped_refptr<TransformedFrameCallback> callback;

@@ -83,7 +83,7 @@ bool TestPeer::SetRemoteDescription(
     std::string* error_out) {
   RTC_CHECK(wrapper_) << "TestPeer is already closed";
 
-  auto observer = rtc::make_ref_counted<SetRemoteDescriptionCallback>();
+  auto observer = webrtc::make_ref_counted<SetRemoteDescriptionCallback>();
   // We're assuming (and asserting) that the PeerConnection implementation of
   // SetRemoteDescription is synchronous when called on the signaling thread.
   pc()->SetRemoteDescription(std::move(desc), observer);

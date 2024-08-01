@@ -177,7 +177,8 @@ rtc::scoped_refptr<Video> AdjustColors(
     const rtc::scoped_refptr<Video> video_;
   };
 
-  return rtc::make_ref_counted<ColorAdjustedVideo>(color_transformation, video);
+  return webrtc::make_ref_counted<ColorAdjustedVideo>(color_transformation,
+                                                      video);
 }
 
 rtc::scoped_refptr<I420BufferInterface> AdjustColors(

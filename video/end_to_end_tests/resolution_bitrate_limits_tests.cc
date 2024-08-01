@@ -30,9 +30,8 @@ void SetEncoderSpecific(VideoEncoderConfig* encoder_config,
   if (type == kVideoCodecVP9) {
     VideoCodecVP9 vp9 = VideoEncoder::GetDefaultVp9Settings();
     vp9.numberOfSpatialLayers = num_spatial_layers;
-    encoder_config->encoder_specific_settings =
-        rtc::make_ref_counted<VideoEncoderConfig::Vp9EncoderSpecificSettings>(
-            vp9);
+    encoder_config->encoder_specific_settings = webrtc::make_ref_counted<
+        VideoEncoderConfig::Vp9EncoderSpecificSettings>(vp9);
   }
 }
 
@@ -155,7 +154,7 @@ class InitEncodeTest : public test::EndToEndTest,
     const VideoCodecType codec_type = PayloadStringToCodecType(payload_name_);
     encoder_config->codec_type = codec_type;
     encoder_config->video_stream_factory =
-        rtc::make_ref_counted<cricket::EncoderStreamFactory>(
+        webrtc::make_ref_counted<cricket::EncoderStreamFactory>(
             payload_name_, /*max qp*/ 0, /*screencast*/ false,
             /*screenshare enabled*/ false, encoder_info);
     encoder_config->max_bitrate_bps = -1;

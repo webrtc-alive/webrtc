@@ -132,9 +132,9 @@ ChannelId VoipCore::CreateChannel(Transport* transport,
   }
 
   rtc::scoped_refptr<AudioChannel> channel =
-      rtc::make_ref_counted<AudioChannel>(transport, local_ssrc.value(),
-                                          task_queue_factory_.get(),
-                                          audio_mixer_.get(), decoder_factory_);
+      webrtc::make_ref_counted<AudioChannel>(
+          transport, local_ssrc.value(), task_queue_factory_.get(),
+          audio_mixer_.get(), decoder_factory_);
 
   {
     MutexLock lock(&lock_);

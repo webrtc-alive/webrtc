@@ -34,7 +34,7 @@ StatsPoller::StatsPoller(std::vector<StatsObserverInterface*> observers,
     : observers_(std::move(observers)) {
   webrtc::MutexLock lock(&mutex_);
   for (auto& peer : peers) {
-    pollers_.push_back(rtc::make_ref_counted<InternalStatsObserver>(
+    pollers_.push_back(webrtc::make_ref_counted<InternalStatsObserver>(
         peer.first, peer.second, observers_));
   }
 }
@@ -44,7 +44,7 @@ StatsPoller::StatsPoller(std::vector<StatsObserverInterface*> observers,
     : observers_(std::move(observers)) {
   webrtc::MutexLock lock(&mutex_);
   for (auto& peer : peers) {
-    pollers_.push_back(rtc::make_ref_counted<InternalStatsObserver>(
+    pollers_.push_back(webrtc::make_ref_counted<InternalStatsObserver>(
         peer.first, peer.second, observers_));
   }
 }
@@ -59,7 +59,7 @@ void StatsPoller::PollStatsAndNotifyObservers() {
 void StatsPoller::RegisterParticipantInCall(absl::string_view peer_name,
                                             StatsProvider* peer) {
   webrtc::MutexLock lock(&mutex_);
-  pollers_.push_back(rtc::make_ref_counted<InternalStatsObserver>(
+  pollers_.push_back(webrtc::make_ref_counted<InternalStatsObserver>(
       peer_name, peer, observers_));
 }
 

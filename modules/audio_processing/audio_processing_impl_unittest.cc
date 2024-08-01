@@ -637,7 +637,7 @@ TEST(AudioProcessingImplTest, EchoControllerObservesPlayoutVolumeChange) {
 TEST(AudioProcessingImplTest, RenderPreProcessorBeforeEchoDetector) {
   // Make sure that signal changes caused by a render pre-processing sub-module
   // take place before any echo detector analysis.
-  auto test_echo_detector = rtc::make_ref_counted<TestEchoDetector>();
+  auto test_echo_detector = webrtc::make_ref_counted<TestEchoDetector>();
   std::unique_ptr<CustomProcessing> test_render_pre_processor(
       new TestRenderPreProcessor());
   // Create APM injecting the test echo detector and render pre-processor.
@@ -695,7 +695,7 @@ TEST(AudioProcessingImplTest, RenderPreProcessorBeforeEchoDetector) {
 // config should be bit-exact with running APM with said submodules disabled.
 // This mainly tests that SetCreateOptionalSubmodulesForTesting has an effect.
 TEST(ApmWithSubmodulesExcludedTest, BitexactWithDisabledModules) {
-  auto apm = rtc::make_ref_counted<AudioProcessingImpl>();
+  auto apm = webrtc::make_ref_counted<AudioProcessingImpl>();
   ASSERT_EQ(apm->Initialize(), AudioProcessing::kNoError);
 
   ApmSubmoduleCreationOverrides overrides;
@@ -742,7 +742,7 @@ TEST(ApmWithSubmodulesExcludedTest, BitexactWithDisabledModules) {
 // Disable transient suppressor creation and run APM in ways that should trigger
 // calls to the transient suppressor API.
 TEST(ApmWithSubmodulesExcludedTest, ReinitializeTransientSuppressor) {
-  auto apm = rtc::make_ref_counted<AudioProcessingImpl>();
+  auto apm = webrtc::make_ref_counted<AudioProcessingImpl>();
   ASSERT_EQ(apm->Initialize(), kNoErr);
 
   ApmSubmoduleCreationOverrides overrides;
@@ -790,7 +790,7 @@ TEST(ApmWithSubmodulesExcludedTest, ReinitializeTransientSuppressor) {
 // Disable transient suppressor creation and run APM in ways that should trigger
 // calls to the transient suppressor API.
 TEST(ApmWithSubmodulesExcludedTest, ToggleTransientSuppressor) {
-  auto apm = rtc::make_ref_counted<AudioProcessingImpl>();
+  auto apm = webrtc::make_ref_counted<AudioProcessingImpl>();
   ASSERT_EQ(apm->Initialize(), AudioProcessing::kNoError);
 
   ApmSubmoduleCreationOverrides overrides;

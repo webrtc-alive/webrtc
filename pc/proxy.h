@@ -281,20 +281,20 @@ class ConstMethodCall {
  public:                                                                   \
   static rtc::scoped_refptr<class_name##ProxyWithInternal> Create(         \
       rtc::Thread* primary_thread, rtc::scoped_refptr<INTERNAL_CLASS> c) { \
-    return rtc::make_ref_counted<class_name##ProxyWithInternal>(           \
+    return webrtc::make_ref_counted<class_name##ProxyWithInternal>(        \
         primary_thread, std::move(c));                                     \
   }
 
-#define BEGIN_PROXY_MAP(class_name)                                \
-  PROXY_MAP_BOILERPLATE(class_name)                                \
-  SECONDARY_PROXY_MAP_BOILERPLATE(class_name)                      \
-  REFCOUNTED_PROXY_MAP_BOILERPLATE(class_name)                     \
- public:                                                           \
-  static rtc::scoped_refptr<class_name##ProxyWithInternal> Create( \
-      rtc::Thread* primary_thread, rtc::Thread* secondary_thread,  \
-      rtc::scoped_refptr<INTERNAL_CLASS> c) {                      \
-    return rtc::make_ref_counted<class_name##ProxyWithInternal>(   \
-        primary_thread, secondary_thread, std::move(c));           \
+#define BEGIN_PROXY_MAP(class_name)                                 \
+  PROXY_MAP_BOILERPLATE(class_name)                                 \
+  SECONDARY_PROXY_MAP_BOILERPLATE(class_name)                       \
+  REFCOUNTED_PROXY_MAP_BOILERPLATE(class_name)                      \
+ public:                                                            \
+  static rtc::scoped_refptr<class_name##ProxyWithInternal> Create(  \
+      rtc::Thread* primary_thread, rtc::Thread* secondary_thread,   \
+      rtc::scoped_refptr<INTERNAL_CLASS> c) {                       \
+    return webrtc::make_ref_counted<class_name##ProxyWithInternal>( \
+        primary_thread, secondary_thread, std::move(c));            \
   }
 
 #define PROXY_PRIMARY_THREAD_DESTRUCTOR()  \

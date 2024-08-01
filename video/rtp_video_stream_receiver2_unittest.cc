@@ -1274,7 +1274,7 @@ TEST_F(RtpVideoStreamReceiver2DependencyDescriptorTest,
 
 TEST_F(RtpVideoStreamReceiver2Test, TransformFrame) {
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<testing::NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<testing::NiceMock<MockFrameTransformer>>();
   EXPECT_CALL(*mock_frame_transformer,
               RegisterTransformedFrameSinkCallback(_, config_.rtp.remote_ssrc));
   auto receiver = std::make_unique<RtpVideoStreamReceiver2>(

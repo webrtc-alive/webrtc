@@ -32,7 +32,7 @@ static_assert(!std::is_abstract_v<MockDtmfSenderObserver>, "");
 class MockDtmfSender : public DtmfSenderInterface {
  public:
   static rtc::scoped_refptr<MockDtmfSender> Create() {
-    return rtc::make_ref_counted<MockDtmfSender>();
+    return webrtc::make_ref_counted<MockDtmfSender>();
   }
 
   MOCK_METHOD(void,

@@ -18,7 +18,7 @@ namespace webrtc {
 rtc::scoped_refptr<AudioTrack> AudioTrack::Create(
     absl::string_view id,
     const rtc::scoped_refptr<AudioSourceInterface>& source) {
-  return rtc::make_ref_counted<AudioTrack>(id, source);
+  return webrtc::make_ref_counted<AudioTrack>(id, source);
 }
 
 AudioTrack::AudioTrack(absl::string_view label,

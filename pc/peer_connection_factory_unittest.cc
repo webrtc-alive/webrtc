@@ -287,8 +287,8 @@ CreatePeerConnectionFactoryWithRtxDisabled() {
   rtc::scoped_refptr<ConnectionContext> context =
       ConnectionContext::Create(CreateEnvironment(), &pcf_dependencies);
   context->set_use_rtx(false);
-  return rtc::make_ref_counted<PeerConnectionFactory>(context,
-                                                      &pcf_dependencies);
+  return webrtc::make_ref_counted<PeerConnectionFactory>(context,
+                                                         &pcf_dependencies);
 }
 
 // Verify creation of PeerConnection using internal ADM, video factory and

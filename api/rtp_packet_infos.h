@@ -88,7 +88,7 @@ class RTC_EXPORT RtpPacketInfos {
         return nullptr;
       }
 
-      return rtc::make_ref_counted<Data>(entries);
+      return webrtc::make_ref_counted<Data>(entries);
     }
 
     static rtc::scoped_refptr<Data> Create(vector_type&& entries) {
@@ -97,7 +97,7 @@ class RTC_EXPORT RtpPacketInfos {
         return nullptr;
       }
 
-      return rtc::make_ref_counted<Data>(std::move(entries));
+      return webrtc::make_ref_counted<Data>(std::move(entries));
     }
 
     const vector_type& entries() const { return entries_; }

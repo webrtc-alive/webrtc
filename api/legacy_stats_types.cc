@@ -695,17 +695,17 @@ StatsReport::~StatsReport() = default;
 
 // static
 StatsReport::Id StatsReport::NewBandwidthEstimationId() {
-  return rtc::make_ref_counted<BandwidthEstimationId>();
+  return webrtc::make_ref_counted<BandwidthEstimationId>();
 }
 
 // static
 StatsReport::Id StatsReport::NewTypedId(StatsType type, const std::string& id) {
-  return rtc::make_ref_counted<TypedId>(type, id);
+  return webrtc::make_ref_counted<TypedId>(type, id);
 }
 
 // static
 StatsReport::Id StatsReport::NewTypedIntId(StatsType type, int id) {
-  return rtc::make_ref_counted<TypedIntId>(type, id);
+  return webrtc::make_ref_counted<TypedIntId>(type, id);
 }
 
 // static
@@ -713,25 +713,26 @@ StatsReport::Id StatsReport::NewIdWithDirection(
     StatsType type,
     const std::string& id,
     StatsReport::Direction direction) {
-  return rtc::make_ref_counted<IdWithDirection>(type, id, direction);
+  return webrtc::make_ref_counted<IdWithDirection>(type, id, direction);
 }
 
 // static
 StatsReport::Id StatsReport::NewCandidateId(bool local, const std::string& id) {
-  return rtc::make_ref_counted<CandidateId>(local, id);
+  return webrtc::make_ref_counted<CandidateId>(local, id);
 }
 
 // static
 StatsReport::Id StatsReport::NewComponentId(const std::string& content_name,
                                             int component) {
-  return rtc::make_ref_counted<ComponentId>(content_name, component);
+  return webrtc::make_ref_counted<ComponentId>(content_name, component);
 }
 
 // static
 StatsReport::Id StatsReport::NewCandidatePairId(const std::string& content_name,
                                                 int component,
                                                 int index) {
-  return rtc::make_ref_counted<CandidatePairId>(content_name, component, index);
+  return webrtc::make_ref_counted<CandidatePairId>(content_name, component,
+                                                   index);
 }
 
 const char* StatsReport::TypeToString() const {

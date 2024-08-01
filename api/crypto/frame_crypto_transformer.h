@@ -63,7 +63,7 @@ struct KeyProviderOptions {
         key_ring_size(copy.key_ring_size) {}
 };
 
-class KeyProvider : public web::RefCountInterface {
+class KeyProvider : public webrtc::RefCountInterface {
  public:
   virtual bool SetSharedKey(int key_index, std::vector<uint8_t> key) = 0;
 
@@ -96,9 +96,9 @@ class KeyProvider : public web::RefCountInterface {
   virtual ~KeyProvider() {}
 };
 
-class ParticipantKeyHandler : public web::RefCountInterface {
+class ParticipantKeyHandler : public webrtc::RefCountInterface {
  public:
-  struct KeySet : public web::RefCountInterface {
+  struct KeySet : public webrtc::RefCountInterface {
     std::vector<uint8_t> material;
     std::vector<uint8_t> encryption_key;
     KeySet(std::vector<uint8_t> material, std::vector<uint8_t> encryptionKey)
@@ -121,7 +121,7 @@ class ParticipantKeyHandler : public web::RefCountInterface {
   virtual ~ParticipantKeyHandler() = default;
 
   rtc::scoped_refptr<ParticipantKeyHandler> Clone() {
-    auto clone = rtc::make_ref_counted<ParticipantKeyHandler>(key_provider_);
+    auto clone = webrtc::make_ref_counted<ParticipantKeyHandler>(key_provider_);
     clone->crypto_key_ring_ = crypto_key_ring_;
     clone->current_key_index_ = current_key_index_;
     clone->has_valid_key_ = has_valid_key_;
@@ -173,7 +173,7 @@ class ParticipantKeyHandler : public web::RefCountInterface {
     std::vector<uint8_t> derived_key;
     if (DerivePBKDF2KeyFromRawKey(password, ratchet_salt, optional_length_bits,
                                   &derived_key) == 0) {
-      return rtc::make_ref_counted<KeySet>(password, derived_key);
+      return webrtc::make_ref_counted<KeySet>(password, derived_key);
     }
     return nullptr;
   }
@@ -232,7 +232,7 @@ class DefaultKeyProviderImpl : public KeyProvider {
     webrtc::MutexLock lock(&mutex_);
     if (options_.shared_key) {
       if (keys_.find("shared") == keys_.end()) {
-        keys_["shared"] = rtc::make_ref_counted<ParticipantKeyHandler>(this);
+        keys_["shared"] = webrtc::make_ref_counted<ParticipantKeyHandler>(this);
       }
 
       auto key_handler = keys_["shared"];
@@ -302,7 +302,7 @@ class DefaultKeyProviderImpl : public KeyProvider {
 
     if (keys_.find(participant_id) == keys_.end()) {
       keys_[participant_id] =
-          rtc::make_ref_counted<ParticipantKeyHandler>(this);
+          webrtc::make_ref_counted<ParticipantKeyHandler>(this);
     }
 
     auto key_handler = keys_[participant_id];
@@ -366,7 +366,7 @@ enum FrameCryptionState {
   kInternalError,
 };
 
-class FrameCryptorTransformerObserver : public web::RefCountInterface {
+class FrameCryptorTransformerObserver : public webrtc::RefCountInterface {
  public:
   virtual void OnFrameCryptionStateChanged(const std::string participant_id,
                                            FrameCryptionState error) = 0;

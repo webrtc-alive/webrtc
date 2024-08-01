@@ -78,7 +78,7 @@ struct AudioDecoderFakeApi {
 TEST(AudioDecoderFactoryTemplateTest, NoDecoderTypes) {
   test::ScopedKeyValueConfig field_trials;
   rtc::scoped_refptr<AudioDecoderFactory> factory(
-      rtc::make_ref_counted<
+      webrtc::make_ref_counted<
           audio_decoder_factory_template_impl::AudioDecoderFactoryT<>>(
           &field_trials));
   EXPECT_THAT(factory->GetSupportedDecoders(), ::testing::IsEmpty());

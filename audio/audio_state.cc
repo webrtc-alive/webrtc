@@ -103,7 +103,6 @@ void AudioState::AddSendingStream(webrtc::AudioSendStream* stream,
     if (!adm->Recording()) {
       if (adm->InitRecording() == 0) {
         if (recording_enabled_) {
-
           // TODO: Verify if the following windows only logic is still required.
 #if defined(WEBRTC_WIN)
           if (adm->BuiltInAECIsAvailable() && !adm->Playing()) {
@@ -220,7 +219,6 @@ void AudioState::UpdateNullAudioPollerState() {
 }
 
 void AudioState::OnMuteStreamChanged() {
-
   auto* adm = config_.audio_device_module.get();
   bool should_record = ShouldRecord();
 
@@ -251,7 +249,8 @@ bool AudioState::ShouldRecord() {
     }
   }
 
-  RTC_LOG(LS_INFO) << "ShouldRecord: " << muted_count << " muted, " << stream_count << " sending";
+  RTC_LOG(LS_INFO) << "ShouldRecord: " << muted_count << " muted, "
+                   << stream_count << " sending";
   return muted_count != stream_count;
 }
 
@@ -259,6 +258,6 @@ bool AudioState::ShouldRecord() {
 
 rtc::scoped_refptr<AudioState> AudioState::Create(
     const AudioState::Config& config) {
-  return rtc::make_ref_counted<internal::AudioState>(config);
+  return webrtc::make_ref_counted<internal::AudioState>(config);
 }
 }  // namespace webrtc

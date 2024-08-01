@@ -41,7 +41,7 @@ rtc::scoped_refptr<const RTCStatsReport> GetStatsAndProcess(
     PeerScenario& s,
     PeerScenarioClient* client) {
   auto stats_collector =
-      rtc::make_ref_counted<webrtc::MockRTCStatsCollectorCallback>();
+      webrtc::make_ref_counted<webrtc::MockRTCStatsCollectorCallback>();
   client->pc()->GetStats(stats_collector.get());
   s.ProcessMessages(TimeDelta::Millis(0));
   RTC_CHECK(stats_collector->called());

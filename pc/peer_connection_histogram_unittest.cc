@@ -326,7 +326,7 @@ class PeerConnectionUsageHistogramTest : public ::testing::Test {
       const PeerConnectionFactoryInterface::Options factory_options,
       PeerConnectionDependencies deps) {
     auto pc_factory =
-        rtc::make_ref_counted<PeerConnectionFactoryForUsageHistogramTest>();
+        webrtc::make_ref_counted<PeerConnectionFactoryForUsageHistogramTest>();
     pc_factory->SetOptions(factory_options);
 
     // If no allocator is provided, one will be created using a network manager

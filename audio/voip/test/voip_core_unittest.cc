@@ -40,7 +40,7 @@ class VoipCoreTest : public ::testing::Test {
     auto encoder_factory = CreateBuiltinAudioEncoderFactory();
     auto decoder_factory = CreateBuiltinAudioDecoderFactory();
     rtc::scoped_refptr<AudioProcessing> audio_processing =
-        rtc::make_ref_counted<NiceMock<test::MockAudioProcessing>>();
+        webrtc::make_ref_counted<NiceMock<test::MockAudioProcessing>>();
 
     voip_core_ = std::make_unique<VoipCore>(
         std::move(encoder_factory), std::move(decoder_factory),

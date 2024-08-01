@@ -27,8 +27,8 @@ constexpr TimeDelta kResourceUsageCheckIntervalMs = TimeDelta::Seconds(5);
 rtc::scoped_refptr<PixelLimitResource> PixelLimitResource::Create(
     TaskQueueBase* task_queue,
     VideoStreamInputStateProvider* input_state_provider) {
-  return rtc::make_ref_counted<PixelLimitResource>(task_queue,
-                                                   input_state_provider);
+  return webrtc::make_ref_counted<PixelLimitResource>(task_queue,
+                                                      input_state_provider);
 }
 
 PixelLimitResource::PixelLimitResource(

@@ -1543,7 +1543,7 @@ void SdpOfferAnswerHandler::CreateOffer(
           return;
         }
         // The operation completes asynchronously when the wrapper is invoked.
-        auto observer_wrapper = rtc::make_ref_counted<
+        auto observer_wrapper = webrtc::make_ref_counted<
             CreateSessionDescriptionObserverOperationWrapper>(
             std::move(observer_refptr), std::move(operations_chain_callback));
         this_weak_ptr->DoCreateOffer(options, observer_wrapper);
@@ -1575,7 +1575,7 @@ void SdpOfferAnswerHandler::SetLocalDescription(
         // `observer_refptr` is invoked in a posted message.
         this_weak_ptr->DoSetLocalDescription(
             std::move(desc),
-            rtc::make_ref_counted<SetSessionDescriptionObserverAdapter>(
+            webrtc::make_ref_counted<SetSessionDescriptionObserverAdapter>(
                 this_weak_ptr, observer_refptr));
         // For backwards-compatability reasons, we declare the operation as
         // completed here (rather than in a post), so that the operation chain
@@ -1617,7 +1617,7 @@ void SdpOfferAnswerHandler::SetLocalDescription(
     SetSessionDescriptionObserver* observer) {
   RTC_DCHECK_RUN_ON(signaling_thread());
   SetLocalDescription(
-      rtc::make_ref_counted<SetSessionDescriptionObserverAdapter>(
+      webrtc::make_ref_counted<SetSessionDescriptionObserverAdapter>(
           weak_ptr_factory_.GetWeakPtr(),
           rtc::scoped_refptr<SetSessionDescriptionObserver>(observer)));
 }
@@ -1628,7 +1628,7 @@ void SdpOfferAnswerHandler::SetLocalDescription(
   // The `create_sdp_observer` handles performing DoSetLocalDescription() with
   // the resulting description as well as completing the operation.
   auto create_sdp_observer =
-      rtc::make_ref_counted<ImplicitCreateSessionDescriptionObserver>(
+      webrtc::make_ref_counted<ImplicitCreateSessionDescriptionObserver>(
           weak_ptr_factory_.GetWeakPtr(), observer);
   // Chain this operation. If asynchronous operations are pending on the chain,
   // this operation will be queued to be invoked, otherwise the contents of the
@@ -1960,7 +1960,7 @@ void SdpOfferAnswerHandler::SetRemoteDescription(
         this_weak_ptr->DoSetRemoteDescription(
             std::make_unique<RemoteDescriptionOperation>(
                 this_weak_ptr.get(), std::move(desc),
-                rtc::make_ref_counted<SetSessionDescriptionObserverAdapter>(
+                webrtc::make_ref_counted<SetSessionDescriptionObserverAdapter>(
                     this_weak_ptr, observer_refptr),
                 std::move(operations_chain_callback)));
       });
@@ -2507,7 +2507,7 @@ void SdpOfferAnswerHandler::CreateAnswer(
           return;
         }
         // The operation completes asynchronously when the wrapper is invoked.
-        auto observer_wrapper = rtc::make_ref_counted<
+        auto observer_wrapper = webrtc::make_ref_counted<
             CreateSessionDescriptionObserverOperationWrapper>(
             std::move(observer_refptr), std::move(operations_chain_callback));
         this_weak_ptr->DoCreateAnswer(options, observer_wrapper);

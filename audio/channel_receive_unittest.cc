@@ -231,7 +231,7 @@ TEST_F(ChannelReceiveTest, SettingFrameTransformer) {
   auto channel = CreateTestChannelReceive();
 
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<MockFrameTransformer>();
+      webrtc::make_ref_counted<MockFrameTransformer>();
 
   EXPECT_CALL(*mock_frame_transformer, RegisterTransformedFrameCallback);
   channel->SetDepacketizerToDecoderFrameTransformer(mock_frame_transformer);
@@ -250,7 +250,7 @@ TEST_F(ChannelReceiveTest, SettingFrameTransformerMultipleTimes) {
   auto channel = CreateTestChannelReceive();
 
   rtc::scoped_refptr<MockFrameTransformer> mock_frame_transformer =
-      rtc::make_ref_counted<MockFrameTransformer>();
+      webrtc::make_ref_counted<MockFrameTransformer>();
 
   EXPECT_CALL(*mock_frame_transformer, RegisterTransformedFrameCallback);
   channel->SetDepacketizerToDecoderFrameTransformer(mock_frame_transformer);

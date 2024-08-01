@@ -47,11 +47,15 @@ void ExternalAudioProcessingJni::Reset(int new_rate) {
   Java_AudioProcessing_reset(env, j_processing_global_, new_rate);
 }
 
-void ExternalAudioProcessingJni::Process(int num_bands, int num_frames, int buffer_size, float* buffer) {
+void ExternalAudioProcessingJni::Process(int num_bands,
+                                         int num_frames,
+                                         int buffer_size,
+                                         float* buffer) {
   JNIEnv* env = AttachCurrentThreadIfNeeded();
   ScopedJavaLocalRef<jobject> audio_buffer =
       NewDirectByteBuffer(env, (void*)buffer, buffer_size * sizeof(float));
-  Java_AudioProcessing_process(env, j_processing_global_, num_bands, num_frames, audio_buffer);
+  Java_AudioProcessing_process(env, j_processing_global_, num_bands, num_frames,
+                               audio_buffer);
 }
 
 ExternalAudioProcessingFactory::ExternalAudioProcessingFactory() {
@@ -76,7 +80,8 @@ static ExternalAudioProcessingFactory* default_processor_ptr;
 
 static jlong JNI_ExternalAudioProcessingFactory_GetDefaultApm(JNIEnv* env) {
   if (!default_processor_ptr) {
-    auto default_processor = rtc::make_ref_counted<ExternalAudioProcessingFactory>();
+    auto default_processor =
+        webrtc::make_ref_counted<ExternalAudioProcessingFactory>();
     default_processor_ptr = default_processor.release();
   }
   return webrtc::jni::jlongFromPointer(default_processor_ptr->apm().get());
@@ -89,7 +94,7 @@ static jlong JNI_ExternalAudioProcessingFactory_SetCapturePostProcessing(
     return 0;
   }
   auto processing =
-      rtc::make_ref_counted<ExternalAudioProcessingJni>(env, j_processing);
+      webrtc::make_ref_counted<ExternalAudioProcessingJni>(env, j_processing);
   processing->AddRef();
   default_processor_ptr->capture_post_processor()->SetExternalAudioProcessing(
       processing.get());
@@ -103,7 +108,7 @@ static jlong JNI_ExternalAudioProcessingFactory_SetRenderPreProcessing(
     return 0;
   }
   auto processing =
-      rtc::make_ref_counted<ExternalAudioProcessingJni>(env, j_processing);
+      webrtc::make_ref_counted<ExternalAudioProcessingJni>(env, j_processing);
   processing->AddRef();
   default_processor_ptr->render_pre_processor()->SetExternalAudioProcessing(
       processing.get());

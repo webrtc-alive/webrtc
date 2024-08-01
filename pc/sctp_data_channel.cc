@@ -287,7 +287,7 @@ rtc::scoped_refptr<SctpDataChannel> SctpDataChannel::Create(
     rtc::Thread* signaling_thread,
     rtc::Thread* network_thread) {
   RTC_DCHECK(config.IsValid());
-  return rtc::make_ref_counted<SctpDataChannel>(
+  return webrtc::make_ref_counted<SctpDataChannel>(
       config, std::move(controller), label, connected_to_transport,
       signaling_thread, network_thread);
 }

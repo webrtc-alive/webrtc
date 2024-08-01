@@ -559,12 +559,12 @@ RTCErrorOr<rtc::scoped_refptr<PeerConnection>> PeerConnection::Create(
   bool dtls_enabled = DtlsEnabled(configuration, options, dependencies);
 
   if (!dependencies.async_dns_resolver_factory) {
-      dependencies.async_dns_resolver_factory =
-          std::make_unique<BasicAsyncDnsResolverFactory>();
+    dependencies.async_dns_resolver_factory =
+        std::make_unique<BasicAsyncDnsResolverFactory>();
   }
 
   // The PeerConnection constructor consumes some, but not all, dependencies.
-  auto pc = rtc::make_ref_counted<PeerConnection>(
+  auto pc = webrtc::make_ref_counted<PeerConnection>(
       env, context, options, is_unified_plan, std::move(call), dependencies,
       dtls_enabled);
   RTCError init_error = pc->Initialize(configuration, std::move(dependencies));
@@ -717,11 +717,11 @@ RTCError PeerConnection::Initialize(
   if (!IsUnifiedPlan()) {
     rtp_manager()->transceivers()->Add(
         RtpTransceiverProxyWithInternal<RtpTransceiver>::Create(
-            signaling_thread(), rtc::make_ref_counted<RtpTransceiver>(
+            signaling_thread(), webrtc::make_ref_counted<RtpTransceiver>(
                                     cricket::MEDIA_TYPE_AUDIO, context())));
     rtp_manager()->transceivers()->Add(
         RtpTransceiverProxyWithInternal<RtpTransceiver>::Create(
-            signaling_thread(), rtc::make_ref_counted<RtpTransceiver>(
+            signaling_thread(), webrtc::make_ref_counted<RtpTransceiver>(
                                     cricket::MEDIA_TYPE_VIDEO, context())));
   }
 

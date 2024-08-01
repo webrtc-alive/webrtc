@@ -36,7 +36,7 @@ VideoRtpReceiver::VideoRtpReceiver(
     const std::vector<rtc::scoped_refptr<MediaStreamInterface>>& streams)
     : worker_thread_(worker_thread),
       id_(receiver_id),
-      source_(rtc::make_ref_counted<VideoRtpTrackSource>(&source_callback_)),
+      source_(webrtc::make_ref_counted<VideoRtpTrackSource>(&source_callback_)),
       track_(VideoTrackProxyWithInternal<VideoTrack>::Create(
           rtc::Thread::Current(),
           worker_thread,
@@ -123,19 +123,18 @@ void VideoRtpReceiver::OnChanged() {
   RTC_DCHECK_RUN_ON(&signaling_thread_checker_);
   if (cached_track_should_receive_ != track_->should_receive()) {
     cached_track_should_receive_ = track_->should_receive();
-    worker_thread_->PostTask(
-        [this, receive = cached_track_should_receive_]() {
-          RTC_DCHECK_RUN_ON(worker_thread_);
-          if(receive) {
-            StartMediaChannel();
-          } else {
-            StopMediaChannel();
-          }
-        });
+    worker_thread_->PostTask([this, receive = cached_track_should_receive_]() {
+      RTC_DCHECK_RUN_ON(worker_thread_);
+      if (receive) {
+        StartMediaChannel();
+      } else {
+        StopMediaChannel();
+      }
+    });
   }
 }
 
-void VideoRtpReceiver::StartMediaChannel() {  
+void VideoRtpReceiver::StartMediaChannel() {
   RTC_DCHECK_RUN_ON(worker_thread_);
   if (!media_channel_) {
     return;
@@ -247,7 +246,7 @@ void VideoRtpReceiver::set_transport(
 void VideoRtpReceiver::SetStreams(
     const std::vector<rtc::scoped_refptr<MediaStreamInterface>>& streams) {
   RTC_DCHECK_RUN_ON(&signaling_thread_checker_);
-  
+
   // Remove remote track from any streams that are going away.
   for (const auto& existing_stream : streams_) {
     bool removed = true;

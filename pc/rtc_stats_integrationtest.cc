@@ -58,10 +58,10 @@ class RTCStatsIntegrationTest : public ::testing::Test {
     RTC_CHECK(network_thread_->Start());
     RTC_CHECK(worker_thread_->Start());
 
-    caller_ = rtc::make_ref_counted<PeerConnectionTestWrapper>(
+    caller_ = webrtc::make_ref_counted<PeerConnectionTestWrapper>(
         "caller", &virtual_socket_server_, network_thread_.get(),
         worker_thread_.get());
-    callee_ = rtc::make_ref_counted<PeerConnectionTestWrapper>(
+    callee_ = webrtc::make_ref_counted<PeerConnectionTestWrapper>(
         "callee", &virtual_socket_server_, network_thread_.get(),
         worker_thread_.get());
   }

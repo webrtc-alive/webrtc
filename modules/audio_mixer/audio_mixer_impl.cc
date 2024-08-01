@@ -78,7 +78,7 @@ rtc::scoped_refptr<AudioMixerImpl> AudioMixerImpl::Create() {
 rtc::scoped_refptr<AudioMixerImpl> AudioMixerImpl::Create(
     std::unique_ptr<OutputRateCalculator> output_rate_calculator,
     bool use_limiter) {
-  return rtc::make_ref_counted<AudioMixerImpl>(
+  return webrtc::make_ref_counted<AudioMixerImpl>(
       std::move(output_rate_calculator), use_limiter);
 }
 

@@ -273,7 +273,8 @@ void JavaToNativeRTCConfiguration(
       Java_RTCConfiguration_getEnableImplicitRollback(jni, j_rtc_config);
 
   rtc_config->enable_any_address_ports =
-      Java_RTCConfiguration_getEnableIceGatheringOnAnyAddressPorts(jni, j_rtc_config);
+      Java_RTCConfiguration_getEnableIceGatheringOnAnyAddressPorts(
+          jni, j_rtc_config);
 
   ScopedJavaLocalRef<jstring> j_turn_logging_id =
       Java_RTCConfiguration_getTurnLoggingId(jni, j_rtc_config);
@@ -282,7 +283,7 @@ void JavaToNativeRTCConfiguration(
   }
 
   rtc_config->port_allocator_config.flags =
-    Java_RTCConfiguration_getPortAllocatorFlags(jni, j_rtc_config);
+      Java_RTCConfiguration_getPortAllocatorFlags(jni, j_rtc_config);
 }
 
 rtc::KeyType GetRtcConfigKeyType(JNIEnv* env,
@@ -574,7 +575,7 @@ static void JNI_PeerConnection_CreateOffer(
     const JavaParamRef<jobject>& j_constraints) {
   std::unique_ptr<MediaConstraints> constraints =
       JavaToNativeMediaConstraints(jni, j_constraints);
-  auto observer = rtc::make_ref_counted<CreateSdpObserverJni>(
+  auto observer = webrtc::make_ref_counted<CreateSdpObserverJni>(
       jni, j_observer, std::move(constraints));
   PeerConnectionInterface::RTCOfferAnswerOptions options;
   CopyConstraintsIntoOfferAnswerOptions(observer->constraints(), &options);
@@ -588,7 +589,7 @@ static void JNI_PeerConnection_CreateAnswer(
     const JavaParamRef<jobject>& j_constraints) {
   std::unique_ptr<MediaConstraints> constraints =
       JavaToNativeMediaConstraints(jni, j_constraints);
-  auto observer = rtc::make_ref_counted<CreateSdpObserverJni>(
+  auto observer = webrtc::make_ref_counted<CreateSdpObserverJni>(
       jni, j_observer, std::move(constraints));
   PeerConnectionInterface::RTCOfferAnswerOptions options;
   CopyConstraintsIntoOfferAnswerOptions(observer->constraints(), &options);
@@ -600,7 +601,7 @@ static void JNI_PeerConnection_SetLocalDescriptionAutomatically(
     const JavaParamRef<jobject>& j_pc,
     const JavaParamRef<jobject>& j_observer) {
   auto observer =
-      rtc::make_ref_counted<SetLocalSdpObserverJni>(jni, j_observer);
+      webrtc::make_ref_counted<SetLocalSdpObserverJni>(jni, j_observer);
   ExtractNativePC(jni, j_pc)->SetLocalDescription(observer);
 }
 
@@ -610,7 +611,7 @@ static void JNI_PeerConnection_SetLocalDescription(
     const JavaParamRef<jobject>& j_observer,
     const JavaParamRef<jobject>& j_sdp) {
   auto observer =
-      rtc::make_ref_counted<SetLocalSdpObserverJni>(jni, j_observer);
+      webrtc::make_ref_counted<SetLocalSdpObserverJni>(jni, j_observer);
   ExtractNativePC(jni, j_pc)->SetLocalDescription(
       JavaToNativeSessionDescription(jni, j_sdp), observer);
 }
@@ -621,7 +622,7 @@ static void JNI_PeerConnection_SetRemoteDescription(
     const JavaParamRef<jobject>& j_observer,
     const JavaParamRef<jobject>& j_sdp) {
   auto observer =
-      rtc::make_ref_counted<SetRemoteSdpObserverJni>(jni, j_observer);
+      webrtc::make_ref_counted<SetRemoteSdpObserverJni>(jni, j_observer);
   ExtractNativePC(jni, j_pc)->SetRemoteDescription(
       JavaToNativeSessionDescription(jni, j_sdp), observer);
 }
@@ -824,7 +825,7 @@ static jboolean JNI_PeerConnection_OldGetStats(
     const JavaParamRef<jobject>& j_pc,
     const JavaParamRef<jobject>& j_observer,
     jlong native_track) {
-  auto observer = rtc::make_ref_counted<StatsObserverJni>(jni, j_observer);
+  auto observer = webrtc::make_ref_counted<StatsObserverJni>(jni, j_observer);
   return ExtractNativePC(jni, j_pc)->GetStats(
       observer.get(),
       reinterpret_cast<MediaStreamTrackInterface*>(native_track),
@@ -835,8 +836,8 @@ static void JNI_PeerConnection_NewGetStats(
     JNIEnv* jni,
     const JavaParamRef<jobject>& j_pc,
     const JavaParamRef<jobject>& j_callback) {
-  auto callback =
-      rtc::make_ref_counted<RTCStatsCollectorCallbackWrapper>(jni, j_callback);
+  auto callback = webrtc::make_ref_counted<RTCStatsCollectorCallbackWrapper>(
+      jni, j_callback);
   ExtractNativePC(jni, j_pc)->GetStats(callback.get());
 }
 
@@ -845,8 +846,8 @@ static void JNI_PeerConnection_NewGetStatsSender(
     const JavaParamRef<jobject>& j_pc,
     jlong native_sender,
     const JavaParamRef<jobject>& j_callback) {
-  auto callback =
-      rtc::make_ref_counted<RTCStatsCollectorCallbackWrapper>(jni, j_callback);
+  auto callback = webrtc::make_ref_counted<RTCStatsCollectorCallbackWrapper>(
+      jni, j_callback);
   ExtractNativePC(jni, j_pc)->GetStats(
       rtc::scoped_refptr<RtpSenderInterface>(
           reinterpret_cast<RtpSenderInterface*>(native_sender)),
@@ -858,8 +859,8 @@ static void JNI_PeerConnection_NewGetStatsReceiver(
     const JavaParamRef<jobject>& j_pc,
     jlong native_receiver,
     const JavaParamRef<jobject>& j_callback) {
-  auto callback =
-      rtc::make_ref_counted<RTCStatsCollectorCallbackWrapper>(jni, j_callback);
+  auto callback = webrtc::make_ref_counted<RTCStatsCollectorCallbackWrapper>(
+      jni, j_callback);
   ExtractNativePC(jni, j_pc)->GetStats(
       rtc::scoped_refptr<RtpReceiverInterface>(
           reinterpret_cast<RtpReceiverInterface*>(native_receiver)),

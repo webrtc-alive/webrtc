@@ -87,15 +87,15 @@ JsepTransport::JsepTransport(
       sdes_transport_(std::move(sdes_transport)),
       dtls_srtp_transport_(std::move(dtls_srtp_transport)),
       rtp_dtls_transport_(rtp_dtls_transport
-                              ? rtc::make_ref_counted<webrtc::DtlsTransport>(
+                              ? webrtc::make_ref_counted<webrtc::DtlsTransport>(
                                     std::move(rtp_dtls_transport))
                               : nullptr),
-      rtcp_dtls_transport_(rtcp_dtls_transport
-                               ? rtc::make_ref_counted<webrtc::DtlsTransport>(
-                                     std::move(rtcp_dtls_transport))
-                               : nullptr),
+      rtcp_dtls_transport_(
+          rtcp_dtls_transport ? webrtc::make_ref_counted<webrtc::DtlsTransport>(
+                                    std::move(rtcp_dtls_transport))
+                              : nullptr),
       sctp_transport_(sctp_transport
-                          ? rtc::make_ref_counted<webrtc::SctpTransport>(
+                          ? webrtc::make_ref_counted<webrtc::SctpTransport>(
                                 std::move(sctp_transport),
                                 rtp_dtls_transport_)
                           : nullptr),

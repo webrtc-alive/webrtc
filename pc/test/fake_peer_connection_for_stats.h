@@ -530,7 +530,7 @@ class FakePeerConnectionForStats : public FakePeerConnectionBase {
   CreateTransceiverOfType(cricket::MediaType media_type) {
     auto transceiver = RtpTransceiverProxyWithInternal<RtpTransceiver>::Create(
         signaling_thread_,
-        rtc::make_ref_counted<RtpTransceiver>(media_type, context_.get()));
+        webrtc::make_ref_counted<RtpTransceiver>(media_type, context_.get()));
     transceivers_.push_back(transceiver);
     return transceiver;
   }

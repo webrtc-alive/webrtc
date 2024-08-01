@@ -42,8 +42,8 @@ class IceTransportTest : public ::testing::Test {
 TEST_F(IceTransportTest, CreateNonSelfDeletingTransport) {
   auto cricket_transport =
       std::make_unique<cricket::FakeIceTransport>("name", 0, nullptr);
-  auto ice_transport =
-      rtc::make_ref_counted<IceTransportWithPointer>(cricket_transport.get());
+  auto ice_transport = webrtc::make_ref_counted<IceTransportWithPointer>(
+      cricket_transport.get());
   EXPECT_EQ(ice_transport->internal(), cricket_transport.get());
   ice_transport->Clear();
   EXPECT_NE(ice_transport->internal(), cricket_transport.get());

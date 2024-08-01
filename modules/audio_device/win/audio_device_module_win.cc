@@ -514,7 +514,7 @@ CreateWindowsCoreAudioAudioDeviceModuleFromInputAndOutput(
     std::unique_ptr<AudioOutput> audio_output,
     TaskQueueFactory* task_queue_factory) {
   RTC_DLOG(LS_INFO) << __FUNCTION__;
-  return rtc::make_ref_counted<WindowsAudioDeviceModule>(
+  return webrtc::make_ref_counted<WindowsAudioDeviceModule>(
       std::move(audio_input), std::move(audio_output), task_queue_factory);
 }
 

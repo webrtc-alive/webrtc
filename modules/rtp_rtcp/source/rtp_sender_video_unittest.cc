@@ -824,7 +824,7 @@ TEST_F(RtpSenderVideoTest,
 
   rtp_module_->RegisterRtpHeaderExtension(
       RtpDependencyDescriptorExtension::Uri(), kDependencyDescriptorId);
-  auto encryptor = rtc::make_ref_counted<NiceMock<MockFrameEncryptor>>();
+  auto encryptor = webrtc::make_ref_counted<NiceMock<MockFrameEncryptor>>();
   ON_CALL(*encryptor, GetMaxCiphertextByteSize).WillByDefault(ReturnArg<1>());
   ON_CALL(*encryptor, Encrypt)
       .WillByDefault(WithArgs<3, 5>(
@@ -1487,7 +1487,7 @@ std::unique_ptr<EncodedImage> CreateDefaultEncodedImage() {
 TEST_F(RtpSenderVideoWithFrameTransformerTest,
        CreateSenderRegistersFrameTransformer) {
   auto mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   EXPECT_CALL(*mock_frame_transformer,
               RegisterTransformedFrameSinkCallback(_, kSsrc));
   std::unique_ptr<RTPSenderVideo> rtp_sender_video =
@@ -1497,7 +1497,7 @@ TEST_F(RtpSenderVideoWithFrameTransformerTest,
 TEST_F(RtpSenderVideoWithFrameTransformerTest,
        DestroySenderUnregistersFrameTransformer) {
   auto mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   std::unique_ptr<RTPSenderVideo> rtp_sender_video =
       CreateSenderWithFrameTransformer(mock_frame_transformer);
   EXPECT_CALL(*mock_frame_transformer,
@@ -1508,7 +1508,7 @@ TEST_F(RtpSenderVideoWithFrameTransformerTest,
 TEST_F(RtpSenderVideoWithFrameTransformerTest,
        SendEncodedImageTransformsFrame) {
   auto mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   std::unique_ptr<RTPSenderVideo> rtp_sender_video =
       CreateSenderWithFrameTransformer(mock_frame_transformer);
   auto encoded_image = CreateDefaultEncodedImage();
@@ -1523,7 +1523,7 @@ TEST_F(RtpSenderVideoWithFrameTransformerTest,
 #if RTC_DCHECK_IS_ON && GTEST_HAS_DEATH_TEST && !defined(WEBRTC_ANDROID)
 TEST_F(RtpSenderVideoWithFrameTransformerTest, ValidPayloadTypes) {
   auto mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   std::unique_ptr<RTPSenderVideo> rtp_sender_video =
       CreateSenderWithFrameTransformer(mock_frame_transformer);
   auto encoded_image = CreateDefaultEncodedImage();
@@ -1548,7 +1548,7 @@ TEST_F(RtpSenderVideoWithFrameTransformerTest, ValidPayloadTypes) {
 
 TEST_F(RtpSenderVideoWithFrameTransformerTest, OnTransformedFrameSendsVideo) {
   auto mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   rtc::scoped_refptr<TransformedFrameCallback> callback;
   EXPECT_CALL(*mock_frame_transformer, RegisterTransformedFrameSinkCallback)
       .WillOnce(SaveArg<0>(&callback));
@@ -1585,7 +1585,7 @@ TEST_F(RtpSenderVideoWithFrameTransformerTest, OnTransformedFrameSendsVideo) {
 TEST_F(RtpSenderVideoWithFrameTransformerTest,
        TransformOverheadCorrectlyAccountedFor) {
   auto mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   rtc::scoped_refptr<TransformedFrameCallback> callback;
   EXPECT_CALL(*mock_frame_transformer, RegisterTransformedFrameSinkCallback)
       .WillOnce(SaveArg<0>(&callback));
@@ -1622,7 +1622,7 @@ TEST_F(RtpSenderVideoWithFrameTransformerTest,
 TEST_F(RtpSenderVideoWithFrameTransformerTest,
        TransformableFrameMetadataHasCorrectValue) {
   auto mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   std::unique_ptr<RTPSenderVideo> rtp_sender_video =
       CreateSenderWithFrameTransformer(mock_frame_transformer);
   auto encoded_image = CreateDefaultEncodedImage();
@@ -1664,7 +1664,7 @@ TEST_F(RtpSenderVideoWithFrameTransformerTest,
 TEST_F(RtpSenderVideoWithFrameTransformerTest,
        TransformableFrameHasCorrectCaptureIdentifier) {
   auto mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   std::unique_ptr<RTPSenderVideo> rtp_sender_video =
       CreateSenderWithFrameTransformer(mock_frame_transformer);
   auto encoded_image = CreateDefaultEncodedImage();
@@ -1688,7 +1688,7 @@ TEST_F(RtpSenderVideoWithFrameTransformerTest,
 TEST_F(RtpSenderVideoWithFrameTransformerTest,
        OnTransformedFrameSendsVideoWhenCloned) {
   auto mock_frame_transformer =
-      rtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
+      webrtc::make_ref_counted<NiceMock<MockFrameTransformer>>();
   rtc::scoped_refptr<TransformedFrameCallback> callback;
   EXPECT_CALL(*mock_frame_transformer, RegisterTransformedFrameSinkCallback)
       .WillOnce(SaveArg<0>(&callback));

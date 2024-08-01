@@ -112,7 +112,7 @@ class PeerConnectionEncodingsIntegrationTest : public ::testing::Test {
   }
 
   rtc::scoped_refptr<PeerConnectionTestWrapper> CreatePc() {
-    auto pc_wrapper = rtc::make_ref_counted<PeerConnectionTestWrapper>(
+    auto pc_wrapper = webrtc::make_ref_counted<PeerConnectionTestWrapper>(
         "pc", &pss_, background_thread_.get(), background_thread_.get());
     pc_wrapper->CreatePc({}, CreateBuiltinAudioEncoderFactory(),
                          CreateBuiltinAudioDecoderFactory());
@@ -217,7 +217,7 @@ class PeerConnectionEncodingsIntegrationTest : public ::testing::Test {
 
   rtc::scoped_refptr<const RTCStatsReport> GetStats(
       rtc::scoped_refptr<PeerConnectionTestWrapper> pc_wrapper) {
-    auto callback = rtc::make_ref_counted<MockRTCStatsCollectorCallback>();
+    auto callback = webrtc::make_ref_counted<MockRTCStatsCollectorCallback>();
     pc_wrapper->pc()->GetStats(callback.get());
     EXPECT_TRUE_WAIT(callback->called(), kDefaultTimeout.ms());
     return callback->report();
@@ -363,8 +363,9 @@ class PeerConnectionEncodingsIntegrationTest : public ::testing::Test {
         RTC_LOG(LS_ERROR) << "rid=" << resolution.rid << " is "
                           << *outbound_rtp->frame_width << "x"
                           << *outbound_rtp->frame_height
-                          << ", this is greater than the " << "expected "
-                          << resolution.width << "x" << resolution.height;
+                          << ", this is greater than the "
+                          << "expected " << resolution.width << "x"
+                          << resolution.height;
         return false;
       }
     }
@@ -375,7 +376,7 @@ class PeerConnectionEncodingsIntegrationTest : public ::testing::Test {
   std::unique_ptr<SessionDescriptionInterface> CreateOffer(
       rtc::scoped_refptr<PeerConnectionTestWrapper> pc_wrapper) {
     auto observer =
-        rtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
+        webrtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
     pc_wrapper->pc()->CreateOffer(observer.get(), {});
     EXPECT_EQ_WAIT(true, observer->called(), kDefaultTimeout.ms());
     return observer->MoveDescription();
@@ -384,7 +385,7 @@ class PeerConnectionEncodingsIntegrationTest : public ::testing::Test {
   std::unique_ptr<SessionDescriptionInterface> CreateAnswer(
       rtc::scoped_refptr<PeerConnectionTestWrapper> pc_wrapper) {
     auto observer =
-        rtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
+        webrtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
     pc_wrapper->pc()->CreateAnswer(observer.get(), {});
     EXPECT_EQ_WAIT(true, observer->called(), kDefaultTimeout.ms());
     return observer->MoveDescription();
@@ -393,7 +394,8 @@ class PeerConnectionEncodingsIntegrationTest : public ::testing::Test {
   rtc::scoped_refptr<MockSetSessionDescriptionObserver> SetLocalDescription(
       rtc::scoped_refptr<PeerConnectionTestWrapper> pc_wrapper,
       SessionDescriptionInterface* sdp) {
-    auto observer = rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+    auto observer =
+        webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
     pc_wrapper->pc()->SetLocalDescription(
         observer.get(), CloneSessionDescription(sdp).release());
     return observer;
@@ -402,7 +404,8 @@ class PeerConnectionEncodingsIntegrationTest : public ::testing::Test {
   rtc::scoped_refptr<MockSetSessionDescriptionObserver> SetRemoteDescription(
       rtc::scoped_refptr<PeerConnectionTestWrapper> pc_wrapper,
       SessionDescriptionInterface* sdp) {
-    auto observer = rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+    auto observer =
+        webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
     pc_wrapper->pc()->SetRemoteDescription(
         observer.get(), CloneSessionDescription(sdp).release());
     return observer;

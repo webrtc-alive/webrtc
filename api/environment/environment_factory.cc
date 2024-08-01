@@ -50,7 +50,8 @@ void Store(absl::Nonnull<std::unique_ptr<T>> value,
   // 'leaf_' - node with the last provided utility. This way `Environment` keeps
   // ownership of a single branch of the storage tree with each used utiltity
   // owned by one of the nodes on that branch.
-  leaf = rtc::make_ref_counted<StorageNode>(std::move(leaf), std::move(value));
+  leaf =
+      webrtc::make_ref_counted<StorageNode>(std::move(leaf), std::move(value));
 }
 
 }  // namespace

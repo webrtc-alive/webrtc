@@ -416,7 +416,7 @@ void WebRtcVoiceEngine::Init() {
     config.audio_device_module = adm_;
     if (audio_frame_processor_) {
       config.async_audio_processing_factory =
-          rtc::make_ref_counted<webrtc::AsyncAudioProcessing::Factory>(
+          webrtc::make_ref_counted<webrtc::AsyncAudioProcessing::Factory>(
               std::move(audio_frame_processor_), *task_queue_factory_);
     }
     audio_state_ = webrtc::AudioState::Create(config);
@@ -1888,7 +1888,7 @@ webrtc::RTCError WebRtcVoiceSendChannel::SetRtpSendParameters(
     if (parameters.encodings[0].codec && send_codec &&
         !send_codec->MatchesRtpCodec(*parameters.encodings[0].codec)) {
       RTC_LOG(LS_VERBOSE) << "Trying to change codec to "
-                        << parameters.encodings[0].codec->name;
+                          << parameters.encodings[0].codec->name;
       auto matched_codec =
           absl::c_find_if(send_codecs_, [&](auto negotiated_codec) {
             return negotiated_codec.MatchesRtpCodec(
@@ -2673,11 +2673,10 @@ bool WebRtcVoiceReceiveChannel::GetStats(VoiceMediaReceiveInfo* info,
 void WebRtcVoiceReceiveChannel::FillReceiveCodecStats(
     VoiceMediaReceiveInfo* voice_media_info) {
   for (const auto& receiver : voice_media_info->receivers) {
-    auto codec =
-        absl::c_find_if(recv_codecs_, [&receiver](const Codec& c) {
-          return receiver.codec_payload_type &&
-                 *receiver.codec_payload_type == c.id;
-        });
+    auto codec = absl::c_find_if(recv_codecs_, [&receiver](const Codec& c) {
+      return receiver.codec_payload_type &&
+             *receiver.codec_payload_type == c.id;
+    });
     if (codec != recv_codecs_.end()) {
       voice_media_info->receive_codecs.insert(
           std::make_pair(codec->id, codec->ToCodecParameters()));

@@ -88,7 +88,7 @@ struct FakeAsyncAudioProcessingHelper {
   FakeTaskQueueFactory task_queue_factory_;
 
   rtc::scoped_refptr<AsyncAudioProcessing::Factory> CreateFactory() {
-    return rtc::make_ref_counted<AsyncAudioProcessing::Factory>(
+    return webrtc::make_ref_counted<AsyncAudioProcessing::Factory>(
         audio_frame_processor_, task_queue_factory_);
   }
 };
@@ -105,9 +105,10 @@ struct ConfigHelper {
     audio_state_config.audio_processing =
         params.use_null_audio_processing
             ? nullptr
-            : rtc::make_ref_counted<testing::NiceMock<MockAudioProcessing>>();
+            : webrtc::make_ref_counted<
+                  testing::NiceMock<MockAudioProcessing>>();
     audio_state_config.audio_device_module =
-        rtc::make_ref_counted<NiceMock<MockAudioDeviceModule>>();
+        webrtc::make_ref_counted<NiceMock<MockAudioDeviceModule>>();
     if (params.use_async_audio_processing) {
       audio_state_config.async_audio_processing_factory =
           async_audio_processing_helper_.CreateFactory();
@@ -180,7 +181,7 @@ TEST_P(AudioStateTest, Create) {
 TEST_P(AudioStateTest, ConstructDestruct) {
   ConfigHelper helper(GetParam());
   rtc::scoped_refptr<internal::AudioState> audio_state(
-      rtc::make_ref_counted<internal::AudioState>(helper.config()));
+      webrtc::make_ref_counted<internal::AudioState>(helper.config()));
 }
 
 TEST_P(AudioStateTest, RecordedAudioArrivesAtSingleStream) {
@@ -193,7 +194,7 @@ TEST_P(AudioStateTest, RecordedAudioArrivesAtSingleStream) {
   }
 
   rtc::scoped_refptr<internal::AudioState> audio_state(
-      rtc::make_ref_counted<internal::AudioState>(helper.config()));
+      webrtc::make_ref_counted<internal::AudioState>(helper.config()));
 
   MockAudioSendStream stream;
   audio_state->AddSendingStream(&stream, 8000, 2);
@@ -242,7 +243,7 @@ TEST_P(AudioStateTest, RecordedAudioArrivesAtMultipleStreams) {
   }
 
   rtc::scoped_refptr<internal::AudioState> audio_state(
-      rtc::make_ref_counted<internal::AudioState>(helper.config()));
+      webrtc::make_ref_counted<internal::AudioState>(helper.config()));
 
   MockAudioSendStream stream_1;
   MockAudioSendStream stream_2;
@@ -305,7 +306,7 @@ TEST_P(AudioStateTest, EnableChannelSwap) {
   }
 
   rtc::scoped_refptr<internal::AudioState> audio_state(
-      rtc::make_ref_counted<internal::AudioState>(helper.config()));
+      webrtc::make_ref_counted<internal::AudioState>(helper.config()));
 
   audio_state->SetStereoChannelSwapping(true);
 

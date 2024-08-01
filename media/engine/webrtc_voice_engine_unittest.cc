@@ -160,7 +160,7 @@ TEST(WebRtcVoiceEngineTestStubLibrary, StartupShutdown) {
     AdmSetupExpectations(adm.get());
     rtc::scoped_refptr<StrictMock<webrtc::test::MockAudioProcessing>> apm =
         use_null_apm ? nullptr
-                     : rtc::make_ref_counted<
+                     : webrtc::make_ref_counted<
                            StrictMock<webrtc::test::MockAudioProcessing>>();
 
     webrtc::AudioProcessing::Config apm_config;
@@ -198,7 +198,7 @@ class WebRtcVoiceEngineTestFake : public ::testing::TestWithParam<bool> {
         adm_(webrtc::test::MockAudioDeviceModule::CreateStrict()),
         apm_(use_null_apm_
                  ? nullptr
-                 : rtc::make_ref_counted<
+                 : webrtc::make_ref_counted<
                        StrictMock<webrtc::test::MockAudioProcessing>>()),
         call_(env_) {
     // AudioDeviceModule.
@@ -3714,7 +3714,7 @@ TEST(WebRtcVoiceEngineTest, StartupShutdownWithExternalADM) {
   rtc::AutoThread main_thread;
   for (bool use_null_apm : {false, true}) {
     Environment env = CreateEnvironment();
-    auto adm = rtc::make_ref_counted<
+    auto adm = webrtc::make_ref_counted<
         ::testing::NiceMock<webrtc::test::MockAudioDeviceModule>>();
     {
       rtc::scoped_refptr<webrtc::AudioProcessing> apm =
@@ -3931,7 +3931,7 @@ TEST(WebRtcVoiceEngineTest, CollectRecvCodecs) {
     rtc::scoped_refptr<webrtc::MockAudioEncoderFactory> unused_encoder_factory =
         webrtc::MockAudioEncoderFactory::CreateUnusedFactory();
     rtc::scoped_refptr<webrtc::MockAudioDecoderFactory> mock_decoder_factory =
-        rtc::make_ref_counted<webrtc::MockAudioDecoderFactory>();
+        webrtc::make_ref_counted<webrtc::MockAudioDecoderFactory>();
     EXPECT_CALL(*mock_decoder_factory.get(), GetSupportedDecoders())
         .WillOnce(Return(specs));
     rtc::scoped_refptr<webrtc::test::MockAudioDeviceModule> adm =

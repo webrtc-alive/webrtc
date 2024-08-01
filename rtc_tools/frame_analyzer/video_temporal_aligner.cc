@@ -189,15 +189,15 @@ std::vector<size_t> FindMatchingFrameIndices(
   // same memory tens of times.
   const float kScaleFactor = 0.25f;
   const rtc::scoped_refptr<Video> cached_downscaled_reference_video =
-      rtc::make_ref_counted<CachedVideo>(kNumberOfFramesLookAhead,
-                                         rtc::make_ref_counted<DownscaledVideo>(
-                                             kScaleFactor, reference_video));
+      webrtc::make_ref_counted<CachedVideo>(
+          kNumberOfFramesLookAhead, webrtc::make_ref_counted<DownscaledVideo>(
+                                        kScaleFactor, reference_video));
   const rtc::scoped_refptr<Video> downscaled_test_video =
-      rtc::make_ref_counted<DownscaledVideo>(kScaleFactor, test_video);
+      webrtc::make_ref_counted<DownscaledVideo>(kScaleFactor, test_video);
 
   // Assume the video is looping around.
   const rtc::scoped_refptr<Video> looping_reference_video =
-      rtc::make_ref_counted<LoopingVideo>(cached_downscaled_reference_video);
+      webrtc::make_ref_counted<LoopingVideo>(cached_downscaled_reference_video);
 
   std::vector<size_t> match_indices;
   for (const rtc::scoped_refptr<I420BufferInterface>& test_frame :
@@ -217,8 +217,8 @@ std::vector<size_t> FindMatchingFrameIndices(
 
 rtc::scoped_refptr<Video> ReorderVideo(const rtc::scoped_refptr<Video>& video,
                                        const std::vector<size_t>& indices) {
-  return rtc::make_ref_counted<ReorderedVideo>(
-      rtc::make_ref_counted<LoopingVideo>(video), indices);
+  return webrtc::make_ref_counted<ReorderedVideo>(
+      webrtc::make_ref_counted<LoopingVideo>(video), indices);
 }
 
 rtc::scoped_refptr<Video> GenerateAlignedReferenceVideo(

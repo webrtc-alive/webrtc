@@ -377,7 +377,7 @@ void ChannelReceive::InitFrameTransformerDelegate(
                               /*receive_time=*/Timestamp::MinusInfinity());
       };
   frame_transformer_delegate_ =
-      rtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
+      webrtc::make_ref_counted<ChannelReceiveFrameTransformerDelegate>(
           std::move(receive_audio_callback), std::move(frame_transformer),
           worker_thread_);
   frame_transformer_delegate_->Init();

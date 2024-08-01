@@ -73,7 +73,7 @@ class RtpTransceiverTest : public testing::Test {
 // Checks that a channel cannot be set on a stopped `RtpTransceiver`.
 TEST_F(RtpTransceiverTest, CannotSetChannelOnStoppedTransceiver) {
   const std::string content_name("my_mid");
-  auto transceiver = rtc::make_ref_counted<RtpTransceiver>(
+  auto transceiver = webrtc::make_ref_counted<RtpTransceiver>(
       cricket::MediaType::MEDIA_TYPE_AUDIO, context());
   auto channel1 = std::make_unique<cricket::MockChannelInterface>();
   EXPECT_CALL(*channel1, media_type())
@@ -108,7 +108,7 @@ TEST_F(RtpTransceiverTest, CannotSetChannelOnStoppedTransceiver) {
 // Checks that a channel can be unset on a stopped `RtpTransceiver`
 TEST_F(RtpTransceiverTest, CanUnsetChannelOnStoppedTransceiver) {
   const std::string content_name("my_mid");
-  auto transceiver = rtc::make_ref_counted<RtpTransceiver>(
+  auto transceiver = webrtc::make_ref_counted<RtpTransceiver>(
       cricket::MediaType::MEDIA_TYPE_VIDEO, context());
   auto channel = std::make_unique<cricket::MockChannelInterface>();
   EXPECT_CALL(*channel, media_type())
@@ -137,7 +137,7 @@ TEST_F(RtpTransceiverTest, CanUnsetChannelOnStoppedTransceiver) {
 class RtpTransceiverUnifiedPlanTest : public RtpTransceiverTest {
  public:
   RtpTransceiverUnifiedPlanTest()
-      : transceiver_(rtc::make_ref_counted<RtpTransceiver>(
+      : transceiver_(webrtc::make_ref_counted<RtpTransceiver>(
             RtpSenderProxyWithInternal<RtpSenderInternal>::Create(
                 rtc::Thread::Current(),
                 sender_),
@@ -150,14 +150,14 @@ class RtpTransceiverUnifiedPlanTest : public RtpTransceiverTest {
             /* on_negotiation_needed= */ [] {})) {}
 
   static rtc::scoped_refptr<MockRtpReceiverInternal> MockReceiver() {
-    auto receiver = rtc::make_ref_counted<MockRtpReceiverInternal>();
+    auto receiver = webrtc::make_ref_counted<MockRtpReceiverInternal>();
     EXPECT_CALL(*receiver.get(), media_type())
         .WillRepeatedly(Return(cricket::MediaType::MEDIA_TYPE_AUDIO));
     return receiver;
   }
 
   static rtc::scoped_refptr<MockRtpSenderInternal> MockSender() {
-    auto sender = rtc::make_ref_counted<MockRtpSenderInternal>();
+    auto sender = webrtc::make_ref_counted<MockRtpSenderInternal>();
     EXPECT_CALL(*sender.get(), media_type())
         .WillRepeatedly(Return(cricket::MediaType::MEDIA_TYPE_AUDIO));
     return sender;
@@ -204,7 +204,7 @@ class RtpTransceiverTestForHeaderExtensions : public RtpTransceiverTest {
              RtpHeaderExtensionCapability(RtpExtension::kVideoRotationUri,
                                           4,
                                           RtpTransceiverDirection::kSendRecv)}),
-        transceiver_(rtc::make_ref_counted<RtpTransceiver>(
+        transceiver_(webrtc::make_ref_counted<RtpTransceiver>(
             RtpSenderProxyWithInternal<RtpSenderInternal>::Create(
                 rtc::Thread::Current(),
                 sender_),
@@ -217,14 +217,14 @@ class RtpTransceiverTestForHeaderExtensions : public RtpTransceiverTest {
             /* on_negotiation_needed= */ [] {})) {}
 
   static rtc::scoped_refptr<MockRtpReceiverInternal> MockReceiver() {
-    auto receiver = rtc::make_ref_counted<MockRtpReceiverInternal>();
+    auto receiver = webrtc::make_ref_counted<MockRtpReceiverInternal>();
     EXPECT_CALL(*receiver.get(), media_type())
         .WillRepeatedly(Return(cricket::MediaType::MEDIA_TYPE_AUDIO));
     return receiver;
   }
 
   static rtc::scoped_refptr<MockRtpSenderInternal> MockSender() {
-    auto sender = rtc::make_ref_counted<MockRtpSenderInternal>();
+    auto sender = webrtc::make_ref_counted<MockRtpSenderInternal>();
     EXPECT_CALL(*sender.get(), media_type())
         .WillRepeatedly(Return(cricket::MediaType::MEDIA_TYPE_AUDIO));
     return sender;
@@ -491,8 +491,8 @@ TEST_F(RtpTransceiverTestForHeaderExtensions,
   };
 
   // Default is stopped.
-  auto sender = rtc::make_ref_counted<MockRtpSenderInternal>();
-  auto transceiver = rtc::make_ref_counted<RtpTransceiver>(
+  auto sender = webrtc::make_ref_counted<MockRtpSenderInternal>();
+  auto transceiver = webrtc::make_ref_counted<RtpTransceiver>(
       RtpSenderProxyWithInternal<RtpSenderInternal>::Create(
           rtc::Thread::Current(), sender),
       RtpReceiverProxyWithInternal<RtpReceiverInternal>::Create(
@@ -510,10 +510,10 @@ TEST_F(RtpTransceiverTestForHeaderExtensions,
   // Simulcast, i.e. more than one encoding.
   RtpParameters simulcast_parameters;
   simulcast_parameters.encodings.resize(2);
-  auto simulcast_sender = rtc::make_ref_counted<MockRtpSenderInternal>();
+  auto simulcast_sender = webrtc::make_ref_counted<MockRtpSenderInternal>();
   EXPECT_CALL(*simulcast_sender, GetParametersInternal())
       .WillRepeatedly(Return(simulcast_parameters));
-  auto simulcast_transceiver = rtc::make_ref_counted<RtpTransceiver>(
+  auto simulcast_transceiver = webrtc::make_ref_counted<RtpTransceiver>(
       RtpSenderProxyWithInternal<RtpSenderInternal>::Create(
           rtc::Thread::Current(), simulcast_sender),
       RtpReceiverProxyWithInternal<RtpReceiverInternal>::Create(
@@ -537,10 +537,10 @@ TEST_F(RtpTransceiverTestForHeaderExtensions,
   svc_parameters.encodings.resize(1);
   svc_parameters.encodings[0].scalability_mode = "L3T3";
 
-  auto svc_sender = rtc::make_ref_counted<MockRtpSenderInternal>();
+  auto svc_sender = webrtc::make_ref_counted<MockRtpSenderInternal>();
   EXPECT_CALL(*svc_sender, GetParametersInternal())
       .WillRepeatedly(Return(svc_parameters));
-  auto svc_transceiver = rtc::make_ref_counted<RtpTransceiver>(
+  auto svc_transceiver = webrtc::make_ref_counted<RtpTransceiver>(
       RtpSenderProxyWithInternal<RtpSenderInternal>::Create(
           rtc::Thread::Current(), svc_sender),
       RtpReceiverProxyWithInternal<RtpReceiverInternal>::Create(

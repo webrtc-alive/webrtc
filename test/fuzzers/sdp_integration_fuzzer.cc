@@ -27,7 +27,7 @@ class FuzzerTest : public PeerConnectionIntegrationBaseTest {
     // generated are discarded.
 
     auto srd_observer =
-        rtc::make_ref_counted<FakeSetRemoteDescriptionObserver>();
+        webrtc::make_ref_counted<FakeSetRemoteDescriptionObserver>();
 
     SdpParseError error;
     std::unique_ptr<SessionDescriptionInterface> sdp(
@@ -39,7 +39,7 @@ class FuzzerTest : public PeerConnectionIntegrationBaseTest {
 
     // If set-remote-description was successful, try to answer.
     auto sld_observer =
-        rtc::make_ref_counted<FakeSetLocalDescriptionObserver>();
+        webrtc::make_ref_counted<FakeSetLocalDescriptionObserver>();
     if (srd_observer->error().ok()) {
       caller()->pc()->SetLocalDescription(sld_observer);
       EXPECT_TRUE_WAIT(sld_observer->called(), 100);

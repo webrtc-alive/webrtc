@@ -103,7 +103,7 @@ class FakeAudioTrack : public MediaStreamTrack<AudioTrackInterface> {
  public:
   explicit FakeAudioTrack(const std::string& id)
       : MediaStreamTrack<AudioTrackInterface>(id),
-        processor_(rtc::make_ref_counted<FakeAudioProcessor>()) {}
+        processor_(webrtc::make_ref_counted<FakeAudioProcessor>()) {}
   std::string kind() const override { return "audio"; }
   AudioSourceInterface* GetSource() const override { return NULL; }
   void AddSink(AudioTrackSinkInterface* sink) override {}
@@ -140,7 +140,8 @@ class FakeAudioTrackWithInitValue
  public:
   explicit FakeAudioTrackWithInitValue(const std::string& id)
       : MediaStreamTrack<AudioTrackInterface>(id),
-        processor_(rtc::make_ref_counted<FakeAudioProcessorWithInitValue>()) {}
+        processor_(
+            webrtc::make_ref_counted<FakeAudioProcessorWithInitValue>()) {}
   std::string kind() const override { return "audio"; }
   AudioSourceInterface* GetSource() const override { return NULL; }
   void AddSink(AudioTrackSinkInterface* sink) override {}
@@ -598,7 +599,7 @@ class LegacyStatsCollectorForTest : public LegacyStatsCollector {
 class LegacyStatsCollectorTest : public ::testing::Test {
  protected:
   rtc::scoped_refptr<FakePeerConnectionForStats> CreatePeerConnection() {
-    return rtc::make_ref_counted<FakePeerConnectionForStats>();
+    return webrtc::make_ref_counted<FakePeerConnectionForStats>();
   }
 
   std::unique_ptr<LegacyStatsCollectorForTest> CreateStatsCollector(
@@ -739,7 +740,7 @@ class LegacyStatsCollectorTest : public ::testing::Test {
 static rtc::scoped_refptr<MockRtpSenderInternal> CreateMockSender(
     rtc::scoped_refptr<MediaStreamTrackInterface> track,
     uint32_t ssrc) {
-  auto sender = rtc::make_ref_counted<MockRtpSenderInternal>();
+  auto sender = webrtc::make_ref_counted<MockRtpSenderInternal>();
   EXPECT_CALL(*sender, track()).WillRepeatedly(Return(track));
   EXPECT_CALL(*sender, ssrc()).WillRepeatedly(Return(ssrc));
   EXPECT_CALL(*sender, media_type())
@@ -756,7 +757,7 @@ static rtc::scoped_refptr<MockRtpSenderInternal> CreateMockSender(
 static rtc::scoped_refptr<MockRtpReceiverInternal> CreateMockReceiver(
     rtc::scoped_refptr<MediaStreamTrackInterface> track,
     uint32_t ssrc) {
-  auto receiver = rtc::make_ref_counted<MockRtpReceiverInternal>();
+  auto receiver = webrtc::make_ref_counted<MockRtpReceiverInternal>();
   EXPECT_CALL(*receiver, track()).WillRepeatedly(Return(track));
   EXPECT_CALL(*receiver, ssrc()).WillRepeatedly(Return(ssrc));
   EXPECT_CALL(*receiver, media_type())
@@ -812,7 +813,7 @@ class StatsCollectorTrackTest : public LegacyStatsCollectorTest,
   rtc::scoped_refptr<RtpSenderInterface> AddOutgoingAudioTrack(
       FakePeerConnectionForStats* pc,
       LegacyStatsCollectorForTest* stats) {
-    audio_track_ = rtc::make_ref_counted<FakeAudioTrack>(kLocalTrackId);
+    audio_track_ = webrtc::make_ref_counted<FakeAudioTrack>(kLocalTrackId);
     if (GetParam()) {
       if (!stream_)
         stream_ = MediaStream::Create("streamid");
@@ -827,7 +828,7 @@ class StatsCollectorTrackTest : public LegacyStatsCollectorTest,
   // Adds a incoming audio track with a given SSRC into the stats.
   void AddIncomingAudioTrack(FakePeerConnectionForStats* pc,
                              LegacyStatsCollectorForTest* stats) {
-    audio_track_ = rtc::make_ref_counted<FakeAudioTrack>(kRemoteTrackId);
+    audio_track_ = webrtc::make_ref_counted<FakeAudioTrack>(kRemoteTrackId);
     if (GetParam()) {
       if (stream_ == nullptr)
         stream_ = MediaStream::Create("streamid");
@@ -1538,7 +1539,7 @@ TEST_P(StatsCollectorTrackTest, FilterOutNegativeInitialValues) {
   // Create a local stream with a local audio track and adds it to the stats.
   stream_ = MediaStream::Create("streamid");
   auto local_track =
-      rtc::make_ref_counted<FakeAudioTrackWithInitValue>(kLocalTrackId);
+      webrtc::make_ref_counted<FakeAudioTrackWithInitValue>(kLocalTrackId);
   stream_->AddTrack(rtc::scoped_refptr<AudioTrackInterface>(local_track.get()));
   pc->AddSender(CreateMockSender(local_track, kSsrcOfTrack));
   if (GetParam()) {
@@ -1550,7 +1551,7 @@ TEST_P(StatsCollectorTrackTest, FilterOutNegativeInitialValues) {
   rtc::scoped_refptr<MediaStream> remote_stream(
       MediaStream::Create("remotestreamid"));
   rtc::scoped_refptr<AudioTrackInterface> remote_track =
-      rtc::make_ref_counted<FakeAudioTrackWithInitValue>(kRemoteTrackId);
+      webrtc::make_ref_counted<FakeAudioTrackWithInitValue>(kRemoteTrackId);
   remote_stream->AddTrack(remote_track);
   pc->AddReceiver(CreateMockReceiver(remote_track, kSsrcOfTrack));
   if (GetParam()) {
@@ -1725,7 +1726,7 @@ TEST_P(StatsCollectorTrackTest, LocalAndRemoteTracksWithSameSsrc) {
   rtc::scoped_refptr<MediaStream> remote_stream(
       MediaStream::Create("remotestreamid"));
   rtc::scoped_refptr<AudioTrackInterface> remote_track =
-      rtc::make_ref_counted<FakeAudioTrack>(kRemoteTrackId);
+      webrtc::make_ref_counted<FakeAudioTrack>(kRemoteTrackId);
   pc->AddReceiver(CreateMockReceiver(remote_track, kSsrcOfTrack));
   remote_stream->AddTrack(remote_track);
   stats->AddStream(remote_stream.get());
@@ -1817,7 +1818,7 @@ TEST_P(StatsCollectorTrackTest, TwoLocalTracksWithSameSsrc) {
 
   // Create a new audio track and adds it to the stream and stats.
   static const std::string kNewTrackId = "new_track_id";
-  auto new_audio_track = rtc::make_ref_counted<FakeAudioTrack>(kNewTrackId);
+  auto new_audio_track = webrtc::make_ref_counted<FakeAudioTrack>(kNewTrackId);
   pc->AddSender(CreateMockSender(new_audio_track, kSsrcOfTrack));
   stream_->AddTrack(
       rtc::scoped_refptr<AudioTrackInterface>(new_audio_track.get()));
@@ -1850,7 +1851,7 @@ TEST_P(StatsCollectorTrackTest, TwoLocalSendersWithSameTrack) {
   auto stats = CreateStatsCollector(pc.get());
 
   auto local_track =
-      rtc::make_ref_counted<FakeAudioTrackWithInitValue>(kLocalTrackId);
+      webrtc::make_ref_counted<FakeAudioTrackWithInitValue>(kLocalTrackId);
   pc->AddSender(CreateMockSender(local_track, kFirstSsrc));
   stats->AddLocalAudioTrack(local_track.get(), kFirstSsrc);
   pc->AddSender(CreateMockSender(local_track, kSecondSsrc));

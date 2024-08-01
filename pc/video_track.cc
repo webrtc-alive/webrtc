@@ -150,8 +150,8 @@ rtc::scoped_refptr<VideoTrack> VideoTrack::Create(
       source_proxy = VideoTrackSourceProxy::Create(
           rtc::Thread::Current(), worker_thread, std::move(source));
 
-  return rtc::make_ref_counted<VideoTrack>(id, std::move(source_proxy),
-                                           worker_thread);
+  return webrtc::make_ref_counted<VideoTrack>(id, std::move(source_proxy),
+                                              worker_thread);
 }
 
 }  // namespace webrtc

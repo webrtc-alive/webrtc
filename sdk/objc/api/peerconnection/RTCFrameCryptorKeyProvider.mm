@@ -35,11 +35,11 @@
                       sharedKeyMode:(BOOL)sharedKey
                 uncryptedMagicBytes:(NSData *)uncryptedMagicBytes {
   return [self initWithRatchetSalt:salt
-                  ratchetWindowSize:windowSize
-                      sharedKeyMode:sharedKey
-                uncryptedMagicBytes:uncryptedMagicBytes
-                   failureTolerance:-1
-                   keyRingSize:webrtc::DEFAULT_KEYRING_SIZE];
+                 ratchetWindowSize:windowSize
+                     sharedKeyMode:sharedKey
+               uncryptedMagicBytes:uncryptedMagicBytes
+                  failureTolerance:-1
+                       keyRingSize:webrtc::DEFAULT_KEYRING_SIZE];
 }
 
 - (instancetype)initWithRatchetSalt:(NSData *)salt
@@ -49,12 +49,12 @@
                    failureTolerance:(int)failureTolerance
                         keyRingSize:(int)keyRingSize {
   return [self initWithRatchetSalt:salt
-                  ratchetWindowSize:windowSize
-                      sharedKeyMode:sharedKey
-                uncryptedMagicBytes:uncryptedMagicBytes
-                   failureTolerance:-1
-                   keyRingSize:keyRingSize
-                   discardFrameWhenCryptorNotReady:false];
+                    ratchetWindowSize:windowSize
+                        sharedKeyMode:sharedKey
+                  uncryptedMagicBytes:uncryptedMagicBytes
+                     failureTolerance:-1
+                          keyRingSize:keyRingSize
+      discardFrameWhenCryptorNotReady:false];
 }
 
 - (instancetype)initWithRatchetSalt:(NSData *)salt
@@ -73,11 +73,12 @@
     options.failure_tolerance = failureTolerance;
     options.key_ring_size = keyRingSize;
     options.discard_frame_when_cryptor_not_ready = discardFrameWhenCryptorNotReady;
-    if(uncryptedMagicBytes != nil) {
-      options.uncrypted_magic_bytes = std::vector<uint8_t>((const uint8_t *)uncryptedMagicBytes.bytes,
-                                                          ((const uint8_t *)uncryptedMagicBytes.bytes) + uncryptedMagicBytes.length);
+    if (uncryptedMagicBytes != nil) {
+      options.uncrypted_magic_bytes = std::vector<uint8_t>(
+          (const uint8_t *)uncryptedMagicBytes.bytes,
+          ((const uint8_t *)uncryptedMagicBytes.bytes) + uncryptedMagicBytes.length);
     }
-    _nativeKeyProvider = rtc::make_ref_counted<webrtc::DefaultKeyProviderImpl>(options);
+    _nativeKeyProvider = webrtc::make_ref_counted<webrtc::DefaultKeyProviderImpl>(options);
   }
   return self;
 }
@@ -116,9 +117,8 @@
 }
 
 - (void)setSifTrailer:(NSData *)trailer {
-  _nativeKeyProvider->SetSifTrailer(
-      std::vector<uint8_t>((const uint8_t *)trailer.bytes,
-                           ((const uint8_t *)trailer.bytes) + trailer.length));
+  _nativeKeyProvider->SetSifTrailer(std::vector<uint8_t>(
+      (const uint8_t *)trailer.bytes, ((const uint8_t *)trailer.bytes) + trailer.length));
 }
 
 @end

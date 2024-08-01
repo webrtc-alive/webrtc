@@ -639,11 +639,13 @@ void GetAudioParameters(JNIEnv* env,
   RTC_CHECK(output_parameters->is_valid());
 }
 
-bool IsLowLatencyInputSupported(JNIEnv* env, const JavaRef<jobject>& j_context) {
+bool IsLowLatencyInputSupported(JNIEnv* env,
+                                const JavaRef<jobject>& j_context) {
   return Java_WebRtcAudioManager_isLowLatencyInputSupported(env, j_context);
 }
 
-bool IsLowLatencyOutputSupported(JNIEnv* env, const JavaRef<jobject>& j_context) {
+bool IsLowLatencyOutputSupported(JNIEnv* env,
+                                 const JavaRef<jobject>& j_context) {
   return Java_WebRtcAudioManager_isLowLatencyOutputSupported(env, j_context);
 }
 
@@ -655,7 +657,7 @@ rtc::scoped_refptr<AudioDeviceModule> CreateAudioDeviceModuleFromInputAndOutput(
     std::unique_ptr<AudioInput> audio_input,
     std::unique_ptr<AudioOutput> audio_output) {
   RTC_DLOG(LS_INFO) << __FUNCTION__;
-  return rtc::make_ref_counted<AndroidAudioDeviceModule>(
+  return webrtc::make_ref_counted<AndroidAudioDeviceModule>(
       audio_layer, is_stereo_playout_supported, is_stereo_record_supported,
       playout_delay_ms, std::move(audio_input), std::move(audio_output));
 }

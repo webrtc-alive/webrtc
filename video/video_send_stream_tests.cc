@@ -2483,8 +2483,8 @@ void VideoCodecConfigObserver<VideoCodecVP8>::VerifyCodecSpecifics(
 template <>
 rtc::scoped_refptr<VideoEncoderConfig::EncoderSpecificSettings>
 VideoCodecConfigObserver<VideoCodecVP8>::GetEncoderSpecificSettings() const {
-  return rtc::make_ref_counted<VideoEncoderConfig::Vp8EncoderSpecificSettings>(
-      encoder_settings_);
+  return webrtc::make_ref_counted<
+      VideoEncoderConfig::Vp8EncoderSpecificSettings>(encoder_settings_);
 }
 
 template <>
@@ -2517,8 +2517,8 @@ void VideoCodecConfigObserver<VideoCodecVP9>::VerifyCodecSpecifics(
 template <>
 rtc::scoped_refptr<VideoEncoderConfig::EncoderSpecificSettings>
 VideoCodecConfigObserver<VideoCodecVP9>::GetEncoderSpecificSettings() const {
-  return rtc::make_ref_counted<VideoEncoderConfig::Vp9EncoderSpecificSettings>(
-      encoder_settings_);
+  return webrtc::make_ref_counted<
+      VideoEncoderConfig::Vp9EncoderSpecificSettings>(encoder_settings_);
 }
 
 TEST_F(VideoSendStreamTest, EncoderSetupPropagatesVp8Config) {
@@ -2648,7 +2648,7 @@ TEST_F(VideoSendStreamTest, TranslatesTwoLayerScreencastToTargetBitrate) {
       send_config->encoder_settings.encoder_factory = &encoder_factory_;
       EXPECT_EQ(1u, encoder_config->number_of_streams);
       encoder_config->video_stream_factory =
-          rtc::make_ref_counted<VideoStreamFactory>();
+          webrtc::make_ref_counted<VideoStreamFactory>();
       EXPECT_EQ(1u, encoder_config->simulcast_layers.size());
       encoder_config->simulcast_layers[0].num_temporal_layers = 2;
       encoder_config->content_type = VideoEncoderConfig::ContentType::kScreen;
@@ -3001,9 +3001,8 @@ class Vp9HeaderObserver : public test::SendTest {
     send_config->rtp.payload_name = "VP9";
     send_config->rtp.payload_type = kVp9PayloadType;
     ModifyVideoConfigsHook(send_config, receive_configs, encoder_config);
-    encoder_config->encoder_specific_settings =
-        rtc::make_ref_counted<VideoEncoderConfig::Vp9EncoderSpecificSettings>(
-            vp9_settings_);
+    encoder_config->encoder_specific_settings = webrtc::make_ref_counted<
+        VideoEncoderConfig::Vp9EncoderSpecificSettings>(vp9_settings_);
     EXPECT_EQ(1u, encoder_config->number_of_streams);
     EXPECT_EQ(1u, encoder_config->simulcast_layers.size());
     encoder_config_ = encoder_config->Copy();
@@ -4078,12 +4077,12 @@ void VideoSendStreamTest::TestTemporalLayers(
       encoder_config->video_format.name = payload_name_;
       encoder_config->codec_type = PayloadStringToCodecType(payload_name_);
       encoder_config->video_stream_factory =
-          rtc::make_ref_counted<cricket::EncoderStreamFactory>(
+          webrtc::make_ref_counted<cricket::EncoderStreamFactory>(
               payload_name_, /*max_qp=*/56, /*is_screenshare=*/false,
               /*conference_mode=*/false, encoder_info);
       encoder_config->max_bitrate_bps = kMaxBitrateBps;
       if (absl::EqualsIgnoreCase(payload_name_, "VP9")) {
-        encoder_config->encoder_specific_settings = rtc::make_ref_counted<
+        encoder_config->encoder_specific_settings = webrtc::make_ref_counted<
             VideoEncoderConfig::Vp9EncoderSpecificSettings>(
             VideoEncoder::GetDefaultVp9Settings());
       }

@@ -2546,7 +2546,7 @@ TEST_P(PeerConnectionIntegrationTest, IceTransportFactoryUsedForConnections) {
                                              /*reset_decoder_factory=*/false);
   ASSERT_TRUE(wrapper);
   wrapper->CreateDataChannel();
-  auto observer = rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+  auto observer = webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
   wrapper->pc()->SetLocalDescription(observer.get(),
                                      wrapper->CreateOfferAndWait().release());
 }
@@ -3188,7 +3188,7 @@ TEST_F(PeerConnectionIntegrationTestUnifiedPlan,
   SetSignalIceCandidates(false);  // Workaround candidate outrace sdp.
   caller()->AddVideoTrack();
   callee()->AddVideoTrack();
-  auto observer = rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+  auto observer = webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
   callee()->pc()->SetLocalDescription(observer.get(),
                                       callee()->CreateOfferAndWait().release());
   EXPECT_TRUE_WAIT(observer->called(), kDefaultTimeout);
@@ -3206,14 +3206,14 @@ TEST_F(PeerConnectionIntegrationTestUnifiedPlan,
   ASSERT_TRUE(CreatePeerConnectionWrappersWithConfig(config, config));
 
   auto sld_observer =
-      rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+      webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
   callee()->pc()->SetLocalDescription(sld_observer.get(),
                                       callee()->CreateOfferAndWait().release());
   EXPECT_TRUE_WAIT(sld_observer->called(), kDefaultTimeout);
   EXPECT_EQ(sld_observer->error(), "");
 
   auto srd_observer =
-      rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+      webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
   callee()->pc()->SetRemoteDescription(
       srd_observer.get(), caller()->CreateOfferAndWait().release());
   EXPECT_TRUE_WAIT(srd_observer->called(), kDefaultTimeout);

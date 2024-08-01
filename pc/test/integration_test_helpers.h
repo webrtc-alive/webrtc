@@ -482,7 +482,7 @@ class PeerConnectionIntegrationWrapper : public PeerConnectionObserver,
   // which can be used to access the gathered stats.
   rtc::scoped_refptr<MockStatsObserver> OldGetStatsForTrack(
       MediaStreamTrackInterface* track) {
-    auto observer = rtc::make_ref_counted<MockStatsObserver>();
+    auto observer = webrtc::make_ref_counted<MockStatsObserver>();
     EXPECT_TRUE(peer_connection_->GetStats(
         observer.get(), nullptr,
         PeerConnectionInterface::kStatsOutputLevelStandard));
@@ -498,7 +498,7 @@ class PeerConnectionIntegrationWrapper : public PeerConnectionObserver,
   // Synchronously gets stats and returns them. If it times out, fails the test
   // and returns null.
   rtc::scoped_refptr<const RTCStatsReport> NewGetStats() {
-    auto callback = rtc::make_ref_counted<MockRTCStatsCollectorCallback>();
+    auto callback = webrtc::make_ref_counted<MockRTCStatsCollectorCallback>();
     peer_connection_->GetStats(callback.get());
     EXPECT_TRUE_WAIT(callback->called(), kDefaultTimeout);
     return callback->report();
@@ -635,7 +635,7 @@ class PeerConnectionIntegrationWrapper : public PeerConnectionObserver,
   // Returns null on failure.
   std::unique_ptr<SessionDescriptionInterface> CreateOfferAndWait() {
     auto observer =
-        rtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
+        webrtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
     pc()->CreateOffer(observer.get(), offer_answer_options_);
     return WaitForDescriptionFromObserver(observer.get());
   }
@@ -712,7 +712,7 @@ class PeerConnectionIntegrationWrapper : public PeerConnectionObserver,
     config.frame_interval_ms = 100;
 
     video_track_sources_.emplace_back(
-        rtc::make_ref_counted<FakePeriodicVideoTrackSource>(
+        webrtc::make_ref_counted<FakePeriodicVideoTrackSource>(
             config, false /* remote */));
     rtc::scoped_refptr<VideoTrackInterface> track =
         peer_connection_factory_->CreateVideoTrack(video_track_sources_.back(),
@@ -759,7 +759,7 @@ class PeerConnectionIntegrationWrapper : public PeerConnectionObserver,
   // Returns null on failure.
   std::unique_ptr<SessionDescriptionInterface> CreateAnswer() {
     auto observer =
-        rtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
+        webrtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
     pc()->CreateAnswer(observer.get(), offer_answer_options_);
     return WaitForDescriptionFromObserver(observer.get());
   }
@@ -784,7 +784,8 @@ class PeerConnectionIntegrationWrapper : public PeerConnectionObserver,
   // don't outrace the description.
   bool SetLocalDescriptionAndSendSdpMessage(
       std::unique_ptr<SessionDescriptionInterface> desc) {
-    auto observer = rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+    auto observer =
+        webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
     RTC_LOG(LS_INFO) << debug_name_ << ": SetLocalDescriptionAndSendSdpMessage";
     SdpType type = desc->GetType();
     std::string sdp;
@@ -800,7 +801,8 @@ class PeerConnectionIntegrationWrapper : public PeerConnectionObserver,
   }
 
   bool SetRemoteDescription(std::unique_ptr<SessionDescriptionInterface> desc) {
-    auto observer = rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+    auto observer =
+        webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
     RTC_LOG(LS_INFO) << debug_name_ << ": SetRemoteDescription";
     pc()->SetRemoteDescription(observer.get(), desc.release());
     RemoveUnusedVideoRenderers();
@@ -1222,7 +1224,8 @@ class MockIceTransportFactory : public IceTransportFactory {
       int component,
       IceTransportInit init) {
     RecordIceTransportCreated();
-    return rtc::make_ref_counted<MockIceTransport>(transport_name, component);
+    return webrtc::make_ref_counted<MockIceTransport>(transport_name,
+                                                      component);
   }
   MOCK_METHOD(void, RecordIceTransportCreated, ());
 };

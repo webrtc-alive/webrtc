@@ -45,7 +45,7 @@ VideoStream LayerWithRequestedResolution(Resolution res) {
 TEST(EncoderStreamFactory, SinglecastRequestedResolution) {
   ExplicitKeyValueConfig field_trials("");
   VideoEncoder::EncoderInfo encoder_info;
-  auto factory = rtc::make_ref_counted<EncoderStreamFactory>(
+  auto factory = webrtc::make_ref_counted<EncoderStreamFactory>(
       "VP8", kMaxQp,
       /* is_screenshare= */ false,
       /* conference_mode= */ false, encoder_info);
@@ -69,7 +69,7 @@ TEST(EncoderStreamFactory, SinglecastRequestedResolutionWithAdaptation) {
       /* target_pixels_per_frame= */ absl::nullopt,
       /* max_frame_rate= */ absl::nullopt);
   VideoEncoder::EncoderInfo encoder_info;
-  auto factory = rtc::make_ref_counted<EncoderStreamFactory>(
+  auto factory = webrtc::make_ref_counted<EncoderStreamFactory>(
       "VP8", kMaxQp,
       /* is_screenshare= */ false,
       /* conference_mode= */ false, encoder_info, restrictions);

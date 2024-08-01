@@ -127,18 +127,20 @@ void RTCFrameCryptorDelegateAdapter::OnFrameCryptionStateChanged(const std::stri
     rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> nativeTrack = nativeRtpSender->track();
     if (nativeTrack == nullptr) return nil;
 
-    webrtc::FrameCryptorTransformer::MediaType mediaType =
-        nativeTrack->kind() == "audio" ? webrtc::FrameCryptorTransformer::MediaType::kAudioFrame
-                                       : webrtc::FrameCryptorTransformer::MediaType::kVideoFrame;
+    webrtc::FrameCryptorTransformer::MediaType mediaType = nativeTrack->kind() == "audio" ?
+        webrtc::FrameCryptorTransformer::MediaType::kAudioFrame :
+        webrtc::FrameCryptorTransformer::MediaType::kVideoFrame;
 
     os_unfair_lock_lock(&_lock);
-    _observer = rtc::make_ref_counted<webrtc::RTCFrameCryptorDelegateAdapter>(self);
+    _observer = webrtc::make_ref_counted<webrtc::RTCFrameCryptorDelegateAdapter>(self);
     _participantId = participantId;
 
-    _frame_crypto_transformer =
-        rtc::scoped_refptr<webrtc::FrameCryptorTransformer>(new webrtc::FrameCryptorTransformer(
-            factory.signalingThread, [participantId stdString], mediaType,
-            [self algorithmFromEnum:algorithm], keyProvider.nativeKeyProvider));
+    _frame_crypto_transformer = rtc::scoped_refptr<webrtc::FrameCryptorTransformer>(
+        new webrtc::FrameCryptorTransformer(factory.signalingThread,
+                                            [participantId stdString],
+                                            mediaType,
+                                            [self algorithmFromEnum:algorithm],
+                                            keyProvider.nativeKeyProvider));
 
     factory.workerThread->BlockingCall([self, nativeRtpSender] {
       // Must be called on Worker thread
@@ -167,18 +169,20 @@ void RTCFrameCryptorDelegateAdapter::OnFrameCryptionStateChanged(const std::stri
     rtc::scoped_refptr<webrtc::MediaStreamTrackInterface> nativeTrack = nativeRtpReceiver->track();
     if (nativeTrack == nullptr) return nil;
 
-    webrtc::FrameCryptorTransformer::MediaType mediaType =
-        nativeTrack->kind() == "audio" ? webrtc::FrameCryptorTransformer::MediaType::kAudioFrame
-                                       : webrtc::FrameCryptorTransformer::MediaType::kVideoFrame;
+    webrtc::FrameCryptorTransformer::MediaType mediaType = nativeTrack->kind() == "audio" ?
+        webrtc::FrameCryptorTransformer::MediaType::kAudioFrame :
+        webrtc::FrameCryptorTransformer::MediaType::kVideoFrame;
 
     os_unfair_lock_lock(&_lock);
-    _observer = rtc::make_ref_counted<webrtc::RTCFrameCryptorDelegateAdapter>(self);
+    _observer = webrtc::make_ref_counted<webrtc::RTCFrameCryptorDelegateAdapter>(self);
     _participantId = participantId;
 
-    _frame_crypto_transformer =
-        rtc::scoped_refptr<webrtc::FrameCryptorTransformer>(new webrtc::FrameCryptorTransformer(
-            factory.signalingThread, [participantId stdString], mediaType,
-            [self algorithmFromEnum:algorithm], keyProvider.nativeKeyProvider));
+    _frame_crypto_transformer = rtc::scoped_refptr<webrtc::FrameCryptorTransformer>(
+        new webrtc::FrameCryptorTransformer(factory.signalingThread,
+                                            [participantId stdString],
+                                            mediaType,
+                                            [self algorithmFromEnum:algorithm],
+                                            keyProvider.nativeKeyProvider));
 
     factory.workerThread->BlockingCall([self, nativeRtpReceiver] {
       // Must be called on Worker thread

@@ -100,7 +100,7 @@ const AudioDecodingCallStats kAudioDecodeStats = MakeAudioDecodeStatsForTest();
 
 struct ConfigHelper {
   explicit ConfigHelper(bool use_null_audio_processing)
-      : ConfigHelper(rtc::make_ref_counted<MockAudioMixer>(),
+      : ConfigHelper(webrtc::make_ref_counted<MockAudioMixer>(),
                      use_null_audio_processing) {}
 
   ConfigHelper(rtc::scoped_refptr<MockAudioMixer> audio_mixer,
@@ -113,9 +113,9 @@ struct ConfigHelper {
     config.audio_processing =
         use_null_audio_processing
             ? nullptr
-            : rtc::make_ref_counted<NiceMock<MockAudioProcessing>>();
+            : webrtc::make_ref_counted<NiceMock<MockAudioProcessing>>();
     config.audio_device_module =
-        rtc::make_ref_counted<testing::NiceMock<MockAudioDeviceModule>>();
+        webrtc::make_ref_counted<testing::NiceMock<MockAudioDeviceModule>>();
     audio_state_ = AudioState::Create(config);
 
     channel_receive_ = new ::testing::StrictMock<MockChannelReceive>();
@@ -140,7 +140,7 @@ struct ConfigHelper {
     stream_config_.rtp.nack.rtp_history_ms = 300;
     stream_config_.rtcp_send_transport = &rtcp_send_transport_;
     stream_config_.decoder_factory =
-        rtc::make_ref_counted<MockAudioDecoderFactory>();
+        webrtc::make_ref_counted<MockAudioDecoderFactory>();
   }
 
   std::unique_ptr<AudioReceiveStreamImpl> CreateAudioReceiveStream() {
@@ -409,7 +409,7 @@ TEST(AudioReceiveStreamTest, ReconfigureWithFrameDecryptor) {
 
     auto new_config_0 = helper.config();
     rtc::scoped_refptr<FrameDecryptorInterface> mock_frame_decryptor_0(
-        rtc::make_ref_counted<MockFrameDecryptor>());
+        webrtc::make_ref_counted<MockFrameDecryptor>());
     new_config_0.frame_decryptor = mock_frame_decryptor_0;
 
     // TODO(tommi): While this changes the internal config value, it doesn't
@@ -421,7 +421,7 @@ TEST(AudioReceiveStreamTest, ReconfigureWithFrameDecryptor) {
 
     auto new_config_1 = helper.config();
     rtc::scoped_refptr<FrameDecryptorInterface> mock_frame_decryptor_1(
-        rtc::make_ref_counted<MockFrameDecryptor>());
+        webrtc::make_ref_counted<MockFrameDecryptor>());
     new_config_1.frame_decryptor = mock_frame_decryptor_1;
     new_config_1.crypto_options.sframe.require_frame_encryption = true;
     recv_stream->ReconfigureForTesting(new_config_1);

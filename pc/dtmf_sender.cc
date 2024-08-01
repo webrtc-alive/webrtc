@@ -63,7 +63,7 @@ rtc::scoped_refptr<DtmfSender> DtmfSender::Create(
   if (!signaling_thread) {
     return nullptr;
   }
-  return rtc::make_ref_counted<DtmfSender>(signaling_thread, provider);
+  return webrtc::make_ref_counted<DtmfSender>(signaling_thread, provider);
 }
 
 DtmfSender::DtmfSender(TaskQueueBase* signaling_thread,

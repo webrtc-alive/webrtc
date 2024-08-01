@@ -23,7 +23,7 @@ class RTCStatsObtainer : public RTCStatsCollectorCallback {
  public:
   static rtc::scoped_refptr<RTCStatsObtainer> Create(
       rtc::scoped_refptr<const RTCStatsReport>* report_ptr = nullptr) {
-    return rtc::make_ref_counted<RTCStatsObtainer>(report_ptr);
+    return webrtc::make_ref_counted<RTCStatsObtainer>(report_ptr);
   }
 
   void OnStatsDelivered(

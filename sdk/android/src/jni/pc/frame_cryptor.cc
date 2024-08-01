@@ -86,7 +86,7 @@ static jlong JNI_FrameCryptor_SetObserver(
     jlong j_frame_cryptor_pointer,
     const JavaParamRef<jobject>& j_observer) {
   auto observer =
-      rtc::make_ref_counted<FrameCryptorObserverJni>(jni, j_observer);
+      webrtc::make_ref_counted<FrameCryptorObserverJni>(jni, j_observer);
   observer->AddRef();
   reinterpret_cast<FrameCryptorTransformer*>(j_frame_cryptor_pointer)
       ->RegisterFrameCryptorTransformerObserver(observer);
@@ -131,8 +131,9 @@ JNI_FrameCryptorFactory_CreateFrameCryptorForRtpReceiver(
           : webrtc::FrameCryptorTransformer::MediaType::kVideoFrame;
   auto frame_crypto_transformer =
       rtc::scoped_refptr<webrtc::FrameCryptorTransformer>(
-          new webrtc::FrameCryptorTransformer(factory->signaling_thread(),
-              participant_id, mediaType, AlgorithmFromIndex(j_algorithm_index),
+          new webrtc::FrameCryptorTransformer(
+              factory->signaling_thread(), participant_id, mediaType,
+              AlgorithmFromIndex(j_algorithm_index),
               rtc::scoped_refptr<webrtc::KeyProvider>(keyProvider)));
 
   rtpReceiver->SetDepacketizerToDecoderFrameTransformer(
@@ -162,8 +163,9 @@ JNI_FrameCryptorFactory_CreateFrameCryptorForRtpSender(
           : webrtc::FrameCryptorTransformer::MediaType::kVideoFrame;
   auto frame_crypto_transformer =
       rtc::scoped_refptr<webrtc::FrameCryptorTransformer>(
-          new webrtc::FrameCryptorTransformer(factory->signaling_thread(),
-              participant_id, mediaType, AlgorithmFromIndex(j_algorithm_index),
+          new webrtc::FrameCryptorTransformer(
+              factory->signaling_thread(), participant_id, mediaType,
+              AlgorithmFromIndex(j_algorithm_index),
               rtc::scoped_refptr<webrtc::KeyProvider>(keyProvider)));
 
   rtpSender->SetEncoderToPacketizerFrameTransformer(frame_crypto_transformer);
@@ -188,14 +190,15 @@ JNI_FrameCryptorFactory_CreateFrameCryptorKeyProvider(
       std::vector<uint8_t>(ratchetSalt.begin(), ratchetSalt.end());
   options.ratchet_window_size = j_ratchetWindowSize;
   auto uncryptedMagicBytes = JavaToNativeByteArray(env, j_uncryptedMagicBytes);
-  options.uncrypted_magic_bytes =
-      std::vector<uint8_t>(uncryptedMagicBytes.begin(), uncryptedMagicBytes.end());
+  options.uncrypted_magic_bytes = std::vector<uint8_t>(
+      uncryptedMagicBytes.begin(), uncryptedMagicBytes.end());
   options.shared_key = j_shared;
   options.failure_tolerance = j_failureTolerance;
   options.key_ring_size = j_keyRingSize;
-  options.discard_frame_when_cryptor_not_ready = j_discardFrameWhenCryptorNotReady;
+  options.discard_frame_when_cryptor_not_ready =
+      j_discardFrameWhenCryptorNotReady;
   return NativeToJavaFrameCryptorKeyProvider(
-      env, rtc::make_ref_counted<webrtc::DefaultKeyProviderImpl>(options));
+      env, webrtc::make_ref_counted<webrtc::DefaultKeyProviderImpl>(options));
 }
 
 }  // namespace jni

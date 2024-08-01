@@ -171,7 +171,7 @@ rtc::scoped_refptr<Video> AdjustCropping(
     mutable std::map<size_t, CropRegion> crop_regions_;
   };
 
-  return rtc::make_ref_counted<CroppedVideo>(reference_video, test_video);
+  return webrtc::make_ref_counted<CroppedVideo>(reference_video, test_video);
 }
 
 }  // namespace test

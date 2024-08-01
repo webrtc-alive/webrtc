@@ -619,7 +619,7 @@ class PeerConnectionFactoryForTest : public PeerConnectionFactory {
     EnableMediaWithDefaults(dependencies);
     dependencies.event_log_factory = std::make_unique<RtcEventLogFactory>();
 
-    return rtc::make_ref_counted<PeerConnectionFactoryForTest>(
+    return webrtc::make_ref_counted<PeerConnectionFactoryForTest>(
         std::move(dependencies));
   }
 
@@ -849,7 +849,7 @@ class PeerConnectionInterfaceBaseTest : public ::testing::Test {
                            const RTCOfferAnswerOptions* options,
                            bool offer) {
     auto observer =
-        rtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
+        webrtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
     if (offer) {
       pc_->CreateOffer(observer.get(),
                        options ? *options : RTCOfferAnswerOptions());
@@ -875,7 +875,8 @@ class PeerConnectionInterfaceBaseTest : public ::testing::Test {
   bool DoSetSessionDescription(
       std::unique_ptr<SessionDescriptionInterface> desc,
       bool local) {
-    auto observer = rtc::make_ref_counted<MockSetSessionDescriptionObserver>();
+    auto observer =
+        webrtc::make_ref_counted<MockSetSessionDescriptionObserver>();
     if (local) {
       pc_->SetLocalDescription(observer.get(), desc.release());
     } else {
@@ -901,7 +902,7 @@ class PeerConnectionInterfaceBaseTest : public ::testing::Test {
   // It does not verify the values in the StatReports since a RTCP packet might
   // be required.
   bool DoGetStats(MediaStreamTrackInterface* track) {
-    auto observer = rtc::make_ref_counted<MockStatsObserver>();
+    auto observer = webrtc::make_ref_counted<MockStatsObserver>();
     if (!pc_->GetStats(observer.get(), track,
                        PeerConnectionInterface::kStatsOutputLevelStandard))
       return false;
@@ -911,7 +912,7 @@ class PeerConnectionInterfaceBaseTest : public ::testing::Test {
 
   // Call the standards-compliant GetStats function.
   bool DoGetRTCStats() {
-    auto callback = rtc::make_ref_counted<MockRTCStatsCollectorCallback>();
+    auto callback = webrtc::make_ref_counted<MockRTCStatsCollectorCallback>();
     pc_->GetStats(callback.get());
     EXPECT_TRUE_WAIT(callback->called(), kTimeout);
     return callback->called();
@@ -1165,7 +1166,7 @@ class PeerConnectionInterfaceBaseTest : public ::testing::Test {
       const RTCOfferAnswerOptions& offer_answer_options) {
     RTC_DCHECK(pc_);
     auto observer =
-        rtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
+        webrtc::make_ref_counted<MockCreateSessionDescriptionObserver>();
     pc_->CreateOffer(observer.get(), offer_answer_options);
     EXPECT_EQ_WAIT(true, observer->called(), kTimeout);
     return observer->MoveDescription();

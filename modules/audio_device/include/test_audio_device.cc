@@ -444,7 +444,7 @@ rtc::scoped_refptr<AudioDeviceModule> TestAudioDeviceModule::Create(
     std::unique_ptr<TestAudioDeviceModule::Capturer> capturer,
     std::unique_ptr<TestAudioDeviceModule::Renderer> renderer,
     float speed) {
-  return rtc::make_ref_counted<TestAudioDeviceModuleImpl>(
+  return webrtc::make_ref_counted<TestAudioDeviceModuleImpl>(
       task_queue_factory, std::move(capturer), std::move(renderer), speed);
 }
 

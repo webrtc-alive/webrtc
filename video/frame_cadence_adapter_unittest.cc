@@ -52,7 +52,7 @@ using ::testing::Values;
 VideoFrame CreateFrame() {
   return VideoFrame::Builder()
       .set_video_frame_buffer(
-          rtc::make_ref_counted<NV12Buffer>(/*width=*/16, /*height=*/16))
+          webrtc::make_ref_counted<NV12Buffer>(/*width=*/16, /*height=*/16))
       .build();
 }
 
@@ -60,7 +60,7 @@ VideoFrame CreateFrameWithTimestamps(
     GlobalSimulatedTimeController* time_controller) {
   return VideoFrame::Builder()
       .set_video_frame_buffer(
-          rtc::make_ref_counted<NV12Buffer>(/*width=*/16, /*height=*/16))
+          webrtc::make_ref_counted<NV12Buffer>(/*width=*/16, /*height=*/16))
       .set_ntp_time_ms(time_controller->GetClock()->CurrentNtpInMilliseconds())
       .set_timestamp_us(time_controller->GetClock()->CurrentTime().us())
       .build();

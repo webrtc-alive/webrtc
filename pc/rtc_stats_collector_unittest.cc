@@ -247,11 +247,12 @@ class FakeAudioTrackForStats : public MediaStreamTrack<AudioTrackInterface> {
       const std::string& id,
       MediaStreamTrackInterface::TrackState state,
       bool create_fake_audio_processor) {
-    auto audio_track_stats = rtc::make_ref_counted<FakeAudioTrackForStats>(id);
+    auto audio_track_stats =
+        webrtc::make_ref_counted<FakeAudioTrackForStats>(id);
     audio_track_stats->set_state(state);
     if (create_fake_audio_processor) {
       audio_track_stats->processor_ =
-          rtc::make_ref_counted<FakeAudioProcessor>();
+          webrtc::make_ref_counted<FakeAudioProcessor>();
     }
     return audio_track_stats;
   }
@@ -279,8 +280,8 @@ class FakeVideoTrackSourceForStats : public VideoTrackSourceInterface {
   static rtc::scoped_refptr<FakeVideoTrackSourceForStats> Create(
       int input_width,
       int input_height) {
-    return rtc::make_ref_counted<FakeVideoTrackSourceForStats>(input_width,
-                                                               input_height);
+    return webrtc::make_ref_counted<FakeVideoTrackSourceForStats>(input_width,
+                                                                  input_height);
   }
 
   FakeVideoTrackSourceForStats(int input_width, int input_height)
@@ -326,7 +327,7 @@ class FakeVideoTrackForStats : public MediaStreamTrack<VideoTrackInterface> {
       MediaStreamTrackInterface::TrackState state,
       rtc::scoped_refptr<VideoTrackSourceInterface> source) {
     auto video_track =
-        rtc::make_ref_counted<FakeVideoTrackForStats>(id, std::move(source));
+        webrtc::make_ref_counted<FakeVideoTrackForStats>(id, std::move(source));
     video_track->set_state(state);
     return video_track;
   }
@@ -376,7 +377,7 @@ rtc::scoped_refptr<MockRtpSenderInternal> CreateMockSender(
               media_type == cricket::MEDIA_TYPE_AUDIO) ||
              (track->kind() == MediaStreamTrackInterface::kVideoKind &&
               media_type == cricket::MEDIA_TYPE_VIDEO));
-  auto sender = rtc::make_ref_counted<MockRtpSenderInternal>();
+  auto sender = webrtc::make_ref_counted<MockRtpSenderInternal>();
   EXPECT_CALL(*sender, track()).WillRepeatedly(Return(track));
   EXPECT_CALL(*sender, ssrc()).WillRepeatedly(Return(ssrc));
   EXPECT_CALL(*sender, media_type()).WillRepeatedly(Return(media_type));
@@ -399,7 +400,7 @@ rtc::scoped_refptr<MockRtpReceiverInternal> CreateMockReceiver(
     const rtc::scoped_refptr<MediaStreamTrackInterface>& track,
     uint32_t ssrc,
     int attachment_id) {
-  auto receiver = rtc::make_ref_counted<MockRtpReceiverInternal>();
+  auto receiver = webrtc::make_ref_counted<MockRtpReceiverInternal>();
   EXPECT_CALL(*receiver, track()).WillRepeatedly(Return(track));
   EXPECT_CALL(*receiver, ssrc()).WillRepeatedly(Invoke([ssrc]() {
     return ssrc;
@@ -661,7 +662,7 @@ class RTCStatsCollectorWrapper {
 class RTCStatsCollectorTest : public ::testing::Test {
  public:
   RTCStatsCollectorTest()
-      : pc_(rtc::make_ref_counted<FakePeerConnectionForStats>()),
+      : pc_(webrtc::make_ref_counted<FakePeerConnectionForStats>()),
         stats_(new RTCStatsCollectorWrapper(pc_)),
         data_channel_controller_(
             new FakeDataChannelController(pc_->network_thread())) {}
@@ -1555,10 +1556,10 @@ TEST_F(RTCStatsCollectorTest, CollectTwoRTCDataChannelStatsWithPendingId) {
   // This is not a safe assumption, but in order to make it work for
   // the test, we reset the ID allocator at test start.
   SctpDataChannel::ResetInternalIdAllocatorForTesting(-1);
-  pc_->AddSctpDataChannel(rtc::make_ref_counted<MockSctpDataChannel>(
+  pc_->AddSctpDataChannel(webrtc::make_ref_counted<MockSctpDataChannel>(
       data_channel_controller_->weak_ptr(), /*id=*/-1,
       DataChannelInterface::kConnecting));
-  pc_->AddSctpDataChannel(rtc::make_ref_counted<MockSctpDataChannel>(
+  pc_->AddSctpDataChannel(webrtc::make_ref_counted<MockSctpDataChannel>(
       data_channel_controller_->weak_ptr(), /*id=*/-1,
       DataChannelInterface::kConnecting));
 
@@ -1584,7 +1585,7 @@ TEST_F(RTCStatsCollectorTest, CollectRTCDataChannelStats) {
   // This is not a safe assumption, but in order to make it work for
   // the test, we reset the ID allocator at test start.
   SctpDataChannel::ResetInternalIdAllocatorForTesting(-1);
-  pc_->AddSctpDataChannel(rtc::make_ref_counted<MockSctpDataChannel>(
+  pc_->AddSctpDataChannel(webrtc::make_ref_counted<MockSctpDataChannel>(
       data_channel_controller_->weak_ptr(), 0, "MockSctpDataChannel0",
       DataChannelInterface::kConnecting, "proto1", 1, 2, 3, 4));
   RTCDataChannelStats expected_data_channel0("D0", Timestamp::Zero());
@@ -1597,7 +1598,7 @@ TEST_F(RTCStatsCollectorTest, CollectRTCDataChannelStats) {
   expected_data_channel0.messages_received = 3;
   expected_data_channel0.bytes_received = 4;
 
-  pc_->AddSctpDataChannel(rtc::make_ref_counted<MockSctpDataChannel>(
+  pc_->AddSctpDataChannel(webrtc::make_ref_counted<MockSctpDataChannel>(
       data_channel_controller_->weak_ptr(), 1, "MockSctpDataChannel1",
       DataChannelInterface::kOpen, "proto2", 5, 6, 7, 8));
   RTCDataChannelStats expected_data_channel1("D1", Timestamp::Zero());
@@ -1610,7 +1611,7 @@ TEST_F(RTCStatsCollectorTest, CollectRTCDataChannelStats) {
   expected_data_channel1.messages_received = 7;
   expected_data_channel1.bytes_received = 8;
 
-  pc_->AddSctpDataChannel(rtc::make_ref_counted<MockSctpDataChannel>(
+  pc_->AddSctpDataChannel(webrtc::make_ref_counted<MockSctpDataChannel>(
       data_channel_controller_->weak_ptr(), 2, "MockSctpDataChannel2",
       DataChannelInterface::kClosing, "proto1", 9, 10, 11, 12));
   RTCDataChannelStats expected_data_channel2("D2", Timestamp::Zero());
@@ -1623,7 +1624,7 @@ TEST_F(RTCStatsCollectorTest, CollectRTCDataChannelStats) {
   expected_data_channel2.messages_received = 11;
   expected_data_channel2.bytes_received = 12;
 
-  pc_->AddSctpDataChannel(rtc::make_ref_counted<MockSctpDataChannel>(
+  pc_->AddSctpDataChannel(webrtc::make_ref_counted<MockSctpDataChannel>(
       data_channel_controller_->weak_ptr(), 3, "MockSctpDataChannel3",
       DataChannelInterface::kClosed, "proto3", 13, 14, 15, 16));
   RTCDataChannelStats expected_data_channel3("D3", Timestamp::Zero());
@@ -3715,8 +3716,8 @@ class RecursiveCallback : public RTCStatsCollectorCallback {
 // Test that nothing bad happens if a callback causes GetStatsReport to be
 // called again recursively. Regression test for crbug.com/webrtc/8973.
 TEST_F(RTCStatsCollectorTest, DoNotCrashWhenGetStatsCalledDuringCallback) {
-  auto callback1 = rtc::make_ref_counted<RecursiveCallback>(stats_.get());
-  auto callback2 = rtc::make_ref_counted<RecursiveCallback>(stats_.get());
+  auto callback1 = webrtc::make_ref_counted<RecursiveCallback>(stats_.get());
+  auto callback2 = webrtc::make_ref_counted<RecursiveCallback>(stats_.get());
   stats_->stats_collector()->GetStatsReport(callback1);
   stats_->stats_collector()->GetStatsReport(callback2);
   EXPECT_TRUE_WAIT(callback1->called(), kGetStatsReportTimeoutMs);
@@ -3841,7 +3842,7 @@ class FakeRTCStatsCollector : public RTCStatsCollector,
 
 TEST(RTCStatsCollectorTestWithFakeCollector, ThreadUsageAndResultsMerging) {
   rtc::AutoThread main_thread_;
-  auto pc = rtc::make_ref_counted<FakePeerConnectionForStats>();
+  auto pc = webrtc::make_ref_counted<FakePeerConnectionForStats>();
   rtc::scoped_refptr<FakeRTCStatsCollector> stats_collector(
       FakeRTCStatsCollector::Create(pc.get(),
                                     50 * rtc::kNumMicrosecsPerMillisec));

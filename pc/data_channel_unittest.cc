@@ -719,7 +719,7 @@ class NoImplObserver : public DataChannelObserver {
 }  // namespace
 
 TEST(DataChannelInterfaceTest, Coverage) {
-  auto channel = rtc::make_ref_counted<NoImplDataChannel>();
+  auto channel = webrtc::make_ref_counted<NoImplDataChannel>();
   EXPECT_FALSE(channel->ordered());
   EXPECT_EQ(channel->maxRetransmitTime(), 0u);
   EXPECT_EQ(channel->maxRetransmits(), 0u);
@@ -737,12 +737,12 @@ TEST(DataChannelInterfaceTest, Coverage) {
 #if RTC_DCHECK_IS_ON && GTEST_HAS_DEATH_TEST && !defined(WEBRTC_ANDROID)
 
 TEST(DataChannelInterfaceDeathTest, SendDefaultImplDchecks) {
-  auto channel = rtc::make_ref_counted<NoImplDataChannel>();
+  auto channel = webrtc::make_ref_counted<NoImplDataChannel>();
   RTC_EXPECT_DEATH(channel->Send(DataBuffer("Foo")), "Check failed: false");
 }
 
 TEST(DataChannelInterfaceDeathTest, SendAsyncDefaultImplDchecks) {
-  auto channel = rtc::make_ref_counted<NoImplDataChannel>();
+  auto channel = webrtc::make_ref_counted<NoImplDataChannel>();
   RTC_EXPECT_DEATH(channel->SendAsync(DataBuffer("Foo"), nullptr),
                    "Check failed: false");
 }

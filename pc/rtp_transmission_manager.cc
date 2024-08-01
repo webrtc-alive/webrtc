@@ -271,16 +271,16 @@ RtpTransmissionManager::CreateReceiver(cricket::MediaType media_type,
   if (media_type == cricket::MEDIA_TYPE_AUDIO) {
     receiver = RtpReceiverProxyWithInternal<RtpReceiverInternal>::Create(
         signaling_thread(), worker_thread(),
-        rtc::make_ref_counted<AudioRtpReceiver>(worker_thread(), receiver_id,
-                                                std::vector<std::string>({}),
-                                                IsUnifiedPlan()));
+        webrtc::make_ref_counted<AudioRtpReceiver>(worker_thread(), receiver_id,
+                                                   std::vector<std::string>({}),
+                                                   IsUnifiedPlan()));
     NoteUsageEvent(UsageEvent::AUDIO_ADDED);
   } else {
     RTC_DCHECK_EQ(media_type, cricket::MEDIA_TYPE_VIDEO);
     receiver = RtpReceiverProxyWithInternal<RtpReceiverInternal>::Create(
         signaling_thread(), worker_thread(),
-        rtc::make_ref_counted<VideoRtpReceiver>(worker_thread(), receiver_id,
-                                                std::vector<std::string>({})));
+        webrtc::make_ref_counted<VideoRtpReceiver>(
+            worker_thread(), receiver_id, std::vector<std::string>({})));
     NoteUsageEvent(UsageEvent::VIDEO_ADDED);
   }
   return receiver;
@@ -299,7 +299,7 @@ RtpTransmissionManager::CreateAndAddTransceiver(
   RTC_DCHECK(!FindSenderById(sender->id()));
   auto transceiver = RtpTransceiverProxyWithInternal<RtpTransceiver>::Create(
       signaling_thread(),
-      rtc::make_ref_counted<RtpTransceiver>(
+      webrtc::make_ref_counted<RtpTransceiver>(
           sender, receiver, context_,
           sender->media_type() == cricket::MEDIA_TYPE_AUDIO
               ? media_engine()->voice().GetRtpHeaderExtensions()
@@ -491,7 +491,7 @@ void RtpTransmissionManager::CreateAudioReceiver(
   streams.push_back(rtc::scoped_refptr<MediaStreamInterface>(stream));
   // TODO(https://crbug.com/webrtc/9480): When we remove remote_streams(), use
   // the constructor taking stream IDs instead.
-  auto audio_receiver = rtc::make_ref_counted<AudioRtpReceiver>(
+  auto audio_receiver = webrtc::make_ref_counted<AudioRtpReceiver>(
       worker_thread(), remote_sender_info.sender_id, streams, IsUnifiedPlan(),
       voice_media_receive_channel());
   if (remote_sender_info.sender_id == kDefaultAudioSenderId) {
@@ -515,7 +515,7 @@ void RtpTransmissionManager::CreateVideoReceiver(
   streams.push_back(rtc::scoped_refptr<MediaStreamInterface>(stream));
   // TODO(https://crbug.com/webrtc/9480): When we remove remote_streams(), use
   // the constructor taking stream IDs instead.
-  auto video_receiver = rtc::make_ref_counted<VideoRtpReceiver>(
+  auto video_receiver = webrtc::make_ref_counted<VideoRtpReceiver>(
       worker_thread(), remote_sender_info.sender_id, streams);
 
   video_receiver->SetupMediaChannel(

@@ -25,7 +25,8 @@ namespace webrtc {
 /**
  * Captures audio data and converts to CMSampleBuffers
  */
-class AudioSinkConverter : public web::RefCountInterface, public webrtc::AudioTrackSinkInterface {
+class AudioSinkConverter : public webrtc::RefCountInterface,
+                           public webrtc::AudioTrackSinkInterface {
  private:
   os_unfair_lock *lock_;
   __weak RTC_OBJC_TYPE(RTCAudioTrack) * audio_track_;

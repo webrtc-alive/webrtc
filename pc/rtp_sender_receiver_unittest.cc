@@ -287,7 +287,7 @@ class RtpSenderReceiverTest
 
   void CreateAudioRtpReceiver(
       std::vector<rtc::scoped_refptr<MediaStreamInterface>> streams = {}) {
-    audio_rtp_receiver_ = rtc::make_ref_counted<AudioRtpReceiver>(
+    audio_rtp_receiver_ = webrtc::make_ref_counted<AudioRtpReceiver>(
         rtc::Thread::Current(), kAudioTrackId, streams,
         /*is_unified_plan=*/true);
     audio_rtp_receiver_->SetMediaChannel(voice_media_receive_channel());
@@ -298,7 +298,7 @@ class RtpSenderReceiverTest
 
   void CreateVideoRtpReceiver(
       std::vector<rtc::scoped_refptr<MediaStreamInterface>> streams = {}) {
-    video_rtp_receiver_ = rtc::make_ref_counted<VideoRtpReceiver>(
+    video_rtp_receiver_ = webrtc::make_ref_counted<VideoRtpReceiver>(
         rtc::Thread::Current(), kVideoTrackId, streams);
     video_rtp_receiver_->SetMediaChannel(video_media_receive_channel());
     video_rtp_receiver_->SetupMediaChannel(kVideoSsrc);
@@ -318,7 +318,7 @@ class RtpSenderReceiverTest
     video_media_receive_channel_->AddRecvStream(stream_params);
     uint32_t primary_ssrc = stream_params.first_ssrc();
 
-    video_rtp_receiver_ = rtc::make_ref_counted<VideoRtpReceiver>(
+    video_rtp_receiver_ = webrtc::make_ref_counted<VideoRtpReceiver>(
         rtc::Thread::Current(), kVideoTrackId, streams);
     video_rtp_receiver_->SetMediaChannel(video_media_receive_channel());
     video_rtp_receiver_->SetupMediaChannel(primary_ssrc);
@@ -1818,7 +1818,7 @@ TEST_F(RtpSenderReceiverTest, AudioSenderCannotSetFrameEncryptorAfterStop) {
 TEST_F(RtpSenderReceiverTest, AudioReceiverCanSetFrameDecryptor) {
   CreateAudioRtpReceiver();
   rtc::scoped_refptr<FrameDecryptorInterface> fake_frame_decryptor(
-      rtc::make_ref_counted<FakeFrameDecryptor>());
+      webrtc::make_ref_counted<FakeFrameDecryptor>());
   EXPECT_EQ(nullptr, audio_rtp_receiver_->GetFrameDecryptor());
   audio_rtp_receiver_->SetFrameDecryptor(fake_frame_decryptor);
   EXPECT_EQ(fake_frame_decryptor.get(),
@@ -1830,7 +1830,7 @@ TEST_F(RtpSenderReceiverTest, AudioReceiverCanSetFrameDecryptor) {
 TEST_F(RtpSenderReceiverTest, AudioReceiverCannotSetFrameDecryptorAfterStop) {
   CreateAudioRtpReceiver();
   rtc::scoped_refptr<FrameDecryptorInterface> fake_frame_decryptor(
-      rtc::make_ref_counted<FakeFrameDecryptor>());
+      webrtc::make_ref_counted<FakeFrameDecryptor>());
   EXPECT_EQ(nullptr, audio_rtp_receiver_->GetFrameDecryptor());
   audio_rtp_receiver_->SetMediaChannel(nullptr);
   audio_rtp_receiver_->SetFrameDecryptor(fake_frame_decryptor);
@@ -1865,7 +1865,7 @@ TEST_F(RtpSenderReceiverTest, VideoSenderCannotSetFrameEncryptorAfterStop) {
 TEST_F(RtpSenderReceiverTest, VideoReceiverCanSetFrameDecryptor) {
   CreateVideoRtpReceiver();
   rtc::scoped_refptr<FrameDecryptorInterface> fake_frame_decryptor(
-      rtc::make_ref_counted<FakeFrameDecryptor>());
+      webrtc::make_ref_counted<FakeFrameDecryptor>());
   EXPECT_EQ(nullptr, video_rtp_receiver_->GetFrameDecryptor());
   video_rtp_receiver_->SetFrameDecryptor(fake_frame_decryptor);
   EXPECT_EQ(fake_frame_decryptor.get(),
@@ -1877,7 +1877,7 @@ TEST_F(RtpSenderReceiverTest, VideoReceiverCanSetFrameDecryptor) {
 TEST_F(RtpSenderReceiverTest, VideoReceiverCannotSetFrameDecryptorAfterStop) {
   CreateVideoRtpReceiver();
   rtc::scoped_refptr<FrameDecryptorInterface> fake_frame_decryptor(
-      rtc::make_ref_counted<FakeFrameDecryptor>());
+      webrtc::make_ref_counted<FakeFrameDecryptor>());
   EXPECT_EQ(nullptr, video_rtp_receiver_->GetFrameDecryptor());
   video_rtp_receiver_->SetMediaChannel(nullptr);
   video_rtp_receiver_->SetFrameDecryptor(fake_frame_decryptor);

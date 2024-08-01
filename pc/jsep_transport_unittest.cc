@@ -76,7 +76,7 @@ rtc::scoped_refptr<webrtc::IceTransportInterface> CreateIceTransport(
     return nullptr;
   }
 
-  return rtc::make_ref_counted<FakeIceTransportWrapper>(std::move(internal));
+  return webrtc::make_ref_counted<FakeIceTransportWrapper>(std::move(internal));
 }
 
 class JsepTransport2Test : public ::testing::Test, public sigslot::has_slots<> {
@@ -126,8 +126,8 @@ class JsepTransport2Test : public ::testing::Test, public sigslot::has_slots<> {
     std::unique_ptr<webrtc::RtpTransport> unencrypted_rtp_transport;
     std::unique_ptr<webrtc::SrtpTransport> sdes_transport;
     std::unique_ptr<webrtc::DtlsSrtpTransport> dtls_srtp_transport;
-        dtls_srtp_transport = CreateDtlsSrtpTransport(
-            rtp_dtls_transport.get(), rtcp_dtls_transport.get());
+    dtls_srtp_transport = CreateDtlsSrtpTransport(rtp_dtls_transport.get(),
+                                                  rtcp_dtls_transport.get());
 
     auto jsep_transport = std::make_unique<JsepTransport>(
         kTransportName, /*local_certificate=*/nullptr, std::move(ice),

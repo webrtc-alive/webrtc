@@ -2663,7 +2663,7 @@ TEST(ApmConfiguration, EchoControlInjection) {
 TEST(ApmConfiguration, EchoDetectorInjection) {
   using ::testing::_;
   rtc::scoped_refptr<test::MockEchoDetector> mock_echo_detector =
-      rtc::make_ref_counted<::testing::StrictMock<test::MockEchoDetector>>();
+      webrtc::make_ref_counted<::testing::StrictMock<test::MockEchoDetector>>();
   EXPECT_CALL(*mock_echo_detector,
               Initialize(/*capture_sample_rate_hz=*/16000, _,
                          /*render_sample_rate_hz=*/16000, _))

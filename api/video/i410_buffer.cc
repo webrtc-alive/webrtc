@@ -63,7 +63,7 @@ I410Buffer::~I410Buffer() {}
 
 // static
 rtc::scoped_refptr<I410Buffer> I410Buffer::Create(int width, int height) {
-  return rtc::make_ref_counted<I410Buffer>(width, height);
+  return webrtc::make_ref_counted<I410Buffer>(width, height);
 }
 
 // static
@@ -72,8 +72,8 @@ rtc::scoped_refptr<I410Buffer> I410Buffer::Create(int width,
                                                   int stride_y,
                                                   int stride_u,
                                                   int stride_v) {
-  return rtc::make_ref_counted<I410Buffer>(width, height, stride_y, stride_u,
-                                           stride_v);
+  return webrtc::make_ref_counted<I410Buffer>(width, height, stride_y, stride_u,
+                                              stride_v);
 }
 
 // static
