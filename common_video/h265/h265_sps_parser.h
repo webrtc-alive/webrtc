@@ -69,12 +69,7 @@ class H265SpsParser {
   };
 
   // Unpack RBSP and parse SPS state from the supplied buffer.
-  static absl::optional<SpsState> ParseSps(rtc::ArrayView<const uint8_t> data);
-  // TODO: bugs.webrtc.org/42225170 - Deprecate.
-  static inline absl::optional<SpsState> ParseSps(const uint8_t* data,
-                                                  size_t length) {
-    return ParseSps(rtc::MakeArrayView(data, length));
-  }
+  static absl::optional<SpsState> ParseSps(const uint8_t* data, size_t length);
 
   static bool ParseScalingListData(BitstreamReader& reader);
 
