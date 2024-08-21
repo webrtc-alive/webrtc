@@ -73,6 +73,8 @@ struct NaluInfo {
   }
 };
 
+const size_t kMaxNalusPerPacket = 10;
+
 struct RTPVideoHeaderH264 {
   // The NAL unit type. If this is a header for a
   // fragmented packet, it's the NAL unit type of
