@@ -39,15 +39,23 @@ class H265BitstreamParser : public BitstreamParser {
   void ParseBitstream(rtc::ArrayView<const uint8_t> bitstream) override;
   absl::optional<int> GetLastSliceQp() const override;
 
+<<<<<<< HEAD
+=======
+  absl::optional<uint32_t> GetLastSlicePpsId() const;
+
+  static absl::optional<uint32_t> ParsePpsIdFromSliceSegmentLayerRbsp(
+      rtc::ArrayView<const uint8_t> data,
+      uint8_t nalu_type);
+
+>>>>>>> remotes/upstream/branch-heads/6613
  protected:
   enum Result {
     kOk,
     kInvalidStream,
     kUnsupportedStream,
   };
-  void ParseSlice(const uint8_t* slice, size_t length);
-  Result ParseNonParameterSetNalu(const uint8_t* source,
-                                  size_t source_length,
+  void ParseSlice(rtc::ArrayView<const uint8_t> slice);
+  Result ParseNonParameterSetNalu(rtc::ArrayView<const uint8_t> source,
                                   uint8_t nalu_type);
 
   uint32_t CalcNumPocTotalCurr(

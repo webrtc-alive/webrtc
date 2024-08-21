@@ -184,8 +184,8 @@ absl::optional<VideoRtpDepacketizer::ParsedRtpPayload> ProcessApOrSingleNalu(
         if (start_offset)
           output_buffer->AppendData(payload_data, start_offset);
 
-        absl::optional<H265SpsParser::SpsState> sps = H265SpsParser::ParseSps(
-            &payload_data[start_offset], end_offset - start_offset);
+        absl::optional<H265SpsParser::SpsState> sps =
+            H265SpsParser::ParseSps(nalu_data);
 
         if (sps) {
           parsed_payload->video_header.width = sps->width;

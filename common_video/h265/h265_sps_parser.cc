@@ -35,9 +35,14 @@ H265SpsParser::ShortTermRefPicSet::ShortTermRefPicSet() = default;
 
 // Unpack RBSP and parse SPS state from the supplied buffer.
 absl::optional<H265SpsParser::SpsState> H265SpsParser::ParseSps(
+<<<<<<< HEAD
     const uint8_t* data,
     size_t length) {
   return ParseSpsInternal(H265::ParseRbsp(data, length));
+=======
+    rtc::ArrayView<const uint8_t> data) {
+  return ParseSpsInternal(H265::ParseRbsp(data));
+>>>>>>> remotes/upstream/branch-heads/6613
 }
 
 bool H265SpsParser::ParseScalingListData(BitstreamReader& reader) {

@@ -45,16 +45,21 @@ H265BitstreamParser::~H265BitstreamParser() {}
 // section 7.3.6.1. You can find it on this page:
 // http://www.itu.int/rec/T-REC-H.265
 H265BitstreamParser::Result H265BitstreamParser::ParseNonParameterSetNalu(
-    const uint8_t* source,
-    size_t source_length,
+    rtc::ArrayView<const uint8_t> source,
     uint8_t nalu_type) {
   if (!sps_ || !pps_)
     return kInvalidStream;
 
   last_slice_qp_delta_ = absl::nullopt;
+<<<<<<< HEAD
   const std::vector<uint8_t> slice_rbsp =
       H265::ParseRbsp(source, source_length);
   if (slice_rbsp.size() < H265::kNaluTypeSize)
+=======
+  last_slice_pps_id_ = absl::nullopt;
+  const std::vector<uint8_t> slice_rbsp = H265::ParseRbsp(source);
+  if (slice_rbsp.size() < H265::kNaluHeaderSize)
+>>>>>>> remotes/upstream/branch-heads/6613
     return kInvalidStream;
 
   BitstreamReader slice_reader(slice_rbsp);
@@ -354,34 +359,130 @@ uint32_t H265BitstreamParser::CalcNumPocTotalCurr(
   return num_poc_total_curr;
 }
 
-void H265BitstreamParser::ParseSlice(const uint8_t* slice, size_t length) {
+void H265BitstreamParser::ParseSlice(rtc::ArrayView<const uint8_t> slice) {
   H265::NaluType nalu_type = H265::ParseNaluType(slice[0]);
+<<<<<<< HEAD
   if (nalu_type == H265::NaluType::kSps) {
       sps_ = H265SpsParser::ParseSps(slice + H265::kNaluTypeSize,
                                      length - H265::kNaluTypeSize);
       if (!sps_) {
+=======
+  switch (nalu_type) {
+    case H265::NaluType::kVps: {
+      absl::optional<H265VpsParser::VpsState> vps_state;
+      if (slice.size() >= H265::kNaluHeaderSize) {
+        vps_state =
+            H265VpsParser::ParseVps(slice.subview(H265::kNaluHeaderSize));
+      }
+
+      if (!vps_state) {
+        RTC_LOG(LS_WARNING) << "Unable to parse VPS from H265 bitstream.";
+      } else {
+        vps_[vps_state->id] = *vps_state;
+      }
+      break;
+    }
+    case H265::NaluType::kSps: {
+      absl::optional<H265SpsParser::SpsState> sps_state;
+      if (slice.size() >= H265::kNaluHeaderSize) {
+        sps_state =
+            H265SpsParser::ParseSps(slice.subview(H265::kNaluHeaderSize));
+      }
+      if (!sps_state) {
+>>>>>>> remotes/upstream/branch-heads/6613
         RTC_LOG(LS_WARNING) << "Unable to parse SPS from H265 bitstream.";
       }
+<<<<<<< HEAD
   } else if (nalu_type == H265::NaluType::kPps) {
       pps_ = H265PpsParser::ParsePps(slice + H265::kNaluTypeSize,
                                      length - H265::kNaluTypeSize);
       if (!pps_) {
+=======
+      break;
+    }
+    case H265::NaluType::kPps: {
+      absl::optional<H265PpsParser::PpsState> pps_state;
+      if (slice.size() >= H265::kNaluHeaderSize) {
+        std::vector<uint8_t> unpacked_buffer =
+            H265::ParseRbsp(slice.subview(H265::kNaluHeaderSize));
+        BitstreamReader slice_reader(unpacked_buffer);
+        // pic_parameter_set_id: ue(v)
+        uint32_t pps_id = slice_reader.ReadExponentialGolomb();
+        IN_RANGE_OR_RETURN_VOID(pps_id, 0, 63);
+        // seq_parameter_set_id: ue(v)
+        uint32_t sps_id = slice_reader.ReadExponentialGolomb();
+        IN_RANGE_OR_RETURN_VOID(sps_id, 0, 15);
+        const H265SpsParser::SpsState* sps = GetSPS(sps_id);
+        pps_state =
+            H265PpsParser::ParsePps(slice.subview(H265::kNaluHeaderSize), sps);
+      }
+      if (!pps_state) {
+>>>>>>> remotes/upstream/branch-heads/6613
         RTC_LOG(LS_WARNING) << "Unable to parse PPS from H265 bitstream.";
       }
+<<<<<<< HEAD
   } else if (nalu_type <= H265::NaluType::kRsvIrapVcl23) {
       Result res = ParseNonParameterSetNalu(slice, length, nalu_type);
+=======
+      break;
+    }
+    case H265::NaluType::kAud:
+    case H265::NaluType::kPrefixSei:
+    case H265::NaluType::kSuffixSei:
+    case H265::NaluType::kAp:
+    case H265::NaluType::kFu:
+      break;
+    default:
+      Result res = ParseNonParameterSetNalu(slice, nalu_type);
+>>>>>>> remotes/upstream/branch-heads/6613
       if (res != kOk) {
         RTC_LOG(LS_INFO) << "Failed to parse bitstream. Error: " << res;
       }
   }
 }
 
+<<<<<<< HEAD
 void H265BitstreamParser::ParseBitstream(const uint8_t* bitstream,
                                          size_t length) {
   std::vector<H265::NaluIndex> nalu_indices =
       H265::FindNaluIndices(bitstream, length);
+=======
+absl::optional<uint32_t>
+H265BitstreamParser::ParsePpsIdFromSliceSegmentLayerRbsp(
+    rtc::ArrayView<const uint8_t> data,
+    uint8_t nalu_type) {
+  std::vector<uint8_t> unpacked_buffer = H265::ParseRbsp(data);
+  BitstreamReader slice_reader(unpacked_buffer);
+
+  // first_slice_segment_in_pic_flag: u(1)
+  slice_reader.ConsumeBits(1);
+  if (!slice_reader.Ok()) {
+    return absl::nullopt;
+  }
+
+  if (nalu_type >= H265::NaluType::kBlaWLp &&
+      nalu_type <= H265::NaluType::kRsvIrapVcl23) {
+    // no_output_of_prior_pics_flag: u(1)
+    slice_reader.ConsumeBits(1);
+  }
+
+  // slice_pic_parameter_set_id: ue(v)
+  uint32_t slice_pic_parameter_set_id = slice_reader.ReadExponentialGolomb();
+  IN_RANGE_OR_RETURN_NULL(slice_pic_parameter_set_id, 0, 63);
+  if (!slice_reader.Ok()) {
+    return absl::nullopt;
+  }
+
+  return slice_pic_parameter_set_id;
+}
+
+void H265BitstreamParser::ParseBitstream(
+    rtc::ArrayView<const uint8_t> bitstream) {
+  std::vector<H265::NaluIndex> nalu_indices = H265::FindNaluIndices(bitstream);
+>>>>>>> remotes/upstream/branch-heads/6613
   for (const H265::NaluIndex& index : nalu_indices)
-    ParseSlice(&bitstream[index.payload_start_offset], index.payload_size);
+    ParseSlice(
+        bitstream.subview(index.payload_start_offset, index.payload_size));
 }
 
 bool H265BitstreamParser::GetLastSliceQp(int* qp) const {

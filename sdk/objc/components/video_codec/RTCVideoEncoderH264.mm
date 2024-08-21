@@ -665,7 +665,23 @@ NSUInteger GetMaxSampleRate(const webrtc::H264ProfileLevelId &profile_level_id) 
     if (![compressionSessionPixelFormats
             containsObject:[NSNumber numberWithLong:framePixelFormat]]) {
       resetCompressionSession = YES;
-      RTC_LOG(LS_INFO) << "Resetting compression session due to non-matching pixel format.";
+    } else {
+      NSDictionary *poolAttributes =
+          (__bridge NSDictionary *)CVPixelBufferPoolGetPixelBufferAttributes(pixelBufferPool);
+      id pixelFormats =
+          [poolAttributes objectForKey:(__bridge NSString *)kCVPixelBufferPixelFormatTypeKey];
+      NSArray<NSNumber *> *compressionSessionPixelFormats = nil;
+      if ([pixelFormats isKindOfClass:[NSArray class]]) {
+        compressionSessionPixelFormats = (NSArray *)pixelFormats;
+      } else if ([pixelFormats isKindOfClass:[NSNumber class]]) {
+        compressionSessionPixelFormats = @[ (NSNumber *)pixelFormats ];
+      }
+
+      if (![compressionSessionPixelFormats
+              containsObject:[NSNumber numberWithLong:framePixelFormat]]) {
+        resetCompressionSession = YES;
+        RTC_LOG(LS_INFO) << "Resetting compression session due to non-matching pixel format.";
+      }
     }
   } else {
     resetCompressionSession = YES;
