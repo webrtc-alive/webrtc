@@ -63,7 +63,7 @@ struct KeyProviderOptions {
         key_ring_size(copy.key_ring_size) {}
 };
 
-class KeyProvider : public rtc::RefCountInterface {
+class KeyProvider : public webrtc::RefCountInterface {
  public:
   virtual bool SetSharedKey(int key_index, std::vector<uint8_t> key) = 0;
 
@@ -96,9 +96,9 @@ class KeyProvider : public rtc::RefCountInterface {
   virtual ~KeyProvider() {}
 };
 
-class ParticipantKeyHandler : public rtc::RefCountInterface {
+class ParticipantKeyHandler : public webrtc::RefCountInterface {
  public:
-  struct KeySet : public rtc::RefCountInterface {
+  struct KeySet : public webrtc::RefCountInterface {
     std::vector<uint8_t> material;
     std::vector<uint8_t> encryption_key;
     KeySet(std::vector<uint8_t> material, std::vector<uint8_t> encryptionKey)
@@ -366,7 +366,7 @@ enum FrameCryptionState {
   kInternalError,
 };
 
-class FrameCryptorTransformerObserver : public rtc::RefCountInterface {
+class FrameCryptorTransformerObserver : public webrtc::RefCountInterface {
  public:
   virtual void OnFrameCryptionStateChanged(const std::string participant_id,
                                            FrameCryptionState error) = 0;
