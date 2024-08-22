@@ -85,8 +85,8 @@ int64_t* GetContinuousSequence(rtc::ArrayView<int64_t> last_continuous,
 
 #ifdef RTC_ENABLE_H265
 bool HasVps(const H26xPacketBuffer::Packet& packet) {
-  std::vector<H265::NaluIndex> nalu_indices =
-      H265::FindNaluIndices(packet.video_payload);
+  std::vector<H265::NaluIndex> nalu_indices = H265::FindNaluIndices(
+      packet.video_payload.cdata(), packet.video_payload.size());
   return absl::c_any_of((nalu_indices), [&packet](
                                             const H265::NaluIndex& nalu_index) {
     return H265::ParseNaluType(
@@ -242,8 +242,8 @@ bool H26xPacketBuffer::MaybeAssembleFrame(int64_t start_seq_num_unwrapped,
       }
 #ifdef RTC_ENABLE_H265
     } else if (packet->codec() == kVideoCodecH265) {
-      std::vector<H265::NaluIndex> nalu_indices =
-          H265::FindNaluIndices(packet->video_payload);
+      std::vector<H265::NaluIndex> nalu_indices = H265::FindNaluIndices(
+          packet->video_payload.cdata(), packet->video_payload.size());
       for (const auto& nalu_index : nalu_indices) {
         uint8_t nalu_type = H265::ParseNaluType(
             packet->video_payload.cdata()[nalu_index.payload_start_offset]);
