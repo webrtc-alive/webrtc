@@ -68,6 +68,7 @@ QualityConvergenceMonitor::Parameters GetParameters(
       max_qp = 255;
       break;
     case kVideoCodecGeneric:
+    case kVideoCodecMultiplex:
     case kVideoCodecH264:
     case kVideoCodecH265:
       break;

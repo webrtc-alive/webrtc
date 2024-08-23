@@ -30,6 +30,7 @@ int GetDefaultStaticQpThreshold(VideoCodecType codec) {
     case kVideoCodecAV1:
       return kAv1DefaultStaticQpThreshold;
     case kVideoCodecGeneric:
+    case kVideoCodecMultiplex:
     case kVideoCodecH264:
     case kVideoCodecH265:
       // -1 will effectively disable the static QP threshold since QP values are
