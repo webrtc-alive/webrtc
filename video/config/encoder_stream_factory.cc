@@ -107,6 +107,7 @@ int GetDefaultMaxQp(webrtc::VideoCodecType codec_type) {
     case webrtc::kVideoCodecVP9:
     case webrtc::kVideoCodecAV1:
     case webrtc::kVideoCodecGeneric:
+    case webrtc::kVideoCodecMultiplex:
       return kDefaultVideoMaxQpVpx;
   }
 }
