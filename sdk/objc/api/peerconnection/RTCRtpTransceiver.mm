@@ -121,6 +121,28 @@ NSString *const kRTCRtpTransceiverErrorDomain = @"org.webrtc.RTCRtpTranceiver";
   _nativeRtpTransceiver->StopInternal();
 }
 
+- (BOOL)setCodecPreferences:(NSArray<RTC_OBJC_TYPE(RTCRtpCodecCapability) *> *)codecs
+                      error:(NSError **)error {
+  std::vector<webrtc::RtpCodecCapability> codecCapabilities;
+  if (codecs) {
+    for (RTC_OBJC_TYPE(RTCRtpCodecCapability) * rtpCodecCapability in codecs) {
+      codecCapabilities.push_back(rtpCodecCapability.nativeRtpCodecCapability);
+    }
+  }
+  webrtc::RTCError nativeError = _nativeRtpTransceiver->SetCodecPreferences(codecCapabilities);
+  if (!nativeError.ok() && error) {
+    *error = [NSError
+        errorWithDomain:kRTCRtpTransceiverErrorDomain
+                   code:static_cast<int>(nativeError.type())
+               userInfo:@{@"message" : [NSString stringWithUTF8String:nativeError.message()]}];
+  }
+  return nativeError.ok();
+}
+
+- (void)setCodecPreferences:(NSArray<RTC_OBJC_TYPE(RTCRtpCodecCapability) *> *)codecs {
+  [self setCodecPreferences:codecs error:nil];
+}
+
 - (NSString *)description {
   return [NSString
       stringWithFormat:@"RTC_OBJC_TYPE(RTCRtpTransceiver) {\n  sender: %@\n  receiver: %@\n}",
